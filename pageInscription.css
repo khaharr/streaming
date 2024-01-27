@@ -21,7 +21,7 @@ body
 {
     position: relative;
     width: 380px;
-    height: 420px;
+    height: 600px;
     background: #1c1c1c;
     border-radius: 8px;
     overflow: hidden;
@@ -190,7 +190,7 @@ Par défaut, l'élément créé est de type en-ligne (inline)*/
 .box form .links /* modification sur les liens */
 {
     display: flex;
-    justify-content:space-between;
+    justify-content:right;
     
 }
 
@@ -202,11 +202,11 @@ Par défaut, l'élément créé est de type en-ligne (inline)*/
     text-decoration: none;
 }
 
-.box form .links a:hover, /* permet de mettre en blanc mot de passe oublier et s inscrire quand le curseur et au dessus*/
-.box form .links a:nth-child(2)/*garder en blanc s'inscrire*/
+.box form .links a:hover /* permet de mettre en blanc mot de passe oublier et s inscrire quand le curseur et au dessus*/
 {
     color: #fff;
 }
+
 
 .box form input[type="submit"]
 {
@@ -220,6 +220,8 @@ Par défaut, l'élément créé est de type en-ligne (inline)*/
     font-weight: 600;
     width: 100px;
     margin-top: 10px;
+    text-align: center;
+    margin-left: 100px;
 
 }
 

@@ -1,8 +1,8 @@
-1  <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>page connexion pour sao </title>
+    <title>connexion</title>
     <link rel="stylesheet" href="pageConnexion.css">
 </head>
 <body>
@@ -22,7 +22,7 @@
             </div>
         <div class="links">
             <a href="#">mot de passe oublié</a>
-            <a href="#">s'inscrire</a>
+            <a href="pageInscription.PHP">s'inscrire</a>
         </div> 
         <input type="submit" value="connexion">
         </form>

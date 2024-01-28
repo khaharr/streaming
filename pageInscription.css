@@ -14,7 +14,18 @@ body
     align-items: center;
     min-height: 100vh;
     background: #23242a;
+    background-image: url(crane.png); 
 }
+
+.bg {
+    position: fixed; 
+    top: 10; 
+    left: 100; 
+      
+    /* Preserve aspet ratio */
+    min-width: 90%;
+    min-height: 50%;
+  }
 
 
 .box
@@ -114,6 +125,7 @@ Par défaut, l'élément créé est de type en-ligne (inline)*/
     position: absolute;
     inset: 4px;
     background: #222;
+
     padding: 50px 40px;
     border-radius: 8px;
     z-index: 2;

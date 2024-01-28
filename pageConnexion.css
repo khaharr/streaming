@@ -227,3 +227,12 @@ Par défaut, l'élément créé est de type en-ligne (inline)*/
 {
     opacity: 0.8;
 }
+
+.error {
+    background: #F2DEDE;
+    color: #A94442;
+    padding: 10px;
+    width: 95%;
+    border-radius: 5px;
+    
+}

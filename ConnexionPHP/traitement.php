@@ -32,7 +32,7 @@ if(isset($_POST['boutonInscrire'])){
         )
         );
         echo "Inscription réussi";
-        //header("Location: page.php");   < pour rediriger vers la page 
+        header("Location: Home.php");   
 }
 
 ?>

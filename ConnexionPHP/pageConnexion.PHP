@@ -2,7 +2,7 @@
 <head>
     <meta charset="UTF-8">
     <title>connexion</title>
-    <link rel="stylesheet" href="pageConnexion.css">
+    <link rel="stylesheet" href="../CSSconnexion/pageConnexion.css">
 </head>
 <body>    
     <div class="box">

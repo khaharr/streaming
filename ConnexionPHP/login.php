@@ -1,6 +1,6 @@
 <?php
 session_start();
-include "loginConnexion";
+include "loginConnexion.php";
 if(isset($_POST['email']) && isset($_POST['motDePasse'])){
     function validate($data){
         $data = trim($data);
@@ -14,27 +14,26 @@ if(isset($_POST['email']) && isset($_POST['motDePasse'])){
    
 
     if (empty($email)){
-        header("Location: pageConnexion.PHP?error=email est requis");
+        header("Location: ./pageConnexion.PHP?error=email est requis");
         exit();
     }else if(empty($motDePasse)){
-        header("Location: pageConnexion.PHP?error=mot de passe est requis");
+        header("Location: ./pageConnexion.PHP?error=mot de passe est requis");
         exit();
     }else{
         $sql = "SELECT * FROM users WHERE email='$email' AND motDePasse='$motDePasse'";
-
-        $result = mysqli_query($conn, $sql);
+        $result = mysqli_query($conn, $sql  );
         if (mysqli_num_rows($result) === 1){
             $row = mysqli_fetch_assoc($result);
             if ($row ['email']=== $email && $row ['motDePasse']=== $motDePasse ){
                 $SESSION['user'] = $row['user'];
                 $SESSION['id'] = $row['id'];
-                header("Location: pageConnexion.PHP");#mettre le home ICI<<<<<<<<<<<<<
+                header("Location: Home.PHP");
             }else{
-                header("Location: pageConnexion.PHP?error=mot de passe ou email incorrect");
+                header("Location: ./pageConnexion.PHP?error=mot de passe ou email incorrect");
                 exit();
         }
-    }else{
-            header("Location: pageConnexion.PHP?error=mot de passe ou email incorrect");
+        }else{
+            header("Location: ./pageConnexion.PHP?error=mot de passe ou email incorrect");
             exit();
         }
     }

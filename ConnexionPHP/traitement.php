@@ -1,18 +1,17 @@
 <?php
 $servername = "localhost";
 $username = "root";
-$password ="";
+$password = "";
 
-try{
-    $bdd = new PDO("mysql:host=$servername; dbname=utiisateurstreaming", $username, $password);
-    $bdd->setAttribute(PDO::ATTR_ERRMODE , PDO::ERRMODE_EXCEPTION);
-    echo "connexion reussi";
-}
-catch(PDOException $e){
-    echo "Erreur  : ".$e->getMessage();
+try {
+    $bdd = new PDO("mysql:host=$servername;dbname=utiisateurstreaming", $username, $password);
+    $bdd->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    echo "Connexion réussie";
+} catch(PDOException $e) {
+    echo "Erreur : ".$e->getMessage();
 }
 
- 
+
 if(isset($_POST['boutonInscrire'])){
     $nom = $_POST['nom'];
     $prenom = $_POST['prenom'];
@@ -20,19 +19,27 @@ if(isset($_POST['boutonInscrire'])){
     $user = $_POST['user'];
     $motDePasse = $_POST['motDePasse'];
 
-    $requete = $bdd->prepare("INSERT INTO users VALUES (0, :user, :nom, :prenom, :motDePasse, :email)");
-    $requete->execute(
-        array(
-            "user" => $user,
-            "nom" => $nom,
-            "prenom" => $prenom,
-            "motDePasse" => $motDePasse,
-            "email" => $email,
-
-        )
+    try {
+        $requete = $bdd->prepare("INSERT INTO users VALUES (0, :user, :nom, :prenom,:motDePasse, :email)");
+        $requete->execute(
+            array(
+                "user" => $user,
+                "nom" => $nom,
+                "prenom" => $prenom,
+                "motDePasse" => $motDePasse,
+                "email" => $email,
+                ":motDePasse" => password_hash($motDePasse, PASSWORD_DEFAULT),
+            )
         );
-        echo "Inscription réussi";
-        header("Location: Home.php");   
+        echo "Inscription réussie";
+        header("Location: Home.php");
+        exit();
+    } catch (PDOException $e) {
+        if ($e->errorInfo[1] == 1062) { // Code d'erreur MySQL pour la violation de la contrainte unique
+            echo "Erreur : Cet email est déjà utilisé.";
+        } else {
+            echo "Erreur : " . $e->getMessage();
+        }
+    }
 }
-
 ?>

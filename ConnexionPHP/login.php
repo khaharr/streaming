@@ -20,19 +20,36 @@ if(isset($_POST['email']) && isset($_POST['motDePasse'])){
         header("Location: ./pageConnexion.PHP?error=mot de passe est requis");
         exit();
     }else{
-        $sql = "SELECT * FROM users WHERE email='$email' AND motDePasse='$motDePasse'";
+        $sql = "SELECT * FROM users WHERE email='$email' ";
         $result = mysqli_query($conn, $sql  );
         if (mysqli_num_rows($result) === 1){
             $row = mysqli_fetch_assoc($result);
-            if ($row ['email']=== $email && $row ['motDePasse']=== $motDePasse ){
-                $SESSION['user'] = $row['user'];
-                $SESSION['id'] = $row['id'];
-                header("Location: Home.PHP");
+            
+            if ($row ['email']=== $email){
+                if (password_verify($motDePasse, $row['motDePasse'])) {
+                    $_SESSION['user'] = $row['user'];
+                    $_SESSION['id'] = $row['id'];
+                    header("Location: Home.PHP");
+                    exit();
+                } else{
+                    header("Location: ./pageConnexion.PHP?error=mot de passe ou email incorrect");}
             }else{
                 header("Location: ./pageConnexion.PHP?error=mot de passe ou email incorrect");
                 exit();
+
+                if ($row ['user']=== $email){
+                    if (password_verify($motDePasse, $row['motDePasse'])) {
+                        $_SESSION['user'] = $row['user'];
+                        $_SESSION['id'] = $row['id'];
+                        header("Location: Home.PHP");
+                        exit();
+                    } else{
+                        header("Location: ./pageConnexion.PHP?error=mot de passe ou email incorrect");}
+                }else{
+                    header("Location: ./pageConnexion.PHP?error=mot de passe ou email incorrect");
+                    exit();    
         }
-        }else{
+        }}else{
             header("Location: ./pageConnexion.PHP?error=mot de passe ou email incorrect");
             exit();
         }

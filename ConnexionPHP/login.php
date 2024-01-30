@@ -20,12 +20,12 @@ if(isset($_POST['email']) && isset($_POST['motDePasse'])){
         header("Location: ./pageConnexion.PHP?error=mot de passe est requis");
         exit();
     }else{
-        $sql = "SELECT * FROM users WHERE email='$email' ";
-        $result = mysqli_query($conn, $sql  );
+        $sql = "SELECT * FROM users WHERE email='$email'  OR user='$email'";
+        $result = mysqli_query($conn, $sql);
         if (mysqli_num_rows($result) === 1){
             $row = mysqli_fetch_assoc($result);
             
-            if ($row ['email']=== $email){
+            if ($row ['email']=== $email OR $row['user']=== $email){
                 if (password_verify($motDePasse, $row['motDePasse'])) {
                     $_SESSION['user'] = $row['user'];
                     $_SESSION['id'] = $row['id'];

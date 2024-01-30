@@ -36,7 +36,14 @@ if(isset($_POST['boutonInscrire'])){
         exit();
     } catch (PDOException $e) {
         if ($e->errorInfo[1] == 1062) { // Code d'erreur MySQL pour la violation de la contrainte unique
-            echo "Erreur : Cet email est déjà utilisé.";
+            if (strpos($e->getMessage(), 'email') !== false) {
+                header("Location: ./pageInscription.PHP?error=Email deja utilisé");
+            } 
+
+            elseif(strpos($e->getMessage(), 'user') !== false) {
+                header("Location: ./pageInscription.PHP?error=pseudo déja utilisé");
+            }
+
         } else {
             echo "Erreur : " . $e->getMessage();
         }

@@ -56,7 +56,7 @@ body
 {
     position: relative;
     width: 380px;
-    height: 600px;
+    height: 650px;
     background: #1c1c1c;
     border-radius: 8px;
     overflow: hidden;
@@ -264,4 +264,13 @@ Par défaut, l'élément créé est de type en-ligne (inline)*/
 .box form input[type="submit"]:active  /*annimation lorsqu on appui sur le bouton connexion*/
 {
     opacity: 0.8;
+}
+
+.error {
+    background: #F2DEDE;
+    color: #A94442;
+    padding: 10px;
+    width: 95%;
+    border-radius: 5px;
+    
 }

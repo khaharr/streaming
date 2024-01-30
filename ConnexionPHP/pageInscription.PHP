@@ -64,6 +64,9 @@
         <span class="borderLine"></span>
         <form method="POST"  action="traitement.php"> 
             <h2>Inscription</h2>
+            <?php if (isset($_GET['error'])){ ?>
+                <p class="error"><?php echo $_GET['error'];?></p> 
+            <?php } ?>
             <div class="inputBox">
                 <input type="text"  name="nom" required="required">
                 <span>nom</span>

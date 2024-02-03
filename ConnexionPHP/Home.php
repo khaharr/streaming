@@ -9,7 +9,7 @@
 // Fermer la page actuelle après 10 secondes
 setTimeout(function() {
     // Rediriger vers une autre page après la fermeture de celle-ci
-    window.location.href = "https://anime-sama.fr/"; // Remplacez "nouvelle_page.html" par l'URL de votre nouvelle page
+    window.location.href = "./page1.php"; // Remplacez "nouvelle_page.html" par l'URL de votre nouvelle page
 }, 5000); // 10000 millisecondes = 10 secondes
 </script>
    <link rel="stylesheet" href="../CSSconnexion/d.css">

@@ -14,19 +14,21 @@
 <body>
     <!-- Navbar section -->
     <navbar id="Navbar">
-        <img src="../CSSconnexion/logo.png" alt="" id="logo">
+        <img src="../IMG/crane.png" alt="" id="logo">
         <ul>
-            <li><a href="#">Home</a> </li>
-            <li><a href="#">About</a> </li>
+            <li><a href="#">Film</a> </li>
+            <li><a href="#">anime</a> </li>
  
             <div id="categories">
                 <li><a href="#">Categories <i class="fas fa-caret-down"></i></a></li>
-                <div id="drop-down-box">
-                    <a href="#">Shonen</a>
+                <div class="drop-down-box">
+                    <a href="#">action</a>
+                    <a href="#">avanture</a>
                     <a href="#">Shojo</a>
                     <a href="#">Seinen</a>
                     <a href="#">Josei</a>
                     <a href="#">Kodomomuke</a>
+                    <a href="#">shonen</a>
                 </div>
             </div>
             <li><a href="#">Contact</a></li>
@@ -36,15 +38,15 @@
                 <input type="search" name="search" id="search" placeholder="Search...">
                 <i class="fas fa-search"></i>
             </div>
-            <button id="signIn">Sign in</button>
+            <button onclick="location.href='./pageConnexion.php'" id="signIn">se déconnecter</button>
         </div>
-        <img src="../CSSconnexion/menu.png" alt="Menu Png" id="Menu-Btn">
+        <img src="../IMG/menu.png" alt="Menu Png" id="Menu-Btn">
     </navbar>
  
     <nav id="Other-Navbar">
         <ul>
-            <li><a href="#">Home</a> </li>
-            <li><a href="#">About</a> </li>
+            <li><a href="#">film</a> </li>
+            <li><a href="#">anime</a> </li>
  
             <div id="categories">
                 <li><a href="#">Categories <i class="fas fa-caret-down"></i></a></li>
@@ -70,15 +72,16 @@
     <div class="slides-box">
  
         <div class="slider">
+       
             <div class="slides">
                 <div class="slide first" id="first">
-                    <img src="../CSSconnexion/AOT banner.jpg" alt="">
+                    <img src="../IMG/AOT banner.jpg" alt="">
                 </div>
                 <div class="slide second">
-                    <img src="../CSSconnexion/fate long banner.png" alt="">
+                    <img src="../IMG/fate long banner.png" alt="">
                 </div>
                 <div class="slide third">
-                    <img src="../CSSconnexion/yourname banner.jpg" alt="">
+                    <img src="../IMG/goku banner.jpg" alt="">
                 </div>
             </div>
         </div>
@@ -97,14 +100,16 @@
                     <div id="MainContainer">
                             <div id="Heading-box">
                                 <div class="heading">tendance du moment</div>
-                                <div class="viewAll">view all
+                                <div class="viewAll">voir tout
                                     <i class="fas fa-arrow-right"></i>
                                 </div>
                            </div>
  
                             <div id="Banners-container">
                                 <div class="Image-Name">
-                                    <img src="../CSSconnexion/fate.jpg" alt="Fate stye night">
+                                    <div class="img-ep">
+                                    <img src="../IMG/fate.jpg" alt="Fate stye night">
+                                    </div>
                                     <span class="ep">06/16</span>
                                     <span class="comments"><i class="fas fa-comments"></i>11</span>
                                     <span class="watch"><i class="far fa-eye"></i> 9987</span>
@@ -117,7 +122,7 @@
                                     </div>
                                 </div>
                                 <div class="Image-Name">
-                                    <img src="../CSSconnexion/future diary.jpg" alt="">
+                                    <img src="../IMG/future diary.jpg" alt="">
                                     <span class="ep">06/16</span>
                                     <span class="comments"><i class="fas fa-comments"></i>11</span>
                                     <span class="watch"><i class="far fa-eye"></i> 9987</span>
@@ -130,7 +135,7 @@
                                     </div>
                                 </div>
                                 <div class="Image-Name">
-                                    <img src="../CSSconnexion/DAB.jpg" alt="">
+                                    <img src="../IMG/DAB.jpg" alt="">
                                     <span class="ep">06/16</span>
                                     <span class="comments"><i class="fas fa-comments"></i>11</span>
                                     <span class="watch"><i class="far fa-eye"></i> 9987</span>
@@ -143,7 +148,7 @@
                                     </div>
                                 </div>
                                 <div class="Image-Name">
-                                    <img src="../CSSconnexion/erased.jpeg" alt="">
+                                    <img src="../IMG/erased.jpeg" alt="">
                                     <span class="ep">06/16</span>
                                     <span class="comments"><i class="fas fa-comments"></i>11</span>
                                     <span class="watch"><i class="far fa-eye"></i> 9987</span>
@@ -156,7 +161,7 @@
                                     </div>
                                 </div>
                                 <div class="Image-Name">
-                                    <img src="../CSSconnexion/MHA.jpg" alt="">
+                                    <img src="../IMG/MHA.jpg" alt="">
                                     <span class="ep">06/16</span>
                                     <span class="comments"><i class="fas fa-comments"></i>11</span>
                                     <span class="watch"><i class="far fa-eye"></i> 9987</span>
@@ -169,7 +174,7 @@
                                     </div>
                                 </div>
                                 <div class="Image-Name">
-                                    <img src=".../CSSconnexion/death note.jfif" alt="">
+                                    <img src="../IMG/sololeveling.jpg" alt="">
                                     <span class="ep">06/16</span>
                                     <span class="comments"><i class="fas fa-comments"></i>11</span>
                                     <span class="watch"><i class="far fa-eye"></i> 9987</span>
@@ -178,7 +183,7 @@
                                         <span class="adventure">Adventure</span>
                                     </div>
                                     <div class="show-name">
-                                        Death Note
+                                        solo leveling
                                     </div>
                                 </div>
                             </div>
@@ -197,7 +202,7 @@
  
                             <div id="Banners-container">
                                 <div class="Image-Name">
-                                    <img src="../CSSconnexion/classroom.jfif" alt="Fate stye night">
+                                    <img src="../IMG/classroom.jfif" alt="Fate stye night">
                                     <span class="ep">06/16</span>
                                     <span class="comments"><i class="fas fa-comments"></i>11</span>
                                     <span class="watch"><i class="far fa-eye"></i> 9987</span>
@@ -210,7 +215,7 @@
                                     </div>
                                 </div>
                                 <div class="Image-Name">
-                                    <img src="../CSSconnexion/human lost.jfif" alt="">
+                                    <img src="../IMG/human lost.jfif" alt="">
                                     <span class="ep">06/16</span>
                                     <span class="comments"><i class="fas fa-comments"></i>11</span>
                                     <span class="watch"><i class="far fa-eye"></i> 9987</span>
@@ -223,7 +228,7 @@
                                     </div>
                                 </div>
                                 <div class="Image-Name">
-                                    <img src="../CSSconnexion/your lie in april.jpg" alt="">
+                                    <img src="../IMG/your lie in april.jpg" alt="">
                                     <span class="ep">06/16</span>
                                     <span class="comments"><i class="fas fa-comments"></i>11</span>
                                     <span class="watch"><i class="far fa-eye"></i> 9987</span>
@@ -236,7 +241,7 @@
                                     </div>
                                 </div>
                                 <div class="Image-Name">
-                                    <img src="../CSSconnexion/yourname.jpg" alt="">
+                                    <img src="../IMG/yourname.jpg" alt="">
                                     <span class="ep">06/16</span>
                                     <span class="comments"><i class="fas fa-comments"></i>11</span>
                                     <span class="watch"><i class="far fa-eye"></i> 9987</span>
@@ -249,7 +254,7 @@
                                     </div>
                                 </div>
                                 <div class="Image-Name">
-                                    <img src="../CSSconnexion/mugen train.jpg" alt="">
+                                    <img src="../IMG/mugen train.jpg" alt="">
                                     <span class="ep">06/16</span>
                                     <span class="comments"><i class="fas fa-comments"></i>11</span>
                                     <span class="watch"><i class="far fa-eye"></i> 9987</span>
@@ -262,7 +267,7 @@
                                     </div>
                                 </div>
                                 <div class="Image-Name">
-                                    <img src="../CSSconnexion/AOT.jfif" alt="">
+                                    <img src="../IMG/AOT.jfif" alt="">
                                     <span class="ep">06/16</span>
                                     <span class="comments"><i class="fas fa-comments"></i>11</span>
                                     <span class="watch"><i class="far fa-eye"></i> 9987</span>
@@ -291,7 +296,7 @@
  
                             <div id="Banners-container">
                                 <div class="Image-Name">
-                                    <img src="../CSSconnexion/I want to eat you pancreas.jfif" alt="Fate stye night">
+                                    <img src="../IMG/I want to eat you pancreas.jfif" alt="Fate stye night">
                                     <span class="ep">06/16</span>
                                     <span class="comments"><i class="fas fa-comments"></i>11</span>
                                     <span class="watch"><i class="far fa-eye"></i> 9987</span>
@@ -304,7 +309,7 @@
                                     </div>
                                 </div>
                                 <div class="Image-Name">
-                                    <img src="../CSSconnexion/ne zha.jpg" alt="">
+                                    <img src="../IMG/ne zha.jpg" alt="">
                                     <span class="ep">06/16</span>
                                     <span class="comments"><i class="fas fa-comments"></i>11</span>
                                     <span class="watch"><i class="far fa-eye"></i> 9987</span>
@@ -317,7 +322,7 @@
                                     </div>
                                 </div>
                                 <div class="Image-Name">
-                                    <img src="../CSSconnexion/MHA movie.jpg" alt="">
+                                    <img src="../IMG/MHA.jpg" alt="">
                                     <span class="ep">06/16</span>
                                     <span class="comments"><i class="fas fa-comments"></i>11</span>
                                     <span class="watch"><i class="far fa-eye"></i> 9987</span>
@@ -330,7 +335,7 @@
                                     </div>
                                 </div>
                                 <div class="Image-Name">
-                                    <img src="../CSSconnexion/sprirted away movie.jpg" alt="">
+                                    <img src="../IMG/sprirted away movie.jpg" alt="">
                                     <span class="ep">06/16</span>
                                     <span class="comments"><i class="fas fa-comments"></i>11</span>
                                     <span class="watch"><i class="far fa-eye"></i> 9987</span>
@@ -343,7 +348,7 @@
                                     </div>
                                 </div>
                                 <div class="Image-Name">
-                                    <img src="../CSSconnexion/AOT movie.jpg" alt="">
+                                    <img src="../IMG/AOT movie.jpg" alt="">
                                     <span class="ep">06/16</span>
                                     <span class="comments"><i class="fas fa-comments"></i>11</span>
                                     <span class="watch"><i class="far fa-eye"></i> 9987</span>
@@ -356,7 +361,7 @@
                                     </div>
                                 </div>
                                 <div class="Image-Name">
-                                    <img src="../CSSconnexion/yourname.jpg" alt="">
+                                    <img src="../IMG/yourname.jpg" alt="">
                                     <span class="ep">06/16</span>
                                     <span class="comments"><i class="fas fa-comments"></i>11</span>
                                     <span class="watch"><i class="far fa-eye"></i> 9987</span>
@@ -382,56 +387,56 @@
                     <div id="insideLatestNews">
  
                         <div id="Heading-box2">
-                            <div class="headingInNews">Latest News</div>
-                            <div class="viewAllInNews">view all
+                            <div class="headingInNews">ajouté recement</div>
+                            <div class="viewAllInNews">voir tou
                                 <i class="fas fa-arrow-right"></i>
                             </div>
                         </div>
-                    <div id="LatestNewses">
-                        <div id="ImageOfNews" style="margin: 0;">
+                    <div class="LatestNewses">
+                        <div class="ImageOfNews" style="margin: 0;">
                             <span class="epInNews">06/16</span>
                                 <span class="watchInNews"><i class="far fa-eye"></i> 9987</span>
-                            <img src="../CSSconnexion/boruto wide banner.jfif" alt="">
+                            <img src="../IMG/boruto wide banner.jfif" alt="">
                             <span class="name">
                                 Boruto : Next generation
                             </span>
                         </div>
-                        <div id="ImageOfNews">
+                        <div class="ImageOfNews">
                             <span class="epInNews">06/16</span>
                                 <span class="watchInNews"><i class="far fa-eye"></i> 9987</span>
-                            <img src="../CSSconnexion/erased wide banner.jpeg" alt="">
+                            <img src="../IMG/erased wide banner.jpeg" alt="">
                             <span class="name">
                                 Erased
                             </span>
                         </div>
-                        <div id="ImageOfNews">
+                        <div class="ImageOfNews">
                             <span class="epInNews">06/16</span>
                                 <span class="watchInNews"><i class="far fa-eye"></i> 9987</span>
-                            <img src="../CSSconnexion/MHA banner.jfif" alt="">
+                            <img src="../IMG/MHA banner.jfif" alt="">
                             <span class="name">
                                 My Hero Acadmia : The Movie
                             </span>
                         </div>
-                        <div id="ImageOfNews">
+                        <div class="ImageOfNews">
                             <span class="epInNews">06/16</span>
                                 <span class="watchInNews"><i class="far fa-eye"></i> 9987</span>
-                            <img src="../CSSconnexion/mugen train wide banner.jpg" alt="">
+                            <img src="../IMG/mugen train wide banner.jpg" alt="">
                             <span class="name">
                                 demon slayer:Mugen train
                             </span>
                         </div>
-                        <div id="ImageOfNews">
+                        <div class="ImageOfNews">
                             <span class="epInNews">06/16</span>
                                 <span class="watchInNews"><i class="far fa-eye"></i> 9987</span>
-                            <img src="../CSSconnexion/classroom wide banner.jfif" alt="">
+                            <img src="../IMG/classroom wide banner.jfif" alt="">
                             <span class="name">
                                 Classroom of the Elite
                             </span>
                         </div>
-                        <div id="ImageOfNews">
+                        <div class="ImageOfNews">
                             <span class="epInNews">06/16</span>
                                 <span class="watchInNews"><i class="far fa-eye"></i> 9987</span>
-                            <img src="../CSSconnexion/death note wide banner.jfif" alt="">
+                            <img src="../IMG/death note wide banner.jfif" alt="">
                             <span class="name">
                                 Death Note
                             </span>
@@ -449,6 +454,6 @@
  
  
 </body>
-<script src="page1.js"></script>
+<script src="../IMG/page1.js"></script>
  
 </html>

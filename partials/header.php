@@ -1,11 +1,13 @@
 
 <div id="Navbar">
 
-<a href="../ConnexionPHP/Page1.php">
-    <img id="logo" src="IMG/crane.png" alt="Logo" >
-</a>
+
         
         <nav>
+            <a href="../ConnexionPHP/Page1.php">
+                <img id="logo" src="../IMG/logo2.png" alt="Logo" >
+                <h2>Streaming</h2>
+            </a>
             <a href="#">Film</a>
             <a href="liste_anime.php">Anime</a>
             <a href="#">Catégorie</a>

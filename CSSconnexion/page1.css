@@ -397,6 +397,11 @@ body{
     width: 82px;
     
 }
+.viewAll a{
+    text-decoration: none;/*Pour que le lien ne soit plus "souligné"...*/
+    color: rgb(255, 255, 255); /*ça reste un exemple*/
+}
+
 #Banners-container{
     margin-top: 19px;
     width: 1150px;
@@ -415,12 +420,12 @@ body{
     position: relative;
     color: white;
     width: 217px;
-    padding-right: 30px;
+    padding-right: 300px;
     transition: transform 0.3s ease;
 }
 .Image-Name:hover{
     transform: scale(1.10);
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 10px #23242a;
 }
 .ep{
     background: #ffde59;
@@ -530,6 +535,11 @@ body{
     font-size: 1.1em;
     cursor: pointer;
 }
+.viewAllInNews a{
+    text-decoration: none;/*Pour que le lien ne soit plus "souligné"...*/
+    color: rgb(255, 255, 255); /*ça reste un exemple*/
+}
+
 .LatestNewses{
     margin-top: 30px;
     

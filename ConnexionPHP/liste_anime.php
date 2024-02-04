@@ -1,58 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
- 
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"
-        integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous">
-    <link rel="stylesheet" href="../CSSconnexion/page1.css">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>voir tout</title>
+    <link rel="stylesheet" href="../CSSconnexion/liste_anime.css">
     <link rel="stylesheet" href="../partials/header.css">
-    <title>partie animé profite en </title>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"
+                integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous">
 </head>
- 
+
 <body>
-    <!-- navbar -->
-    <?php require_once '../partials/header.php'; ?>
- 
-<!-- Slide section -->
-    <div class="slides-box">
- 
-        <div class="slider">
-       
-            <div class="slides">
-                <div class="slide first" id="first">
-                    <img src="../IMG/AOT banner.jpg" alt="">
-                </div>
-                <div class="slide second">
-                    <img src="../IMG/fate long banner.png" alt="">
-                </div>
-                <div class="slide third">
-                    <img src="../IMG/goku banner.jpg" alt="">
-                </div>
-            </div>
-        </div>
-    </div>
- 
-    </div>
-<!-- Slide section -->
- 
- 
-    <!-- ALL SHOWS  -->
-    <div id="AllBanners">
+        
+
+<div id="AllBanners">
         <div id="primaryMainContainer">
- 
+        
             <div id="contentBanners">
                 <!-- For Trending Now  -->
                     <div id="MainContainer">
-                            <div id="Heading-box">
-                                <div class="heading">tendance du moment</div>
-                                <div class="viewAll"><a href="./liste_anime.php">voir tout</a>
-                                    <i class="fas fa-arrow-right"></i>
-                                </div>
-                           </div>
- 
+                    <?php require_once '../partials/header.php'; ?>
+                    
                             <div id="Banners-container">
                                 <div class="Image-Name">
                                     <div class="img-ep">
@@ -122,8 +91,8 @@
                                     </div>
                                 </div>
                                 <div class="Image-Name">
-                                 
-                                  <a href="../ConnexionPHP/visio_anime.php"><img src="../IMG/sololeveling.jpg" alt=""></a>
+                                    <a href="../ConnexionPHP/visio_anime.php">
+                                    <img src="../IMG/sololeveling.jpg" alt="">
                                     <span class="ep">06/16</span>
                                     <span class="comments"><i class="fas fa-comments"></i>11</span>
                                     <span class="watch"><i class="far fa-eye"></i> 9987</span>
@@ -142,12 +111,6 @@
                     <!-- Popular Shows  -->
                     <div id="MainContainer">
                         <!-- <div id="insideMainContainer"> -->
-                            <div id="Heading-box">
-                                <div class="heading">Populaire</div>
-                                <div class="viewAll"><a href="./liste_anime.php">voir tout</a>
-                                    <i class="fas fa-arrow-right"></i>
-                                </div>
-                            </div>
  
                             <div id="Banners-container">
                                 <div class="Image-Name">
@@ -236,12 +199,7 @@
                     <!-- Recently added  -->
                     <div id="MainContainer">
                         <!-- <div id="insideMainContainer"> -->
-                            <div id="Heading-box">
-                                <div class="heading">recemment ajouté</div>
-                                <div class="viewAll"><a href="./liste_anime.php">voir tout</a>
-                                    <i class="fas fa-arrow-right"></i>
-                                </div>
-                            </div>
+
  
                             <div id="Banners-container">
                                 <div class="Image-Name">
@@ -327,82 +285,5 @@
                     </div>
  
             </div>
-            <!-- Recently added -->
- 
- 
-            <!-- Latest News -->
-            <div id="LatestNews">
-                <div id="LatestNewsSection">
-                    <div id="insideLatestNews">
- 
-                        <div id="Heading-box2">
-                            <div class="headingInNews">ajouté récemment</div>
-                            <div class="viewAllInNews"><a href="./liste_anime.php">voir tout</a>
-                                <i class="fas fa-arrow-right"></i>
-                            </div>
-                        </div>
-                    <div class="LatestNewses">
-                        <div class="ImageOfNews" style="margin: 0;">
-                            <span class="epInNews">06/16</span>
-                                <span class="watchInNews"><i class="far fa-eye"></i> 9987</span>
-                            <img src="../IMG/boruto wide banner.jfif" alt="">
-                            <span class="name">
-                                Boruto : Next generation
-                            </span>
-                        </div>
-                        <div class="ImageOfNews">
-                            <span class="epInNews">06/16</span>
-                                <span class="watchInNews"><i class="far fa-eye"></i> 9987</span>
-                            <img src="../IMG/erased wide banner.jpeg" alt="">
-                            <span class="name">
-                                Erased
-                            </span>
-                        </div>
-                        <div class="ImageOfNews">
-                            <span class="epInNews">06/16</span>
-                                <span class="watchInNews"><i class="far fa-eye"></i> 9987</span>
-                            <img src="../IMG/MHA banner.jfif" alt="">
-                            <span class="name">
-                                My Hero Acadmia : The Movie
-                            </span>
-                        </div>
-                        <div class="ImageOfNews">
-                            <span class="epInNews">06/16</span>
-                                <span class="watchInNews"><i class="far fa-eye"></i> 9987</span>
-                            <img src="../IMG/mugen train wide banner.jpg" alt="">
-                            <span class="name">
-                                demon slayer:Mugen train
-                            </span>
-                        </div>
-                        <div class="ImageOfNews">
-                            <span class="epInNews">06/16</span>
-                                <span class="watchInNews"><i class="far fa-eye"></i> 9987</span>
-                            <img src="../IMG/classroom wide banner.jfif" alt="">
-                            <span class="name">
-                                Classroom of the Elite
-                            </span>
-                        </div>
-                        <div class="ImageOfNews">
-                            <span class="epInNews">06/16</span>
-                                <span class="watchInNews"><i class="far fa-eye"></i> 9987</span>
-                            <img src="../IMG/death note wide banner.jfif" alt="">
-                            <span class="name">
-                                Death Note
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- Latest News -->
- 
-        </div>
-    </div>
- 
-    </div>
-<!-- ALL SHOWS  -->
- 
- 
 </body>
-<script src="../IMG/page1.js"></script>
- 
 </html>

@@ -1,10 +1,10 @@
 <?php
 $servername = "localhost";
 $username = "root";
-$password = "";
+$password = "root";
 
 try {
-    $bdd = new PDO("mysql:host=$servername;dbname=utiisateurstreaming", $username, $password);
+    $bdd = new PDO("mysql:host=$servername;dbname=flash_streaming", $username, $password);
     $bdd->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     echo "Connexion réussie";
 } catch(PDOException $e) {

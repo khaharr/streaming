@@ -1,3 +1,6 @@
+/* ========================== */
+/* === Les styles globaux === */
+
 :root {
     --primary: #ffde59;
     --secondary: #38b6ff;
@@ -15,7 +18,8 @@ body {
     font-family: 'Ubuntu', sans-serif;
 }
 
-/* section du navbar */
+/* ======================= */
+/* === Style du Header === */
 #Navbar{
     background-color: rgb(20, 24, 26);
     position: fixed;
@@ -36,20 +40,40 @@ body {
 }
 
 #logo{
-    width: 40px;
-    height: 40px;
+    width: 50px;
+    height: 50px;
 }
 
 #Navbar nav{
     display: flex;
-    margin: 12px;
+    align-items: center;
+    justify-content: start;
 }
 
-#Navbar nav a{
+#Navbar nav a:nth-child(1) {
+    margin-right: 80px;
+    display: flex;
+    align-items: center;
+
+}
+
+#Navbar nav a h6{
+    margin-right: 20px;
+}
+
+
+#Navbar nav a {
     text-decoration: none;
     color: white;
     font-size: 1.1em;
-    margin: 0 70px;
+    margin-right: 50px;
+    transition: transform 0.3s ease;
+}
+
+#Navbar nav a:hover {
+    color: var(--primary);
+    transform: scale(1.1);
+
 }
 
 #categories{
@@ -90,28 +114,31 @@ body {
 }
 
 .search-bar{
-    /* background: white; */
-    border-radius: 70px;
     border: 1px solid var(--primary);
-    padding: 5px 8px;
-    position: relative;
+    padding: 5px;
+    border-radius: 20px;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    margin-right: 15px;
 }
 
 .search-bar input{
-    background-color: var(--dark-background);
+    background-color: transparent;
     color: white;
     outline: none;
 
     border-radius: 30px;
     border: none;
 
-    margin: 0 10px;
+    margin-left: 10px;
 }
-/* .search-bar input:focus{
-    background-color: white;
-} */
 
+.search-bar:focus-within {
+    background-color: white; /* Remplacez #yourDesiredColor par la couleur que vous souhaitez utiliser */
+}
+
+.search-bar input:focus {
+    color: var(--dark-background)
+}
 
 .search-bar i{
     background: var(--primary);
@@ -123,12 +150,11 @@ body {
 }
 
 #nav-options button{
-    padding: 7px ;
-    border-radius: 5px;
+    padding: 10px ;
+    border-radius: 20px;
     border: 1px solid var(--primary);
     outline: none;
     cursor: pointer;
-    margin: 10px;
     background: rgb(20, 24, 26);
     color: white;
 }

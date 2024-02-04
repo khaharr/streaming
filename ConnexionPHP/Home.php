@@ -15,7 +15,7 @@ setTimeout(function() {
    <link rel="stylesheet" href="../CSSconnexion/d.css">
       <div class="center">
          <div class="ring"></div>
-         <span>HACK EN COURS...</span>
+         <span>CHARGEMENT...</span>
       </div>
    </body>
 </html>

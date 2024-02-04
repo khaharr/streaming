@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Alegreya+Sans:wght@300&family=Ubuntu:wght@300;400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Dongle&family=Mulish:wght@200&family=Nunito:wght@200&family=Rubik:wght@300&family=Zen+Kurenaido&display=swap');
+
 /* ========================== */
 /* === Les styles globaux === */
 
@@ -14,12 +17,21 @@
     box-sizing: border-box;
 }
 
-/* body {
+body {
     font-family: 'Ubuntu', sans-serif;
-} */
+}
+
+a {
+    text-decoration: none;
+}
+
+li {
+    list-style-type: none;
+}
 
 /* ======================= */
 /* === Style du Header === */
+
 #Navbar{
     background-color: rgb(20, 24, 26);
     position: fixed;
@@ -37,9 +49,15 @@
     
     color: white;
     border-bottom: 2px solid var(--primary);
+    /* box-shadow: 0 0 5px 2px var(--primary); */
 }
 
 #logo{
+    display: flex;
+    align-items: center;
+}
+
+#logo img {
     width: 50px;
     height: 50px;
 }
@@ -48,21 +66,11 @@
     display: flex;
     align-items: center;
     justify-content: start;
+    width: 100%;
+    margin-left: 80px;
 }
 
-#Navbar nav a:nth-child(1) {
-    margin-right: 80px;
-    display: flex;
-    align-items: center;
-
-}
-
-#Navbar nav a h6{
-    margin-right: 20px;
-}
-
-
-#Navbar nav a {
+#Navbar a {
     text-decoration: none;
     color: white;
     font-size: 1.1em;
@@ -70,42 +78,10 @@
     transition: transform 0.3s ease;
 }
 
-#Navbar nav a:hover {
+#Navbar a:hover {
     color: var(--primary);
     transform: scale(1.1);
 
-}
-
-#categories{
-    height: 26px;
-}
-
-.drop-down-box{
-    display: none;
-    position: absolute;
-    min-width: 160px;
-    border-radius: 3px;
-    z-index: 1;
-    background-color: #f1f1f1;
-    top: 5.5%;
-    left: 46.5%;
-    box-shadow: 0 0 16px 0px rgba(0, 0, 0, 0.2);
-
-}
-
-.drop-down-box a {
-    display: block;
-    text-decoration: none;
-    color: black;
-    padding: 12px 16px;
-}
-.drop-down-box a:hover{
-    background: #ddd;
-    border-radius: 3px;
-}
-
-#categories:hover #drop-down-box{
-    display: block;
 }
 
 #nav-options{
@@ -115,10 +91,12 @@
 
 .search-bar{
     border: 1px solid var(--primary);
+    max-width: 250px;
     padding: 5px;
     border-radius: 20px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
     margin-right: 15px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    display: flex;
 }
 
 .search-bar input{
@@ -137,7 +115,7 @@
 }
 
 .search-bar input:focus {
-    color: var(--dark-background)
+    color: var(--dark-background);
 }
 
 .search-bar i{
@@ -157,6 +135,7 @@
     cursor: pointer;
     background: rgb(20, 24, 26);
     color: white;
+    white-space: nowrap;
 }
 
 #nav-options button:hover {
@@ -171,14 +150,46 @@
     display: flex !important;
 }
 
-/* #nav-options input::-webkit-search-cancel-button{
-    -webkit-appearance: none;
-    background: url("./image/times-circle-solid.svg");
-    width: 1em;
-    height: 1em;
-    opacity: .2;
-    cursor: pointer;
-} */
+#categories{
+    position: relative;
+    white-space: nowrap;
+}
+
+#categories a {
+    padding-bottom: 10px;
+}
+
+.drop-down-box{
+    display: none;
+    /* z-index: 1; */
+    background-color: var(--background);
+    position: absolute;
+    top: 30px;
+    border-radius: 3px;
+    box-shadow: 0 0 16px 0px rgba(0, 0, 0);
+}
+
+.drop-down-box a {
+    display: block;
+    text-decoration: none;
+    color: black;
+    padding: 12px 16px;
+    margin: 0 !important;
+}
+
+.drop-down-box a:hover {
+    background-color: var(--primary);
+    transform: translate(0) !important;
+    color: var(--background) !important;
+}
+
+.drop-down-box a:hover .drop-down-box{
+    display: block;
+}
+
+#categories:hover .drop-down-box{
+    display: block;
+}
 
 
 /* CSS Responsive */
@@ -189,9 +200,15 @@
         flex-direction: column; 
         padding: 10px; 
     }
+
+    #Navbar a {
+        margin-right: 0;
+    }
     
     #Navbar nav {
         margin-top: 20px;
+        margin-left: 0;
+        justify-content: center;
     }
     #Navbar nav a {
         margin: 0 20px; 

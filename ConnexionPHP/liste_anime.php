@@ -12,6 +12,7 @@
 </head>
 
 <body>
+    <?php require_once '../partials/header.php'; ?>
         
 
 <div id="AllBanners">
@@ -20,7 +21,7 @@
             <div id="contentBanners">
                 <!-- For Trending Now  -->
                     <div id="MainContainer">
-                    <?php require_once '../partials/header.php'; ?>
+
                     
                             <div id="Banners-container">
                                 <div class="Image-Name">

@@ -8,65 +8,16 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"
         integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous">
     <link rel="stylesheet" href="../CSSconnexion/page1.css">
+    <link rel="stylesheet" href="../partials/header.css">
+
     <title>partie animé profite en </title>
 </head>
  
 <body>
+    <?php require_once '../partials/header.php'; ?>
     <!-- Navbar section Début de la barre de navigation principale-->
-    <navbar id="Navbar">
-        <img src="../IMG/crane.png" alt="" id="logo">
-        <ul>
-            <li><a href="#">Film</a> </li>
-            <li><a href="#">anime</a> </li>
-             <!-- Catégories avec menu déroulant -->
-            <div id="categories">
-                <li><a href="#">Categories <i class="fas fa-caret-down"></i></a></li>
-                <div class="drop-down-box">
-                    <a href="#">action</a>
-                    <a href="#">avanture</a>
-                    <a href="#">Shojo</a>
-                    <a href="#">Seinen</a>
-                    <a href="#">Josei</a>
-                    <a href="#">Kodomomuke</a>
-                    <a href="#">shonen</a>
-                </div>
-            </div>
-            <li><a href="#">Contact</a></li>
-        </ul>
-          <!-- Autres options de navigation -->
-        <div id="other-opt">
-            <div class="search">
-                <input type="search" name="search" id="search" placeholder="recherche...">
-                <i class="fas fa-search"></i>
-            </div>
-            <button onclick="location.href='./pageConnexion.php'" id="signIn">se déconnecter</button>
-        </div>
-        <img src="../IMG/menu.png" alt="Menu Png" id="Menu-Btn">
-    </navbar>
-  <!-- Fin de la barre de navigation principale -->
-   <!-- Deuxième barre de navigation -->
-    <nav id="Other-Navbar">
-        <ul>
-            <li><a href="#">film</a> </li>
-            <li><a href="#">anime</a> </li>
- 
-            <div id="categories">
-                <li><a href="#">Categories <i class="fas fa-caret-down"></i></a></li>
-                <div id="drop-down-box">
-                    <a href="#">Shonen</a>
-                    <a href="#">Shojo</a>
-                    <a href="#">Seinen</a>
-                    <a href="#">Josei</a>
-                    <a href="#">Kodomomuke</a>
-                </div>
-            </div>
-            <li><a href="#">Contact</a></li>
-        </ul>
-        <div class="Othersearch" style="margin: auto;">
-            <input type="search" name="search" id="Othersearch" placeholder="recherche...">
-            <i class="fas fa-search"></i>
-        </div>
-    </nav>
+    <!-- Fin de la barre de navigation principale -->
+
  <!-- Navbar section -->
  
  

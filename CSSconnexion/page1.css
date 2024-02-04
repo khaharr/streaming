@@ -5,14 +5,16 @@
 *{
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
 }
 
 body{
-    background-color: #000000;
+    background-color: #23242a;
     background-repeat: no-repeat;
     background-size: 400vw;
     color: white;
     width: 100vw;
+    overflow-x: hidden;
 }
 
 /* autre option + scroll banc*/
@@ -28,11 +30,11 @@ body{
 }
 ::-webkit-scrollbar-thumb{
     border-radius: 10px;
-    background: white;
+    background: RED;
 }
 
 /* section du navbar */
-#Navbar{
+/* #Navbar{
     display: flex;
     justify-content: center;
     background-color: rgb(20, 24, 26);
@@ -217,7 +219,7 @@ body{
     margin-right: 30px;
     filter: invert(100);
     display: none;
-}
+} */
 /* Navbar section */
 
 

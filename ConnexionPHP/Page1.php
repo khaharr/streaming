@@ -12,13 +12,13 @@
 </head>
  
 <body>
-    <!-- Navbar section -->
+    <!-- Navbar section Début de la barre de navigation principale-->
     <navbar id="Navbar">
         <img src="../IMG/crane.png" alt="" id="logo">
         <ul>
             <li><a href="#">Film</a> </li>
             <li><a href="#">anime</a> </li>
- 
+             <!-- Catégories avec menu déroulant -->
             <div id="categories">
                 <li><a href="#">Categories <i class="fas fa-caret-down"></i></a></li>
                 <div class="drop-down-box">
@@ -33,16 +33,18 @@
             </div>
             <li><a href="#">Contact</a></li>
         </ul>
+          <!-- Autres options de navigation -->
         <div id="other-opt">
             <div class="search">
-                <input type="search" name="search" id="search" placeholder="Search...">
+                <input type="search" name="search" id="search" placeholder="recherche...">
                 <i class="fas fa-search"></i>
             </div>
             <button onclick="location.href='./pageConnexion.php'" id="signIn">se déconnecter</button>
         </div>
         <img src="../IMG/menu.png" alt="Menu Png" id="Menu-Btn">
     </navbar>
- 
+  <!-- Fin de la barre de navigation principale -->
+   <!-- Deuxième barre de navigation -->
     <nav id="Other-Navbar">
         <ul>
             <li><a href="#">film</a> </li>
@@ -61,7 +63,7 @@
             <li><a href="#">Contact</a></li>
         </ul>
         <div class="Othersearch" style="margin: auto;">
-            <input type="search" name="search" id="Othersearch" placeholder="Search...">
+            <input type="search" name="search" id="Othersearch" placeholder="recherche...">
             <i class="fas fa-search"></i>
         </div>
     </nav>

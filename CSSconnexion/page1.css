@@ -15,7 +15,7 @@ body{
     width: 100vw;
 }
 
-/* Other tools section */
+/* autre option + scroll banc*/
 ::selection{
     background: rgb(255, 188, 188);
     color: black;
@@ -31,8 +31,7 @@ body{
     background: white;
 }
 
-
-/*Navbar section */
+/* section du navbar */
 #Navbar{
     display: flex;
     justify-content: center;
@@ -40,10 +39,8 @@ body{
     color: white;
     align-items: center;
     font-family: 'Ubuntu', sans-serif;
-    margin-bottom: 10px;
-
-
 }
+
 #Other-Navbar{
     display: none;
     flex-direction: column;
@@ -226,16 +223,6 @@ body{
 
 
 
-/* Slide section */
-/* Slider section */
-
-/* Slider section */
-
-/* Slider section */
-
-/* Slider section */
-
-/* Slider section */
 
 /* Slider section */
 
@@ -249,10 +236,11 @@ body{
     height: auto; /* Ajustez la hauteur automatiquement en fonction du contenu */
     border-radius: 4px;
     overflow: hidden;
-    cursor: pointer;
+   
     display: flex;
     text-align: center;
     position: relative; /* Position relative pour les images absolues */
+    
   }
   
   .slider img {
@@ -260,6 +248,14 @@ body{
     height: auto; /* Ajustez la hauteur automatiquement en fonction du contenu */
     object-fit: cover; /* Empêchez l'étirement de l'image en conservant les proportions */
     display: block;
+    margin-right: 80vw;
+    text-align: center;
+    display: flex;
+    text-align: center;
+    border-radius: 10%; 
+    margin-top:     30px;
+    cursor: pointer;
+  
   }
   
   .slides {
@@ -268,6 +264,7 @@ body{
     display: flex;
     transition: transform 0.3s ease; /* Ajoutez une transition pour une animation de slide */
     position: relative; /* Position relative pour contrôler les images absolues */
+  
   }
   .slide :hover{
     transform: scale(1.03);

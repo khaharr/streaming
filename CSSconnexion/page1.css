@@ -30,7 +30,7 @@ body{
 }
 ::-webkit-scrollbar-thumb{
     border-radius: 10px;
-    background: RED;
+    background: rgb(255, 255, 255);
 }
 
 /* section du navbar */

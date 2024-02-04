@@ -9,11 +9,11 @@
 #Navbar{
     font-family: 'Ubuntu', sans-serif;
     background-color: rgb(20, 24, 26);
-    
+    max-width: 100vw;
     height: 70px;
     width: 100vw;
+    max-width: 100vw;
     padding: 0 5vw;
-
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -136,3 +136,29 @@
     opacity: .2;
     cursor: pointer;
 } */
+
+
+/* CSS Responsive */
+@media only screen and (max-width: 768px) {
+    /* Modifiez la mise en page du Navbar pour les appareils avec une largeur d'écran maximale de 768px */
+    #Navbar {
+        height: auto;
+        flex-direction: column; 
+        padding: 10px; 
+    }
+    
+    #Navbar nav {
+        margin-top: 20px;
+    }
+    #Navbar nav a {
+        margin: 0 20px; 
+    }
+
+    #nav-options {
+        margin-top: 20px; 
+    }
+
+    .search-bar {
+        margin-right: 20px; 
+    }
+}

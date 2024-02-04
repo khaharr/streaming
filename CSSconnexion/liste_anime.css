@@ -36,7 +36,7 @@ body {
     display: flex;
 }
 #Banners-container img{
-    width: 217px;
+    width: 12vw;
     border-radius: 5px;
     margin-right:20px;
     margin-top: 12px;
@@ -45,8 +45,8 @@ body {
 .Image-Name{
     position: relative;
     color: white;
-    width: 217px;
-    padding-right: 90px;
+    width: 307px;
+    padding-right: 15vw;
     transition: transform 0.3s ease;
 }
 .Image-Name a {
@@ -178,4 +178,50 @@ body {
 ::-webkit-scrollbar-thumb{
     border-radius: 10px;
     background: white;
+}
+
+/* Styles pour les écrans de petite taille */
+@media only screen and (max-width: 600px) {
+    body {
+        justify-content: center; /* Centrer le contenu sur les petits écrans */
+    }
+    #Menu-Btn {
+        display: block; /* Afficher le bouton de menu sur les petits écrans */
+    }
+    #contentBanners {
+        margin-top: 30px; /* Ajuster la marge supérieure pour les petits écrans */
+    }
+    #Banners-container {
+        margin-top: 30px; /* Ajuster la marge supérieure pour les petits écrans */
+    }
+    #Banners-container img {
+        width: 40vw; /* Ajuster la largeur des images pour les petits écrans */
+        margin-right: 10px; /* Ajuster la marge droite des images pour les petits écrans */
+    }
+    .Image-Name {
+        padding-right: 5vw; /* Ajuster le padding droit pour les petits écrans */
+    }
+    .comments, .watch {
+        top: 270px; /* Ajuster la position verticale pour les petits écrans */
+    }
+}
+
+/* Styles pour les écrans de taille moyenne et grande */
+@media only screen and (min-width: 601px) {
+    #Menu-Btn {
+        display: none; /* Cacher le bouton de menu sur les écrans de taille moyenne et grande */
+    }
+    #contentBanners {
+        margin-top: 90px; /* Garder la marge supérieure originale pour les écrans plus grands */
+    }
+    #Banners-container img {
+        width: 12vw; /* Garder la largeur originale des images pour les écrans plus grands */
+        margin-right: 20px; /* Garder la marge droite originale des images pour les écrans plus grands */
+    }
+    .Image-Name {
+        padding-right: 15vw; /* Garder le padding droit originale pour les écrans plus grands */
+    }
+    .comments, .watch {
+        top: 300px; /* Garder la position verticale originale pour les écrans plus grands */
+    }
 }

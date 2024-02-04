@@ -31,6 +31,9 @@
                 <div class="slide third">
                     <img src="../IMG/goku banner.jpg" alt="">
                 </div>
+                <div class="slide four">
+                    <img src="../IMG/jjk_banner.jpg" alt="">
+                </div>
             </div>
         </div>
     </div>

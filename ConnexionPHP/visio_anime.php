@@ -16,7 +16,7 @@
     <p>Synopsis. Dans un monde où les chasseurs - des guerriers humains dotés de capacités surnaturelles<br> - doivent combattre des monstres mortels pour protéger l'humanité d'une annihilation certaine,<br> le chasseur notoirement faible nommé Sung Jinwoo se retrouve dans une lutte apparemment sans fin pour sa survie.</p>
 
     <div class="video-container">
-        <video controls autoplay loop muted>
+        <video controls>
             <source src="https://videos2.sendvid.com/99/e1/3ftlx7cf.mp4?validfrom=1707063681&validto=1707078081&rate=250k&ip=81.65.145.51&hash=kX8nNXt1VRojwhwPsscZWQNA%2BC4%3D" type="video/mp4">
             Votre navigateur ne supporte pas la lecture de la vidéo.
         </video>

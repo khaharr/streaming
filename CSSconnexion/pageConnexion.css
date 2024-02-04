@@ -21,17 +21,19 @@ body
     display: flex;
     min-height: 75vh;  
 }
+
 .bulle span{
     position: relative;
     width: 30px;
     height: 30px;
-    background: #ffde59 ;
+    background: #ffde59;
     margin: 0 4px;
     border-radius: 50%;
     box-shadow: 0 0 0 10px #e0ff4344, 0 0 50px #ffde59, 0 0 100px #ffde59 ;
     animation: animatee 15s linear infinite;
     animation-duration: calc(125s / var(--i));
 }
+
 .bulle span:nth-child(even){
     background: #38b6ff ;
     box-shadow: 0 0 0 10px #24d7ff44, 0 0 50px #38b6ff, 0 0 100px #38b6ff ;

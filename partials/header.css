@@ -1,0 +1,138 @@
+:root {
+    --primary: #ffde59;
+    --secondary: #38b6ff;
+    --background: #23242a;
+    --dark-background: rgb(20, 24, 26);
+}
+
+/* section du navbar */
+#Navbar{
+    font-family: 'Ubuntu', sans-serif;
+    background-color: rgb(20, 24, 26);
+    
+    height: 70px;
+    width: 100vw;
+    padding: 0 5vw;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    
+    color: white;
+    border-bottom: 2px solid var(--primary);
+}
+
+#logo{
+    width: 40px;
+    height: 40px;
+}
+
+#Navbar nav{
+    display: flex;
+    margin: 12px;
+}
+
+#Navbar nav a{
+    text-decoration: none;
+    color: white;
+    font-size: 1.1em;
+    margin: 0 12px;
+}
+
+#categories{
+    height: 26px;
+}
+
+.drop-down-box{
+    display: none;
+    position: absolute;
+    min-width: 160px;
+    border-radius: 3px;
+    z-index: 1;
+    background-color: #f1f1f1;
+    top: 5.5%;
+    left: 46.5%;
+    box-shadow: 0 0 16px 0px rgba(0, 0, 0, 0.2);
+
+}
+
+.drop-down-box a {
+    display: block;
+    text-decoration: none;
+    color: black;
+    padding: 12px 16px;
+}
+.drop-down-box a:hover{
+    background: #ddd;
+    border-radius: 3px;
+}
+
+#categories:hover #drop-down-box{
+    display: block;
+}
+
+#nav-options{
+    display: flex;
+    align-items: center;
+}
+
+.search-bar{
+    /* background: white; */
+    border-radius: 70px;
+    border: 1px solid var(--primary);
+    padding: 5px 8px;
+    position: relative;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+.search-bar input{
+    background-color: var(--dark-background);
+    outline: none;
+    border: 1px solid white;
+    border-radius: 30px;
+    border: none;
+    color: white;
+    margin: 0 10px;
+}
+
+
+.search-bar i{
+    background: var(--primary);
+    border-radius: 50%;
+    color: var(--dark-background);
+    padding: 5px;
+
+    cursor: pointer;
+}
+
+#nav-options button{
+    padding: 7px ;
+    border-radius: 5px;
+    border: 1px solid var(--primary);
+    outline: none;
+    cursor: pointer;
+    margin: 10px;
+    background: rgb(20, 24, 26);
+    color: white;
+}
+
+#nav-options button:hover {
+    background: var(--primary);
+    color: rgb(20, 24, 26);
+}   
+
+
+/* Navbar section */
+
+.show{
+    display: flex !important;
+}
+
+/* #nav-options input::-webkit-search-cancel-button{
+    -webkit-appearance: none;
+    background: url("./image/times-circle-solid.svg");
+    width: 1em;
+    height: 1em;
+    opacity: .2;
+    cursor: pointer;
+} */

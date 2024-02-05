@@ -348,10 +348,8 @@
                         <div class="ImageOfNews" style="margin: 0;">
                             <span class="epInNews">06/16</span>
                                 <span class="watchInNews"><i class="far fa-eye"></i> 9987</span>
-                            <img src="../IMG/boruto wide banner.jfif" alt="">
-                            <span class="name">
-                                Boruto : Next generation
-                            </span>
+                            <img src="../IMG/boruto1.webp" alt="">
+                            
                         </div>
                         <div class="ImageOfNews">
                             <span class="epInNews">06/16</span>

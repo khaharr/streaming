@@ -1,7 +1,7 @@
 <?php
 $servername = "localhost";
 $username = "root";
-$password = "root";
+$password = "";
 
 try {
     $bdd = new PDO("mysql:host=$servername;dbname=flash_streaming", $username, $password);

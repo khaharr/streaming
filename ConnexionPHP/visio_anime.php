@@ -17,7 +17,7 @@
 
     <div class="video-container">
         <video controls>
-            <source src="https://videos2.sendvid.com/99/e1/3ftlx7cf.mp4?validfrom=1707063681&validto=1707078081&rate=250k&ip=81.65.145.51&hash=kX8nNXt1VRojwhwPsscZWQNA%2BC4%3D" type="video/mp4">
+            <source src="https://videos2.sendvid.com/99/e1/3ftlx7cf.mp4?validfrom=1707111721&validto=1707126121&rate=250k&ip=138.199.22.98&hash=6xkRoN9DJYwU00yuWQYBmuI5n4o%3D" type="video/mp4">
             Votre navigateur ne supporte pas la lecture de la vidéo.
         </video>
     </div>

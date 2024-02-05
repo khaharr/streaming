@@ -3,7 +3,7 @@ $hostname = "localhost";
 $username = "root";
 $password = "";
 
-$database = "utiisateurstreaming";
+$database = "flash_streaming";
 $conn = mysqli_connect($hostname, $username, $password , $database);
 
 if (!$conn){

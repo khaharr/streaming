@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+    web:
+        image: monapache:latest
+        container_name: php-flash-streaming
+        ports:
+            - "8000:80"
+        volumes:
+            - ./public:/var/www/html
+            - ./src:/var/www/src
+        build:
+            context: .
+            dockerfile: Dockerfile
+
+    database:
+        image: mysql:8.0
+        container_name: data-flash-streaming
+        command: --default-authentication-plugin=mysql_native_password
+        environment:
+            - MYSQL_ROOT_PASSWORD=pass  # Mot de pass du compte root
+            - MYSQL_DATABASE=streaming  # Nom de la base de donnée
+            - MYSQL_USER=flash  # Nom du compte utilisateur
+            - MYSQL_PASSWORD=pass  # Mot de pass du compte utilisateur
+        ports:
+            - "3302:3301"
+        volumes:
+            - ./docker/data:/var/lib/mysql  # Ajout du volume pour persister les données MySQL
+
+    phpmyadmin:
+        image: phpmyadmin
+        restart: always
+        ports:
+            - 8001:80
+        environment:
+            - PMA_ARBITRARY=1
+
+#volumes:
+    #mysql_data:
+        #driver: local # Type de volume

@@ -17,7 +17,7 @@
 
     <div class="video-container">
         <video controls>
-            <source src="https://videos2.sendvid.com/99/e1/3ftlx7cf.mp4?validfrom=1707111721&validto=1707126121&rate=250k&ip=138.199.22.98&hash=6xkRoN9DJYwU00yuWQYBmuI5n4o%3D" type="video/mp4">
+            <source src="https://s22.anime-sama.fr/videos/Solo%20Leveling/Saison%201/VOSTFR/Solo_Leveling_5_VOSTFR.mp4" type="video/mp4">
             Votre navigateur ne supporte pas la lecture de la vidéo.
         </video>
     </div>

@@ -30,7 +30,7 @@
             <input type="search" name="search" placeholder="Recherche...">
             <i class="fas fa-search"></i>
         </div>
-        <button onclick="location.href='./pageConnexion.php'" id="signIn">Se Déconnecter</button>
+        <button onclick="location.href='connexion.php'" id="signIn">Se Déconnecter</button>
     </div>
 
 </div>

@@ -21,16 +21,16 @@ if(isset($_POST['boutonInscrire'])){
                 ":motDePasse" => password_hash($motDePasse, PASSWORD_DEFAULT),
             )
         );
-        header("Location: ../index.php");
+        header("Location: ../chargement.php");
         exit();
     } catch (PDOException $e) {
         if ($e->errorInfo[1] == 1062) { // Code d'erreur MySQL pour la violation de la contrainte unique
             if (strpos($e->getMessage(), 'email') !== false) {
-                header("Location: ../index.php?error=Email deja utilisé");
+                header("Location: ../inscription.php?error=Email deja utilisé");
             } 
 
             elseif(strpos($e->getMessage(), 'user') !== false) {
-                header("Location: ../index.php?error=pseudo déja utilisé");
+                header("Location: ../inscription.php?error=pseudo déja utilisé");
             }
 
         } else {

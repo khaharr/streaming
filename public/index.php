@@ -51,7 +51,7 @@
                     <div id="MainContainer">
                             <div id="Heading-box">
                                 <div class="heading">tendance du moment</div>
-                                <div class="viewAll"><a href="./liste_anime.php">voir tout</a>
+                                <div class="viewAll"><a href="./liste-anime.php">voir tout</a>
                                     <i class="fas fa-arrow-right"></i>
                                 </div>
                            </div>
@@ -147,7 +147,7 @@
                         <!-- <div id="insideMainContainer"> -->
                             <div id="Heading-box">
                                 <div class="heading">Populaire</div>
-                                <div class="viewAll"><a href="./liste_anime.php">voir tout</a>
+                                <div class="viewAll"><a href="./liste-anime.php">voir tout</a>
                                     <i class="fas fa-arrow-right"></i>
                                 </div>
                             </div>
@@ -241,7 +241,7 @@
                         <!-- <div id="insideMainContainer"> -->
                             <div id="Heading-box">
                                 <div class="heading">recemment ajouté</div>
-                                <div class="viewAll"><a href="./liste_anime.php">voir tout</a>
+                                <div class="viewAll"><a href="./liste-anime.php">voir tout</a>
                                     <i class="fas fa-arrow-right"></i>
                                 </div>
                             </div>
@@ -340,7 +340,7 @@
  
                         <div id="Heading-box2">
                             <div class="headingInNews">ajouté récemment</div>
-                            <div class="viewAllInNews"><a href="./liste_anime.php">voir tout</a>
+                            <div class="viewAllInNews"><a href="./liste-anime.php">voir tout</a>
                                 <i class="fas fa-arrow-right"></i>
                             </div>
                         </div>

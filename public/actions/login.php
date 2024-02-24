@@ -13,10 +13,10 @@ if(isset($_POST['email']) && isset($_POST['motDePasse'])){
     $email = validate($_POST['email']);
 
     if (empty($email)){
-        header("Location: ./pageConnexion.PHP?error=email est requis");
+        header("Location: ../connexion.PHP?error=email est requis");
         exit();
     }else if(empty($motDePasse)){
-        header("Location: ./pageConnexion.PHP?error=mot de passe est requis");
+        header("Location: ../connexion.PHP?error=mot de passe est requis");
         exit();
     }else{
         $sql = "SELECT * FROM users WHERE email='$email'  OR user='$email'";
@@ -31,9 +31,9 @@ if(isset($_POST['email']) && isset($_POST['motDePasse'])){
                     header("Location: ../chargement.php");
                     exit();
                 } else{
-                    header("Location: ./pageConnexion.PHP?error=mot de passe ou email incorrect");}
+                    header("Location: ../connexion.PHP?error=mot de passe ou email incorrect");}
             }else{
-                header("Location: ./pageConnexion.PHP?error=mot de passe ou email incorrect");
+                header("Location: ../connexion.PHP?error=mot de passe ou email incorrect");
                 exit();
 
                 if ($row ['user']=== $email){
@@ -43,19 +43,19 @@ if(isset($_POST['email']) && isset($_POST['motDePasse'])){
                         header("Location: ../chargement.php");
                         exit();
                     } else{
-                        header("Location: ./pageConnexion.PHP?error=mot de passe ou email incorrect");}
+                        header("Location: ../connexion.php?error=mot de passe ou email incorrect");}
                 }else{
-                    header("Location: ./pageConnexion.PHP?error=mot de passe ou email incorrect");
+                    header("Location: ../connexion.php?error=mot de passe ou email incorrect");
                     exit();    
         }
         }}else{
-            header("Location: ./pageConnexion.PHP?error=mot de passe ou email incorrect");
+            header("Location: ../connexion.php?error=mot de passe ou email incorrect");
             exit();
         }
     }
     
 }else{
-    header("Location: pageConnexion.PHP");
+    header("Location: connexion.php");
     exit();
 }
 

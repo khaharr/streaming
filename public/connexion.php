@@ -75,7 +75,7 @@
             </div>
         <div class="links">
             <a href="#">mot de passe oublié</a>
-            <a href="pageInscription.PHP">s'inscrire</a>
+            <a href="inscription.php">s'inscrire</a>
         </div> 
         <input type="submit" value="connexion" name ="connexion">
         </form>

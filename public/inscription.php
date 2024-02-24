@@ -95,7 +95,7 @@
             </div>
 
             <div class="links">
-            <a href="pageConnexion.PHP">SE CONNECTER</a>
+            <a href="connexion.php">SE CONNECTER</a>
             </div>
             <input type="submit" value="inscription" name = "boutonInscrire">
         </form>

@@ -62,6 +62,10 @@ li {
     height: 50px;
 }
 
+#Navbar h2{
+    font-size: 25px;
+}
+
 #Navbar nav{
     display: flex;
     align-items: center;
@@ -92,22 +96,23 @@ li {
 .search-bar{
     border: 1px solid var(--primary);
     max-width: 250px;
+    width: clamp(200px, 4vw, 230px);
     padding: 5px;
     border-radius: 20px;
     margin-right: 15px;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
     display: flex;
+    justify-content: space-between;
 }
 
 .search-bar input{
     background-color: transparent;
     color: white;
     outline: none;
-
     border-radius: 30px;
     border: none;
-
-    margin-left: 10px;
+    width: calc(100% - 30px);
+    padding-left: 10px;
 }
 
 .search-bar:focus-within {
@@ -123,7 +128,7 @@ li {
     border-radius: 50%;
     color: var(--dark-background);
     padding: 5px;
-
+    
     cursor: pointer;
 }
 
@@ -196,9 +201,9 @@ li {
 @media only screen and (max-width: 768px) {
     /* Modifiez la mise en page du Navbar pour les appareils avec une largeur d'écran maximale de 768px */
     #Navbar {
-        height: auto;
-        flex-direction: column; 
-        padding: 10px; 
+        /* height: auto; */
+        /* flex-direction: column;  */
+        /* padding: 10px;  */
     }
 
     #Navbar a {
@@ -206,7 +211,7 @@ li {
     }
     
     #Navbar nav {
-        margin-top: 20px;
+        /* margin-top: 20px; */
         margin-left: 0;
         justify-content: center;
     }
@@ -221,4 +226,84 @@ li {
     .search-bar {
         margin-right: 20px; 
     }
+}
+
+@media only screen and (max-width: 1000px) {
+    nav {
+        position: absolute;
+        top: 70px;
+        left: 0;
+    }
+    nav :nth-child(n) {
+        background-color: rgb(20, 24, 26, 0.95);
+        width: 100vw;
+        padding: 30px 0;
+        text-decoration: none;
+        color: white;
+        font-size: 1.1em;
+        transition: transform 0.3s ease;
+        text-align: center;
+    }
+
+    nav :nth-child(n):hover{
+        background-color: rgb(255, 222, 89, 0.95);
+        color: black !important;
+    }
+
+    nav #categories{
+        height: 80px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    nav #categories a, nav #categories i {
+        background: none;
+        text-align: center;
+        width: auto;
+        padding: 0;
+        font-size: 1.1em;
+    }
+
+
+    .drop-down-box{
+        margin-top: 50px;
+        padding: 0 !important;
+    }
+
+    .drop-down-box a {
+        padding: 10px !important;
+    }
+}
+
+#responsive-menu {
+    height: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    cursor: pointer;
+}
+
+#responsive-menu span {
+    width: 45px;
+    height: 5px;
+    background: white;
+    border-radius: 5px;
+}
+
+.responsive-nav{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: start;
+    width: 100%;
+    margin-left: 80px;
+}
+
+.responsive-a {
+    text-decoration: none;
+    color: white;
+    font-size: 1.1em;
+    margin-right: 50px;
+    transition: transform 0.3s ease;
 }

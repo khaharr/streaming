@@ -24,7 +24,7 @@
         </div>
         <a href="#">Contact</a>
     </nav>
-        <!-- Autres options de navigation -->
+
     <div id="nav-options">
         <div class="search-bar">
             <input type="search" name="search" placeholder="Recherche...">
@@ -38,7 +38,7 @@
         <span></span>
         <span></span>
     </div>
-
+   
 </div>
 
 <script>

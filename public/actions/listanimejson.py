@@ -7,9 +7,9 @@ with open('animelist.json', 'r') as f:
 
 # Connexion à la base de données
 conn = mysql.connector.connect(
-    host="127.0.0.1",
+    host="172.20.0.2",
     user="root",
-    password="",
+    password="pass",
     database="streaming"
 )
 cursor = conn.cursor()

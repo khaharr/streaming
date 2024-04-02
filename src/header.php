@@ -84,4 +84,28 @@
 
     // Applique la fonction au redimmensionnement de la page
     window.addEventListener('resize', responsiveHeader);
+
+    if (window.location.pathname === '/liste-anime.php') {
+    const searchBar = document.querySelector('.search-bar input');
+
+    searchBar.addEventListener('input', function() {
+        const searchText = searchBar.value.toLowerCase().trim();
+
+        const animeItems = document.querySelectorAll('.Image-Name');
+
+        animeItems.forEach(function(animeItem) {
+            const animeName = animeItem.querySelector('.show-name').textContent.toLowerCase();
+
+            if (searchText === '') {
+                animeItem.style.display = 'block';
+            } else {
+                if (animeName.includes(searchText)) {
+                    animeItem.style.display = 'block';
+                } else {
+                    animeItem.style.display = 'none';
+                }
+            }
+        });
+    });
+}
 </script>

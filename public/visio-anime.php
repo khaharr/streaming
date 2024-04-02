@@ -1,3 +1,4 @@
+<?php require_once './actions/visio-back.php';?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,7 +13,7 @@
 
 <body>
     <?php require_once '../src/header.php'; ?>
-    <h1>Solo Leveling</h1>
+    <h1><?php echo $nomAnime; ?></h1>
     <p>Synopsis. Dans un monde où les chasseurs - des guerriers humains dotés de capacités surnaturelles<br> - doivent combattre des monstres mortels pour protéger l'humanité d'une annihilation certaine,<br> le chasseur notoirement faible nommé Sung Jinwoo se retrouve dans une lutte apparemment sans fin pour sa survie.</p>
 
     <div class="video-container">

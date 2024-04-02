@@ -34,14 +34,18 @@ body {
     width: 98vw;
     flex-wrap: wrap;
     display: flex;
+    margin-left: 5vw;
 }
-#Banners-container img{
-    width: 12vw;
+#Banners-container img {
+    width: 217px;
+    height: 300px; /* Définissez une hauteur fixe pour les images */
+    object-fit: cover; /* Ajustez l'image pour couvrir toute la zone définie */
     border-radius: 5px;
-    margin-right:20px;
+    margin-right: 20px;
     margin-top: 12px;
     cursor: pointer;
 }
+
 .Image-Name{
     position: relative;
     color: white;

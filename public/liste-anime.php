@@ -25,13 +25,13 @@
 
                     
                             <div id="Banners-container">
-                            <?php require_once './actions/listAnime.php'; ?>
+                            <?php require_once './actions/listAnime.php';
+                             ?>
                             </div>
                     </div>
             </div>
         </form>
         </div>
 </div>
-<
 </body>
 </html>

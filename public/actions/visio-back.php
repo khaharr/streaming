@@ -2,21 +2,34 @@
 // Inclusion du fichier de connexion à la base de données
 require_once 'loginConnexion.php';
 
+// Initialisation du tableau des saisons
+$liensSaisons = array();
+
 // Vérifier si l'ID de l'anime est présent dans l'URL
 if(isset($_GET['id'])) {
     $idAnime = $_GET['id'];
 
     // Récupérer les informations de l'anime depuis la base de données en fonction de son ID
-    // Assurez-vous d'adapter cette partie en fonction de votre configuration de base de données
-    $sql = "SELECT nom FROM anime WHERE id = $idAnime";
-    $result = $conn->query($sql);
+    $sqlAnime = "SELECT nom FROM anime WHERE id = $idAnime";
+    $resultAnime = $conn->query($sqlAnime);
 
-    if ($result->num_rows > 0) {
-        $row = $result->fetch_assoc();
-        $nomAnime = $row['nom'];
+    if ($resultAnime->num_rows > 0) {
+        $rowAnime = $resultAnime->fetch_assoc();
+        $nomAnime = $rowAnime['nom'];
+
+
+        $sqlSaisons = "SELECT id, nom, nb_episode, saison, lien, episode FROM saisons WHERE id_anime = $idAnime";
+
+        $resultSaisons = $conn->query($sqlSaisons);
+
+        if ($resultSaisons->num_rows > 0) {
+            // Parcourir les résultats et stocker les saisons dans le tableau $liensSaisons
+            while($rowSaison = $resultSaisons->fetch_assoc()) {
+                $liensSaisons[] = $rowSaison;
+            }
+        }
     } else {
         // Gérer le cas où l'ID de l'anime n'existe pas dans la base de données
-        // Par exemple, afficher un message d'erreur ou rediriger l'utilisateur vers une autre page
         $nomAnime = "Anime introuvable";
     }
 } else {
@@ -25,4 +38,5 @@ if(isset($_GET['id'])) {
     header("Location: liste-anime.php");
     exit();
 }
+
 ?>

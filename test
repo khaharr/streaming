@@ -51,7 +51,7 @@
           </thead>
         </table>
         <div class="text-center mb-4">
-          <button class="btn btn-primary validerCouleur" @click="generateFile" type="button" id="inputGroupFileAddon04" data-dismiss="alert">
+          <button class="btn btn-primary validerCouleur " @click="generateFile" type="button" id="inputGroupFileAddon04" data-dismiss="alert">
             Générer Fichiers
           </button>
         </div>
@@ -65,7 +65,10 @@
 
 <script setup lang="ts">
 import { onMounted, ref, Ref } from 'vue';
+import $ from 'jquery';
+import 'bootstrap';
 
+// Interface pour les items
 interface Item {
   id: number;
   nomfichier: string;
@@ -202,7 +205,6 @@ const generateFile = async () => {
 .table {
   background-color: rgb(231, 231, 231);
 }
-
 .filter-title {
   color: rgb(0, 0, 0);
   animation: slide-in 0.5s ease-in-out;

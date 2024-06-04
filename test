@@ -1,3 +1,36 @@
+<template>
+  <div class="bgg">
+    <!-- ... autre contenu ... -->
+    <div v-if="isSelectionConfirmed" class="w-75 m-auto my-3">
+      <div class="mb-2">Total sélectionné : {{ totalSizeInMo }} Mo</div>
+      <table
+        id="table"
+        data-filter-control-container="#filter"
+        data-toggle="table"
+        data-pagination="true"
+        data-search="true"
+        data-filter-control="true"
+        data-maintain-meta-data="true"
+        data-click-to-select="true"
+        data-search-highlight="true"
+        data-search-selector="#customSearch"
+      ></table>
+      
+      <div class="text-center mb-4 d-flex justify-content-center">
+        <button class="btn mtj validerCouleur" @click="generateFile" type="button" data-dismiss="alert">
+          Générer Fichiers
+        </button>
+      </div>
+      <div v-if="errorMessage" class="alert alert-danger" role="alert">
+        {{ errorMessage }}
+      </div>
+    </div>
+    <!-- ... autre contenu ... -->
+  </div>
+</template>
+
+script
+
 <script setup lang="ts">
 // Interface pour les items
 interface Item {
@@ -11,6 +44,7 @@ interface Item {
 }
 
 const items = ref<Item[]>([]);
+const selectedItems = ref<Item[]>([]);
 const dateFrom = ref<string | null>(null);
 const dateTo = ref<string | null>(null);
 const errorMessage = ref<string | null>(null);
@@ -22,8 +56,12 @@ const zone = ref<'zu' | 'za'>(localStorage.getItem('zone') as 'zu' | 'za' || 'za
 const isSelectionConfirmed = ref(false);
 const showSelectionForm = ref(false);
 
-// Ref pour le compteur de taille
-const sizeCounter = ref<HTMLElement | null>(null);
+// Computed property to calculate total size in Mo
+const totalSizeInMo = computed(() => {
+  return selectedItems.value.reduce((total, item) => {
+    return total + parseFloat(item.size);
+  }, 0).toFixed(2);
+});
 
 const columns = [
   { checkbox: true, field: 'check' },
@@ -66,11 +104,14 @@ const loadData = async () => {
           second: 'numeric',
           timeZone: 'GMT',
         }).format(el.date),
-        size: (parseInt(el.size, 10) / (1024 * 1024)).toFixed(2) + ' Mo'
+        size: (parseInt(el.size, 10) / (1024 * 1024)).toFixed(2)
       }));
 
       $('#table').bootstrapTable('destroy');
       $('#table').bootstrapTable({ columns: columns, data: items.value });
+
+      // Ajoutez les événements de mise à jour du compteur après le chargement des données
+      $('#table').on('check.bs.table uncheck.bs.table check-all.bs.table uncheck-all.bs.table', updateSelectedItems);
     }
   } catch (error: any) {
     errorMessage.value = 'Erreur lors de la récupération des données. Veuillez réessayer plus tard. ' + error.message;
@@ -108,21 +149,15 @@ const applyDateFilter = () => {
   );
 };
 
-const calculateTotalSize = (selectedRows: any[]) => {
-  return selectedRows.reduce((total, row) => {
-    return total + parseFloat(row.size);
-  }, 0);
-};
-
-const updateSizeCounter = () => {
+const updateSelectedItems = () => {
   const selectedRows: any = $('#table').bootstrapTable('getSelections');
-  const totalSize = calculateTotalSize(selectedRows);
-  if (sizeCounter.value) {
-    sizeCounter.value.innerText = `Total sélectionné : ${totalSize.toFixed(2)} Mo`;
-  }
+  selectedItems.value = selectedRows.map((row: any) => {
+    return {
+      ...row,
+      size: parseFloat(row.size)
+    };
+  });
 };
-
-$('#table').on('check.bs.table uncheck.bs.table check-all.bs.table uncheck-all.bs.table', updateSizeCounter);
 
 const generateFile = async () => {
   waitAnimation();
@@ -133,7 +168,7 @@ const generateFile = async () => {
       return;
     }
 
-    const totalSize = calculateTotalSize(selectedRows);
+    const totalSize = selectedItems.value.reduce((total, item) => total + item.size, 0);
     if (totalSize > 200) {
       errorMessage.value = 'Limite de 200 Mo dépassée. Veuillez réduire la sélection.';
       return;

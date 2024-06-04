@@ -69,11 +69,17 @@ const columns = [
 ];
 
 function waitAnimation() {
-  document.getElementById("loading-animation").style.display = "block";
+  const loadingAnimation = document.getElementById("loading-animation");
+  if (loadingAnimation) {
+    loadingAnimation.style.display = "block";
+  }
 }
 
 function hideWaitAnimation() {
-  document.getElementById("loading-animation").style.display = "none";
+  const loadingAnimation = document.getElementById("loading-animation");
+  if (loadingAnimation) {
+    loadingAnimation.style.display = "none";
+  }
 }
 
 const confirmSelection = () => {

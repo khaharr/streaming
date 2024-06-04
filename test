@@ -1,5 +1,57 @@
+<script setup lang="ts">
+// Interface pour les items
+interface Item {
+  id: number;
+  nomfichier: string;
+  category: string;
+  date: string;
+  pathFull: string;
+  zone: string;
+  size: string;
+}
+
+const items = ref<Item[]>([]);
+const dateFrom = ref<string | null>(null);
+const dateTo = ref<string | null>(null);
+const errorMessage = ref<string | null>(null);
+
+const typeData = ref<'data' | 'log'>(localStorage.getItem('typeData') as 'data' | 'log' || 'data');
+const typeClient = ref<'tipi' | 'tipi_client'>(localStorage.getItem('typeClient') as 'tipi' | 'tipi_client' || 'tipi');
+const zone = ref<'zu' | 'za'>(localStorage.getItem('zone') as 'zu' | 'za' || 'za');
+
+const isSelectionConfirmed = ref(false);
+const showSelectionForm = ref(false);
+
+// Ref pour le compteur de taille
+const sizeCounter = ref<HTMLElement | null>(null);
+
+const columns = [
+  { checkbox: true, field: 'check' },
+  { field: 'nomfichier', sortable: true, searchable: true, title: 'Nom fichier' },
+  { field: 'size', sortable: true, searchable: false, title: 'Taille' },
+  { field: 'category', sortable: true, filterControl: 'select', title: 'Catégorie' },
+  { field: 'date', searchable: false, title: 'Date mise en ligne' },
+];
+
+function waitAnimation() {
+  $("#loading-animation").show();
+}
+
+function hideWaitAnimation() {
+  $("#loading-animation").hide();
+}
+
+const confirmSelection = () => {
+  isSelectionConfirmed.value = true;
+  showSelectionForm.value = false;
+  localStorage.setItem('typeData', typeData.value);
+  localStorage.setItem('typeClient', typeClient.value);
+  localStorage.setItem('zone', zone.value);
+  loadData();
+};
+
 const loadData = async () => {
-  waitAnimation()
+  waitAnimation();
   try {
     const data: any[] = await $fetch(`/api/file/tipi/download/${typeData.value}/${zone.value}/listfile`);
     if (data.length > 0) {
@@ -23,21 +75,57 @@ const loadData = async () => {
   } catch (error: any) {
     errorMessage.value = 'Erreur lors de la récupération des données. Veuillez réessayer plus tard. ' + error.message;
   } finally {
-    hideWaitAnimation()
+    hideWaitAnimation();
   }
-}
+};
 
-ajout fonction calcul total fichier 
+const applyDateFilter = () => {
+  const table = $('#table');
+  table.bootstrapTable('load', items.value);
+  table.bootstrapTable(
+    'filterBy',
+    {},
+    {
+      filterAlgorithm: function (row: { date: string | number | Date; }, filters: any) {
+        const day = row.date.toString().slice(0, 2);
+        const month = row.date.toString().slice(3, 5) + '/';
+        const year = row.date.toString().slice(6, 10);
+        const itemDate = new Date(year + '/' + month + '/' + day);
+        const fromDate = dateFrom.value ? new Date(dateFrom.value) : undefined;
+        const toDate = dateTo.value ? new Date(dateTo.value) : undefined;
+
+        if (fromDate && toDate) {
+          return itemDate >= fromDate && itemDate <= toDate;
+        } else if (!fromDate && toDate) {
+          return itemDate <= toDate;
+        } else if (fromDate && !toDate) {
+          return itemDate >= fromDate;
+        }
+
+        return true;
+      }
+    }
+  );
+};
+
 const calculateTotalSize = (selectedRows: any[]) => {
   return selectedRows.reduce((total, row) => {
     return total + parseFloat(row.size);
   }, 0);
 };
 
-generate file 
+const updateSizeCounter = () => {
+  const selectedRows: any = $('#table').bootstrapTable('getSelections');
+  const totalSize = calculateTotalSize(selectedRows);
+  if (sizeCounter.value) {
+    sizeCounter.value.innerText = `Total sélectionné : ${totalSize.toFixed(2)} Mo`;
+  }
+};
+
+$('#table').on('check.bs.table uncheck.bs.table check-all.bs.table uncheck-all.bs.table', updateSizeCounter);
 
 const generateFile = async () => {
-  waitAnimation()
+  waitAnimation();
   try {
     const selectedRows: any = $('#table').bootstrapTable('getSelections');
     if (selectedRows.length === 0) {
@@ -51,10 +139,11 @@ const generateFile = async () => {
       return;
     }
 
-    console.log(selectedRows)
-    const filenames = selectedRows.map((row: any) => {
-      return { name: row.nomfichier, pathFull: row.pathFull, zone: row.zone }
-    });
+    const filenames = selectedRows.map((row: any) => ({
+      name: row.nomfichier,
+      pathFull: row.pathFull,
+      zone: row.zone
+    }));
 
     const response = await fetch(`/api/file/tipi/download/${typeData.value}/download`, {
       method: 'POST',
@@ -82,43 +171,7 @@ const generateFile = async () => {
     console.error('Erreur lors de la génération du fichier ZIP:', error.message);
     errorMessage.value = 'Erreur lors de la génération du fichier ZIP. ' + error.message;
   } finally {
-    hideWaitAnimation()
+    hideWaitAnimation();
   }
 };
-
-mtj compter 
-const updateSizeCounter = () => {
-  const selectedRows: any = $('#table').bootstrapTable('getSelections');
-  const totalSize = calculateTotalSize(selectedRows);
-  document.getElementById('size-counter').innerText = `Total sélectionné : ${totalSize.toFixed(2)} Mo`;
-};
-
-// Appelez cette fonction à chaque changement de sélection dans le tableau
-$('#table').on('check.bs.table uncheck.bs.table check-all.bs.table uncheck-all.bs.table', updateSizeCounter);
-
-
-<div v-if="isSelectionConfirmed" class="w-75 m-auto my-3">
-  <div id="size-counter" class="mb-2">Total sélectionné : 0 Mo</div>
-  <table
-    id="table"
-    data-filter-control-container="#filter"
-    data-toggle="table"
-    data-pagination="true"
-    data-search="true"
-    data-filter-control="true"
-    data-maintain-meta-data="true"
-    data-click-to-select="true"
-    data-search-highlight="true"
-    data-search-selector="#customSearch"
-  ></table>
-  
-  <div class="text-center mb-4 d-flex justify-content-center">
-    <button class="btn mtj validerCouleur" @click="generateFile" type="button" data-dismiss="alert">
-      Générer Fichiers
-    </button>
-  </div>
-  <div v-if="errorMessage" class="alert alert-danger" role="alert">
-    {{ errorMessage }}
-  </div>
-</div>
-
+</script>

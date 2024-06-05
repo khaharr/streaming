@@ -1,408 +1,399 @@
 <template>
-  <div class="bgg">
-    <div id="loading-animation">
-      <div class="loader"></div>
-    </div>
-    <h1 class="text-center">Téléchargement de fichiers</h1>
-
-    <!-- Formulaire de sélection -->
-    <div v-if="!isSelectionConfirmed" class="p-4 mx-auto w-75 border border-white rounded-4">
-      <h4 class="d-flex justify-content-center">Sélectionnez les options</h4>
-      <div class="row justify-content-center">
-        <div class="col-3">
-          <label class="form-label mb-2 white">Type de données :</label>
-          <select class="form-select" v-model="typeData">
-            <option value="data">Data</option>
-            <option value="log">Log</option>
-          </select>
-        </div>
-        <div class="col-3">
-          <label class="form-label mb-2 white">Type de client :</label>
-          <select class="form-select" v-model="typeClient">
-            <option value="tipi">Tipi</option>
-            <option value="tipi_client">Tipi Client</option>
-          </select>
-        </div>
-        <div class="col-3">
-          <label class="form-label mb-2 white">Catégorie :</label>
-          <select class="form-select" v-model="zone">
-            <option value="za">ZA</option>
-            <option value="zu">ZU</option>
-          </select>
-        </div>
-        <div class="col-3 d-flex align-items-end">
-          <button class="btn mtj" @click="confirmSelection">Valider</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Bouton pour afficher le formulaire de sélection -->
-    <div v-if="isSelectionConfirmed" class="d-flex justify-content-center my-3">
-      <button class="btn mtj" @click="showSelectionForm = true">Modifier la sélection</button>
-    </div>
-
-    <!-- Filtre de recherche et tableau -->
-    <div v-if="isSelectionConfirmed" class="border border-white  shadow-lg rounded-3 p-4 my-3 mx-auto w-75">
-      <h4 class="d-flex justify-content-center">Filtre de recherche <i class="bi bi-search ms-2"></i></h4>
-      <div class="row justify-content-center">
-        <div class="col-2">
-          <label for="dateFrom" class="form-label mb-2 white">Date de début :</label>
-          <input type="date" class="form-control" id="dateFrom" v-model="dateFrom" @change="applyDateFilter" />
-        </div>
-        <div class="col-2">
-          <label for="dateTo" class="form-label mb-2 white">Date de fin :</label>
-          <input type="date" class="form-control" id="dateTo" v-model="dateTo" @change="applyDateFilter" />
-        </div>
-        <div class="col-2">
-          <label class="form-label mb-2 white">Nom du fichier :</label>
-          <input type="text" id="customSearch" class="form-control form-control-simple" placeholder="rechercher" />
-        </div>
-        <div class="col-2" id="filter">
-          <label class="select-label mb-2 white">Catégorie :</label>
-          <select class="form-select bootstrap-table-filter-control-category">
-            <option value="">Afficher tout</option>
-          </select>
-        </div>
-      </div><br>
-      <div v-if="errorMessage" class="alert alert-danger" role="alert">
-        {{ errorMessage }}
-      </div>
-    </div>
-
-    <div v-if="isSelectionConfirmed" class="w-75 m-auto my-3">
-      <div :class="sizeClass"
-        class="d-flex justify-content-center card border border-white p-2 my-2 mx-auto text-center sticky-top flex text-align">
-        <p> <span class=" MO">(Limite de 200 Mo)</span> {{ animatedTotalSize }} <span class=" MO">Mo</span></p>
-      </div>
-
-      <table id="table" data-filter-control-container="#filter" data-toggle="table" data-pagination="true"
-        data-search="true" data-filter-control="true" data-maintain-meta-data="true" data-click-to-select="true"
-        data-search-highlight="true" data-search-selector="#customSearch"></table>
-
-      <div class="text-center mb-4 d-flex justify-content-center">
-        <button class="btn mtj validerCouleur  sticky-bottom" @click="generateFile" type="button" data-dismiss="alert">
-          Générer Fichiers
-        </button>
-      </div>
-    </div>
-
-    <!-- Popup pour le formulaire de sélection -->
-    <div v-if="showSelectionForm" class="modal" tabindex="-1" role="dialog" style="display: block;">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">Modifier la sélection</h5>
-            <button type="button" class="btn-close " @click="showSelectionForm = false" aria-label="Close">
-            </button>
-          </div>
-          <div class="modal-body">
-            <div class="row justify-content-center">
-              <div class="col-4">
-                <label class="form-label mb-2 white">Type de données :</label>
-                <select class="form-control" v-model="typeData">
-                  <option value="data">Data</option>
-                  <option value="log">Log</option>
-                </select>
-              </div>
-              <div class="col-4">
-                <label class="form-label mb-2 white">Type de client :</label>
-                <select class="form-control" v-model="typeClient">
-                  <option value="tipi">Tipi</option>
-                  <option value="tipi_client">Tipi Client</option>
-                </select>
-              </div>
-              <div class="col-4">
-                <label class="form-label mb-2 white">Catégorie :</label>
-                <select class="form-control" v-model="zone">
-                  <option value="za">ZA</option>
-                  <option value="zu">ZU</option>
-                </select>
-              </div>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-primary" @click="confirmSelection">Enregistrer</button>
-            <button type="button" class="btn btn-secondary" @click="showSelectionForm = false">Fermer</button>
-          </div>
-        </div>
-      </div>
-    </div>
+  <div :class="['vh-100', isDarkMode ? 'dark-mode' : 'light-mode']">
+    <Navbar :isDarkMode="isDarkMode" @toggleDarkMode="toggleDarkMode" />
+    <NuxtPage />
   </div>
 </template>
 
+
 <script setup lang="ts">
+import { ref, onMounted } from 'vue';
+import Navbar from '~/components/navbar.vue';
 
-// Interface pour les items
-interface Item {
-  id: number;
-  nomfichier: string;
-  category: string;
-  date: string;
-  pathFull: string;
-  zone: string;
-  size: number;
-}
+// Gestion de l'état du thème
+const isDarkMode = ref(false);
 
-const items = ref<Item[]>([]);
-const selectedItems = ref<Item[]>([]);
-const dateFrom = ref<string | null>(null);
-const dateTo = ref<string | null>(null);
-const errorMessage = ref<string | null>(null);
+// Fonction pour basculer le thème
+const toggleDarkMode = () => {
+  isDarkMode.value = !isDarkMode.value;
+  localStorage.setItem('darkMode', isDarkMode.value ? 'true' : 'false');
+  // console.log(isDarkMode.value)
+};
 
-const typeData = ref<'data' | 'log'>(localStorage.getItem('typeData') as 'data' | 'log' || 'data');
-const typeClient = ref<'tipi' | 'tipi_client'>(localStorage.getItem('typeClient') as 'tipi' | 'tipi_client' || 'tipi');
-const zone = ref<'zu' | 'za'>(localStorage.getItem('zone') as 'zu' | 'za' || 'za');
+// Appliquer la classe CSS correspondante au body
+onMounted(() => {
+  const darkModeSetting = localStorage.getItem('darkMode');
+  if (darkModeSetting == 'true') {
+    isDarkMode.value = true;
+  }
 
-const isSelectionConfirmed = ref(false);
-const showSelectionForm = ref(false);
-const currentSize = ref(0);
-const animatedTotalSize = ref("0.00");
 
-// Calcul du total en Mo
-const totalSizeInMo = computed(() => {
-  const total = selectedItems.value.reduce((total, item) => total + item.size, 0);
-  return total.toFixed(2);
+
+  const applyTheme = () => {
+    if (isDarkMode.value) {
+      document.body.classList.add('dark-mode');
+      document.body.classList.remove('light-mode');
+    } else {
+      document.body.classList.add('light-mode');
+      document.body.classList.remove('dark-mode');
+    }
+  };
+
+  applyTheme();
+
+  // Regarder les changements de isDarkMode pour ré-appliquer le thème
+  watch(isDarkMode, applyTheme);
 });
 
-// Classe CSS dynamique pour la couleur du texte
-const sizeClass = computed(() => {
-  const total = parseFloat(totalSizeInMo.value);
-  if (total < 150) {
-    return 'text-success';
-  } else if (total >= 150 && total < 200) {
-    return 'text-warning';
-  } else {
-    return 'text-danger';
-  }
-});
 
-// Animation du compteur
-watch(totalSizeInMo, (newValue) => {
-  const target = parseFloat(newValue);
-  const step = (target - currentSize.value) / 23;
-  const interval = setInterval(() => {
-    currentSize.value += step;
-    animatedTotalSize.value = currentSize.value.toFixed(2);
-    if ((step > 0 && currentSize.value >= target) || (step < 0 && currentSize.value <= target)) {
-      currentSize.value = target;
-      animatedTotalSize.value = currentSize.value.toFixed(2);
-      clearInterval(interval);
-    }
-  }, 20);
-});
-
-const columns = [
-  { checkbox: true, field: 'check' },
-  { field: 'nomfichier', sortable: true, searchable: true, title: 'Nom fichier' },
-  { field: 'size', sortable: true, searchable: false, title: 'Taille (Mo)' },
-  { field: 'category', sortable: true, filterControl: 'select', title: 'Catégorie' },
-  { field: 'date', searchable: false, title: 'Date mise en ligne' },
-];
-
-function waitAnimation() {
-  const loadingAnimation = document.getElementById("loading-animation");
-  if (loadingAnimation) {
-    loadingAnimation.style.display = "block";
-  }
-}
-
-function hideWaitAnimation() {
-  const loadingAnimation = document.getElementById("loading-animation");
-  if (loadingAnimation) {
-    loadingAnimation.style.display = "none";
-  }
-}
-
-const confirmSelection = () => {
-  isSelectionConfirmed.value = true;
-  showSelectionForm.value = false;
-  localStorage.setItem('typeData', typeData.value);
-  localStorage.setItem('typeClient', typeClient.value);
-  localStorage.setItem('zone', zone.value);
-  loadData();
-};
-
-const loadData = async () => {
-  waitAnimation();
-  try {
-    const data: any[] = await $fetch(`/api/file/tipi/download/${typeData.value}/${zone.value}/listfile`);
-    if (data.length > 0) {
-      items.value = data.map((el) => ({
-        ...el,
-        date: new Intl.DateTimeFormat('fr-FR', {
-          year: 'numeric',
-          month: 'numeric',
-          day: 'numeric',
-          hour: 'numeric',
-          minute: 'numeric',
-          second: 'numeric',
-          timeZone: 'GMT',
-        }).format(el.date),
-        size: parseFloat((parseInt(el.size, 10) / (1024 * 1024)).toFixed(5)), // Convertir colonne size en Mo
-      }));
-
-      $('#table').bootstrapTable('destroy');
-      $('#table').bootstrapTable({ columns: columns, data: items.value });
-
-      // Ajouter les événements de mise à jour du compteur après le chargement des données
-      $('#table').on('check.bs.table uncheck.bs.table check-all.bs.table uncheck-all.bs.table', updateSelectedItems);
-    }
-  } catch (error: any) {
-    errorMessage.value = 'Erreur lors de la récupération des données. Veuillez réessayer plus tard. ' + error.message;
-  } finally {
-    hideWaitAnimation();
-  }
-};
-
-const applyDateFilter = () => {
-  const table = $('#table');
-  table.bootstrapTable('load', items.value);
-  table.bootstrapTable(
-    'filterBy',
-    {},
-    {
-      filterAlgorithm: function (row: { date: string | number | Date }, filters: any) {
-        const day = row.date.toString().slice(0, 2);
-        const month = row.date.toString().slice(3, 5) + '/';
-        const year = row.date.toString().slice(6, 10);
-        const itemDate = new Date(year + '/' + month + '/' + day);
-        const fromDate = dateFrom.value ? new Date(dateFrom.value) : undefined;
-        const toDate = dateTo.value ? new Date(dateTo.value) : undefined;
-
-        if (fromDate && toDate) {
-          return itemDate >= fromDate && itemDate <= toDate;
-        } else if (!fromDate && toDate) {
-          return itemDate <= toDate;
-        } else if (fromDate && !toDate) {
-          return itemDate >= fromDate;
-        }
-
-        return true;
-      },
-    }
-  );
-};
-
-const updateSelectedItems = () => {
-  const selectedRows: any = $('#table').bootstrapTable('getSelections');
-  selectedItems.value = selectedRows.map((row: any) => ({
-    ...row,
-    size: parseFloat(row.size),
-  }));
-};
-
-const generateFile = async () => {
-  waitAnimation();
-  try {
-    const selectedRows: any = $('#table').bootstrapTable('getSelections');
-    if (selectedRows.length === 0) {
-      window.scroll(100, 0);
-      errorMessage.value = 'Veuillez sélectionner au moins un fichier.';
-      return;
-    }
-
-    const totalSize = selectedItems.value.reduce((total, item) => total + item.size, 0);
-    if (totalSize > 200) {
-      window.scroll(100, 0);
-      errorMessage.value = 'Limite de 200 Mo dépassée. Veuillez réduire la sélection.';
-      return;
-    }
-
-    const filenames = selectedRows.map((row: any) => ({
-      name: row.nomfichier,
-      pathFull: row.pathFull,
-      zone: row.zone,
-    }));
-
-    const response = await fetch(`/api/file/tipi/download/${typeData.value}/download`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ filenames }),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.statusMessage || 'Erreur lors du téléchargement des fichiers.');
-    }
-
-    const blob = await response.blob();
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `Fichiers_${typeData.value}_${zone.value}.zip`;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    $('#table').bootstrapTable('uncheckAll');
-  } catch (error: any) {
-    console.error('Erreur lors de la génération du fichier ZIP:', error.message);
-    errorMessage.value = 'Erreur lors de la génération du fichier ZIP. ' + error.message;
-  } finally {
-    hideWaitAnimation();
-  }
-};
 </script>
 
-<style lang="scss" scoped>
-// .tbl-filters {
-//     // margin: 20px auto;
-//     // padding: 20px;
-//     // background-color: #ddd0c8;
-//     // width: 70vw;
-//     // border-radius: 10px;
-//     // box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-// }
 
-// .form-row {
-//     margin-bottom: 20px;
-// }
 
-// .form-label {
-//     margin-bottom: 10px;
-// }
+<style lang="scss">
+:root {
+  --color-white: var(--bs-white);
+  --color-gray-900: #1a1a1a;
+  --color-gray-800: #373739;
+  --color-gray-200: #6c757d;
+  --color-gray-100: #c0ccd4;
+  --color-yelow-500: rgb(228, 158, 17);
+  --color-white-100: #ffffff;
+  --color-blue-100 : #56adff;
+  --color-blue-300 : #0056be;
 
-// .form-control {
-//     height: calc(1.5em + 0.75rem + 2px);
-//     // padding: 0.375rem 0.75rem;
-//     font-size: 0.875rem;
-//     line-height: 1.5;
-// }
 
-// .table {
-//     background-color: rgb(231, 231, 231);
-// }
+}
+.table {
+  th,
+  .th-inner {
+      background-color: var(--color-gray-900) !important;
+    }
+  }
 
-// .filter-title {
-//     color: rgb(0, 0, 0);
-//     animation: slide-in 0.5s ease-in-out;
+.pagination {
+  --bs-pagination-active-border-color: var(--color-gray-200);
+  --bs-pagination-active-bg: var(--color-gray-200);
+  --bs-pagination-color: var(--color-gray-200);
+  --bs-pagination-focus-box-shadow: var(--color-gray-200);
+  --bs-pagination-hover-border-color: var(--color-gray-200);
+  --bs-pagination-hover-color: var(--color-gray-200);
+}
 
-//     .bi-search {
-//         margin-left: 5px;
-//     }
-// }
+.card {
+  box-shadow: 10px 5px 5px rgb(180, 180, 180);
+}
+body.light-mode {
+  #iconTheme {
+    color: black;
+  }
 
-// h1 {
-//     //     font-size: 32px;
-//     //     font-family: Arial, Helvetica, sans-serif;
-//     //     color: rgb(0, 0, 0);
-//     //     padding: 16px;
-//     //     font-weight: lighter;
-//     //     box-shadow: 2px 2px 6px #9e9e9e;
-//          text-align: center;
-//     //     display: block;
-//     //     border-radius: 20px;
-// }
+  --background-color-day: #dfdad8;
+  --background-color-white: var(--color-white-100);
+  background-color: var(--background-color-day);
 
-// .fixer {
-//     position: fixed;
+  .MO{
+    color: var(--color-gray-900);
+  }
 
-// }
+  li{
+    border-radius: 15px;
+  }
 
-// .bgg {
-//     background-color: #ddd0c8;
-//     min-height: 93.8vh;
-//     margin: 0;
-//     padding: 0;
-// }</style>
+  li:hover{
+    border-radius: 20px;
+  }
+  li a{
+    border-radius: 15px;
+  }
+  li a:hover {
+    background-color: var(--color-gray-100);
+        color: var(--color-white);
+        border-radius: 20px;
+    }
+
+   
+}
+
+
+body.dark-mode {
+  --bs-body-color: var(--color-white);
+  --bs-body-bg: var(--color-gray-800) !important;
+
+  background-color: var(--color-gray-800) !important;
+  color: var(--color-white) !important;
+
+  .btn-close{
+    background-color: var(--color-white-100);
+  }
+
+  .form-control-simple::placeholder{
+    color: var(--color-white-100);
+  }
+
+  li a:hover {
+        background-color: var(--color-gray-100);
+        color: var(--color-white);
+        border-radius: 20px;
+    }
+
+    li a,
+    .navbar-brand,
+    .white {
+        color: var(--background-color-white);
+        border-radius: 15px;
+    }
+
+  .MO{
+    color: var(--color-white-100);
+  }
+  .form-check-label {
+  margin-left: 5px;
+  color:var(--color-gray-100);
+}
+  #iconTheme {
+    color: var(--color-yelow-500);
+  }
+
+  
+  
+  .form-floating>.form-control-plaintext~label,
+  .form-floating>.form-control:focus~label,
+  .form-floating>.form-control:not(:placeholder-shown)~label,
+  .form-floating>.form-select~label {
+    margin-left: 5px;
+  }
+  
+  .black,
+  .mtj,
+  .form-floating>.form-control-plaintext~label,
+  .form-floating>.form-control:focus~label,
+  .form-floating>.form-control:not(:placeholder-shown)~label,
+  .form-floating>.form-select~label,
+  .form-control-placeholder-gray-100::placeholder {
+    color: var(--color-white-100);
+  }
+
+
+  // Gestion du bouton de type"file"
+  input::file-selector-button {
+    background-color: var(--color-gray-900);
+  }
+
+  .form-control:hover:not(:disabled):not([readonly])::file-selector-button {
+    background-color: var(--color-gray-200);
+  }
+
+  //Fin Gestion du bouton de type"file"
+
+  .dropdown-menu {
+    --bs-dropdown-link-active-bg: var(--color-gray-100);
+    --bs-dropdown-bg: var(--color-gray-200);
+  }
+
+  .modal-content{
+    border-color: var(--color-gray-100);
+  }
+
+  .table {
+    td {
+      background-color: var(--color-gray-800) !important;
+    }
+
+
+    td,
+    th {
+      color: var(--color-white) !important;
+    }
+  }
+
+
+
+  .bubble {
+    box-shadow: 0 0 10px var(--color-white), 0 0 20px var(--color-white), 0 0 30px var(--color-white);
+  }
+
+  .mtj {
+    background-color: var(--color-blue-300);
+  }
+
+
+
+
+  .form-check-input:checked {
+    background-color: var(--color-gray-200);
+  }
+
+  .form-check-input:checked:focus,
+  .form-check-input:focus {
+    box-shadow: 0 0 0 .25rem var(--color-gray-200);
+  }
+
+  .form-check-input:focus,
+  .form-check-input:checked,
+  .file {
+    border-color: var(--background-color-white);
+  }
+
+}
+
+
+/* body.dark-mode.form-floating>label {
+  color: var(--color-white)
+} */
+
+/* body.light-mode label {
+  color: #000000;
+} */
+/* body.dark-mode nav {
+  background-color: var(--background-color-night) !important;
+} */
+
+
+/* 
+body.dark-mode label{
+  color: rgb(177, 177, 177);
+} */
+
+
+
+
+
+// body.dark-mode .card {
+//   background-color: var(--background-color-night);
+//   box-shadow: 10px 5px 5px rgba(0, 0, 0, 0.5);
+//   border-color: #ffffff;
+
+// } 
+
+.page-enter-active,
+.page-leave-active {
+  transition: all 0.3s;
+}
+
+.page-enter-from,
+.page-leave-to {
+  opacity: 0;
+  filter: blur(1rem);
+}
+
+/* h1 {
+  font-size: 1.8rem;
+  color: var(--text-color-day);
+  font-weight: bold;
+}
+
+body.dark-mode h1 {
+  color: var(--text-color-night);
+}
+
+body.light-mode nav {
+  background-color: #000000;
+} */
+
+/* body.dark-mode h5 {
+  color: #ffffff;
+}
+
+body.dark-mode h4 {
+  color: #ffffff;
+} */
+
+/* body.dark-mode .table-hover {
+  background-color: rgb(214, 214, 214);
+}
+*/
+body.light-mode .mtj {
+  background-color: var(--color-blue-300);
+  color: var(--background-color-white);
+}
+
+
+
+body.light-mode .form-control-simple::placeholder{
+    color: var(--color-gray-900);
+  }
+
+body.light-mode .bubble {
+  box-shadow: 0 0 10px rgb(0, 0, 0), 0 0 20px rgb(0, 0, 0), 0 0 30px rgb(0, 0, 0);
+}
+
+
+
+
+
+/* body.dark-mode h6 {
+  color: white;
+}
+
+body.dark-mode h3 {
+  color: white;
+} */
+
+body.light-mode .th-inner {
+  background-color: rgb(0, 0, 0);
+  color: white;
+}
+
+
+
+body.light-mode .form-check-input:checked {
+  background-color: var(--color-gray-200);
+  border-color: var(--background-color-white);
+}
+
+body.light-mode .form-check-input:checked:focus {
+  box-shadow: 0 0 0 .25rem var(--background-color-night);
+}
+
+body.light-mode .form-check-input:focus {
+  border-color: var(--background-color-white);
+  box-shadow: 0 0 0 .25rem var(--background-color-night);
+}
+
+.mark,
+mark {
+  background-color: #d3d3d3;
+  padding: none;
+
+  
+}
+
+/*Amination attente */
+#loading-animation {
+  display: none;
+  /* Le masquer par défaut */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  /* Fond semi-transparent pour un effet d'obscurcissement */
+  z-index: 9999;
+}
+
+.loader {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #3498db;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 2s linear infinite;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -20px;
+  margin-left: -20px;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+</style>

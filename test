@@ -1,7 +1,9 @@
+navbar
 <template>
+    <!-- <nav :class="['navbar navbar-expand-lg', isDarkMode ? 'navbar-dark bg-dark' : 'navbar-light ']"> -->
     <nav :class="['navbar navbar-expand-lg']">
         <div class="container-fluid">
-            <NuxtLink class="navbar-brand" to="/">Accueil</NuxtLink>
+            <NuxtLink class="navbar-brand  " to="/">Accueil</NuxtLink>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
                 aria-label="Toggle navigation">
@@ -10,7 +12,7 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <NuxtLink class="nav-link" to="/dataset">Jeu de données</NuxtLink>
+                        <NuxtLink class="nav-link " to="/dataset">Jeu de données</NuxtLink>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
@@ -42,20 +44,27 @@
                         <ul class="dropdown-menu">
                             <li>
                                 <NuxtLink class="dropdown-item"
-                                    :to="{ name: 'paiement-env', params: { env: 'tipi' } }">Tipi
+                                :to="{ name: 'paiement-env', params: { env: 'tipi-client' } }">tipi-client
                                 </NuxtLink>
                             </li>
                             <li>
                                 <NuxtLink class="dropdown-item"
-                                    :to="{ name: 'paiement-env', params: { env: 'tipi-client' } }">Tipi Client
+                                :to="{ name: 'paiement-env', params: { env: 'tipi' } }">tipi
                                 </NuxtLink>
                             </li>
                         </ul>
+                        <!-- <NuxtLink class="nav-link" to="/paiement">Paiement</NuxtLink> -->
                     </li>
+
+
+
+                    
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
                             Les fichiers
                         </a>
+
+                        
                         <ul class="dropdown-menu">
                             <li>
                                 <NuxtLink class="dropdown-item" to="/download">Télécharger</NuxtLink>
@@ -97,87 +106,425 @@ nav {
 .nav-item {
     cursor: pointer;
 }
+
+
+/* li a {
+    border-radius: 50px;
+} */
+
+
+
+/* .li {
+    border-radius: 15px;
+} */
+
+/* .li:hover {
+    background-color: black;
+    color: rgb(244, 247, 247);
+    border-radius: 15px;
+} */
 </style>
 
-paiement
-
-<template>
-  <!-- ... votre code existant ... -->
+app <template>
+  <div :class="['vh-100', isDarkMode ? 'dark-mode' : 'light-mode']">
+    <Navbar :isDarkMode="isDarkMode" @toggleDarkMode="toggleDarkMode" />
+    <NuxtPage />
+  </div>
 </template>
 
-<script setup>
-import { ref, onMounted, watch } from 'vue';
-import { useRouter, useRoute } from 'vue-router';
 
-const config = useRuntimeConfig();
+<script setup lang="ts">
+import { ref, onMounted } from 'vue';
+import Navbar from '~/components/navbar.vue';
 
-const typePaiement = ref('soap');
-const title = ref();
-const env = ref();
-const error = ref();
+// Gestion de l'état du thème
+const isDarkMode = ref(false);
 
-const route = useRoute();
+// Fonction pour basculer le thème
+const toggleDarkMode = () => {
+  isDarkMode.value = !isDarkMode.value;
+  localStorage.setItem('darkMode', isDarkMode.value ? 'true' : 'false');
+  // console.log(isDarkMode.value)
+};
 
-watch(() => route.params.env, (newEnv) => {
-    env.value = newEnv;
-    onChangeInfo();
-}, { immediate: true });
-
-function onChangeInfo() {
-  if (typePaiement.value === 'soap') {
-    title.value = " Création d'un paiement par web service";
-  } else if (typePaiement.value === 'url') {
-    title.value = "Création d'un paiement par URL";
-  } else {
-    title.value = "Redirection pour paiement par portail";
-  }
-}
-
+// Appliquer la classe CSS correspondante au body
 onMounted(() => {
-  const bubbles = document.querySelectorAll('.bubble');
-  bubbles.forEach(bubble => {
-    bubble.style.setProperty('--random-left', Math.random());
-  });
+  const darkModeSetting = localStorage.getItem('darkMode');
+  if (darkModeSetting == 'true') {
+    isDarkMode.value = true;
+  }
+
+
+
+  const applyTheme = () => {
+    if (isDarkMode.value) {
+      document.body.classList.add('dark-mode');
+      document.body.classList.remove('light-mode');
+    } else {
+      document.body.classList.add('light-mode');
+      document.body.classList.remove('dark-mode');
+    }
+  };
+
+  applyTheme();
+
+  // Regarder les changements de isDarkMode pour ré-appliquer le thème
+  watch(isDarkMode, applyTheme);
 });
 
-async function paiement() {
-  const ip = config.public.paiement.ip[env.value];
-  if (typePaiement.value === 'portail') {
-    window.open(`http://${ip}/tpi-zu/accueilportail.web`, '_blank');
-    return;
-  }
 
-  const formData = new FormData(document.getElementById('info'));
-
-  if (typePaiement.value === 'soap') {
-    const data = {};
-    formData.forEach((value, key) => {
-      data[key] = value;
-    });
-    const { data: result } = await useFetch(`/api/example/soap/${env.value}`, { query: data });
-    if (result.value.status === 'ok') {
-      window.open(result.value.data.url, '_blank');
-    } else {
-      const rError = result.value.data.error;
-      const key = Object.keys(result.value.data.error)[0];
-      error.value = {
-        type: key,
-        code: rError[key].code ?? '',
-        descriptif: rError[key].descriptif ?? '',
-        libelle: rError[key].libelle ?? '',
-        severite: rError[key].severite ?? ''
-      };
-    }
-  } else {
-    const query = new URLSearchParams();
-    formData.forEach((value, key) => {
-      query.set(key, value);
-    });
-    window.open(`http://${ip}/tpi-zu/paiement.web?${query.toString()}`, '_blank');
-  }
-}
 </script>
 
-<style scoped>
-/* ... votre style existant ... */
+
+
+<style lang="scss">
+:root {
+  --color-white: var(--bs-white);
+  --color-gray-900: #1a1a1a;
+  --color-gray-800: #373739;
+  --color-gray-200: #6c757d;
+  --color-gray-100: #c0ccd4;
+  --color-yelow-500: rgb(228, 158, 17);
+  --color-white-100: #ffffff;
+  --color-blue-100 : #56adff;
+  --color-blue-300 : #0056be;
+  
+
+}
+.table {
+  th,
+  .th-inner {
+      background-color: var(--color-gray-900) !important;
+    }
+  }
+
+
+.pagination {
+  --bs-pagination-active-border-color: var(--color-gray-200);
+  --bs-pagination-active-bg: var(--color-gray-200);
+  --bs-pagination-color: var(--color-gray-200);
+  --bs-pagination-focus-box-shadow: var(--color-gray-200);
+  --bs-pagination-hover-border-color: var(--color-gray-200);
+  --bs-pagination-hover-color: var(--color-gray-200);
+}
+
+.card {
+  box-shadow: 10px 5px 5px rgb(180, 180, 180);
+}
+body.light-mode {
+  #iconTheme {
+    color: black;
+  }
+
+  --background-color-day: #dfdad8;
+  --background-color-white: var(--color-white-100);
+  background-color: var(--background-color-day);
+
+  .MO{
+    color: var(--color-gray-900);
+  }
+
+  li{
+    border-radius: 15px;
+  }
+
+  li:hover{
+    border-radius: 20px;
+  }
+  li a{
+    border-radius: 15px;
+  }
+  li a:hover {
+    background-color: var(--color-gray-100);
+        color: var(--color-white);
+        border-radius: 20px;
+    }
+
+   
+}
+
+
+body.dark-mode {
+  --bs-body-color: var(--color-white);
+  --bs-body-bg: var(--color-gray-800) !important;
+
+  background-color: var(--color-gray-800) !important;
+  color: var(--color-white) !important;
+
+  .btn-close{
+    background-color: var(--color-white-100);
+  }
+
+  .form-control-simple::placeholder{
+    color: var(--color-white-100);
+  }
+
+  li a:hover {
+        background-color: var(--color-gray-100);
+        color: var(--color-white);
+        border-radius: 20px;
+    }
+
+    li a,
+    .navbar-brand,
+    .white {
+        color: var(--background-color-white);
+        border-radius: 15px;
+    }
+
+  .MO{
+    color: var(--color-white-100);
+  }
+  .form-check-label {
+  margin-left: 5px;
+  color:var(--color-gray-100);
+}
+  #iconTheme {
+    color: var(--color-yelow-500);
+  }
+
+  
+.form-select{
+  --bs-form-select-bg-img: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='white' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+}
+  
+  .form-floating>.form-control-plaintext~label,
+  .form-floating>.form-control:focus~label,
+  .form-floating>.form-control:not(:placeholder-shown)~label,
+  .form-floating>.form-select~label {
+    margin-left: 5px;
+  }
+  
+  .black,
+  .mtj,
+  .form-floating>.form-control-plaintext~label,
+  .form-floating>.form-control:focus~label,
+  .form-floating>.form-control:not(:placeholder-shown)~label,
+  .form-floating>.form-select~label,
+  .form-control-placeholder-gray-100::placeholder {
+    color: var(--color-white-100);
+  }
+
+
+  // Gestion du bouton de type"file"
+  input::file-selector-button {
+    background-color: var(--color-gray-900);
+  }
+
+  .form-control:hover:not(:disabled):not([readonly])::file-selector-button {
+    background-color: var(--color-gray-200);
+  }
+
+  //Fin Gestion du bouton de type"file"
+
+  .dropdown-menu {
+    --bs-dropdown-link-active-bg: var(--color-gray-100);
+    --bs-dropdown-bg: var(--color-gray-200);
+  }
+
+  .modal-content{
+    border-color: var(--color-gray-100);
+  }
+
+  .table {
+    td {
+      background-color: var(--color-gray-800) !important;
+    }
+
+
+    td,
+    th {
+      color: var(--color-white) !important;
+    }
+  }
+
+
+
+  .bubble {
+    box-shadow: 0 0 10px var(--color-white), 0 0 20px var(--color-white), 0 0 30px var(--color-white);
+  }
+
+  .mtj {
+    background-color: var(--color-blue-300);
+  }
+
+
+
+
+  .form-check-input:checked {
+    background-color: var(--color-gray-200);
+  }
+
+  .form-check-input:checked:focus,
+  .form-check-input:focus {
+    box-shadow: 0 0 0 .25rem var(--color-gray-200);
+  }
+
+  .form-check-input:focus,
+  .form-check-input:checked,
+  .file {
+    border-color: var(--background-color-white);
+  }
+
+}
+
+
+/* body.dark-mode.form-floating>label {
+  color: var(--color-white)
+} */
+
+/* body.light-mode label {
+  color: #000000;
+} */
+/* body.dark-mode nav {
+  background-color: var(--background-color-night) !important;
+} */
+
+
+/* 
+body.dark-mode label{
+  color: rgb(177, 177, 177);
+} */
+
+
+
+
+
+// body.dark-mode .card {
+//   background-color: var(--background-color-night);
+//   box-shadow: 10px 5px 5px rgba(0, 0, 0, 0.5);
+//   border-color: #ffffff;
+
+// } 
+
+.page-enter-active,
+.page-leave-active {
+  transition: all 0.3s;
+}
+
+.page-enter-from,
+.page-leave-to {
+  opacity: 0;
+  filter: blur(1rem);
+}
+
+/* h1 {
+  font-size: 1.8rem;
+  color: var(--text-color-day);
+  font-weight: bold;
+}
+
+body.dark-mode h1 {
+  color: var(--text-color-night);
+}
+
+body.light-mode nav {
+  background-color: #000000;
+} */
+
+/* body.dark-mode h5 {
+  color: #ffffff;
+}
+
+body.dark-mode h4 {
+  color: #ffffff;
+} */
+
+/* body.dark-mode .table-hover {
+  background-color: rgb(214, 214, 214);
+}
+*/
+body.light-mode .mtj {
+  background-color: var(--color-blue-300);
+  color: var(--background-color-white);
+}
+
+
+
+body.light-mode .form-control-simple::placeholder{
+    color: var(--color-gray-900);
+  }
+
+body.light-mode .bubble {
+  box-shadow: 0 0 10px rgb(0, 0, 0), 0 0 20px rgb(0, 0, 0), 0 0 30px rgb(0, 0, 0);
+}
+
+
+
+
+
+/* body.dark-mode h6 {
+  color: white;
+}
+
+body.dark-mode h3 {
+  color: white;
+} */
+
+body.light-mode .th-inner {
+  background-color: rgb(0, 0, 0);
+  color: white;
+}
+
+
+
+body.light-mode .form-check-input:checked {
+  background-color: var(--color-gray-200);
+  border-color: var(--background-color-white);
+}
+
+body.light-mode .form-check-input:checked:focus {
+  box-shadow: 0 0 0 .25rem var(--background-color-night);
+}
+
+body.light-mode .form-check-input:focus {
+  border-color: var(--background-color-white);
+  box-shadow: 0 0 0 .25rem var(--background-color-night);
+}
+
+.mark,
+mark {
+  background-color: #d3d3d3;
+  padding: none;
+
+  
+}
+
+/*Amination attente */
+#loading-animation {
+  display: none;
+  /* Le masquer par défaut */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  /* Fond semi-transparent pour un effet d'obscurcissement */
+  z-index: 9999;
+}
+
+.loader {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #3498db;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 2s linear infinite;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -20px;
+  margin-left: -20px;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
 </style>

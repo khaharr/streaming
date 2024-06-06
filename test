@@ -1,362 +1,7 @@
-paiement
 <template>
-  <div class="bgg">
-    <div class="bubbles">
-      <div class="bubble" v-for="n in 20" :key="n"></div>
-    </div>
-    <div class="container footer-space">
-      <div class="payment-form-container card p-4 rounded shadow">
-        <h1 class="text-center mb-4 ">{{ title }}</h1>
-        <div class="d-flex justify-content-center mb-4">
-          <div class="form-check mx-2">
-            <input @change="onChangeInfo" class="form-check-input" type="radio" name="radio" value="soap"
-              v-model="typePaiement" id="radio1" checked>
-            <label class="form-check-label white" for="radio1">Web service</label>
-          </div>
-          <div class="form-check mx-2">
-            <input @change="onChangeInfo" class="form-check-input" type="radio" name="radio" value="url"
-              v-model="typePaiement" id="radio2">
-            <label class="form-check-label white" for="radio2">URL</label>
-          </div>
-          <div class="form-check mx-2">
-            <input @change="onChangeInfo" class="form-check-input" type="radio" name="radio" value="portail"
-              v-model="typePaiement" id="radio3">
-            <label class="form-check-label white" for="radio3">Portail</label>
-          </div>
-        </div>
-        <div class="alert alert-danger  " role="alert" v-if="error">
-          ERREUR :<br />
-          - Type : {{ error.type }}<br />
-          - Code : {{ error.code }}<br />
-          - Descriptif : {{ error.descriptif }}<br />
-          - libelle : {{ error.libelle }} <br />
-          - Severite : {{ error.severite }}
-        </div>
-
-        <form id="info" class="row g-3" v-if="typePaiement !== 'portail'">
-          <div class="col-2 form-floating ">
-            <input required class="form-control form-control-custom" type="years" name="exer" placeholder="Exercice *"
-              minlength="4" maxlength="4" pattern="\d{4,4}" size="4">
-              <label for="exer">Exercice <span class="text-danger">*</span></label>          
-            </div>
-          
-          <div class="col-2 form-floating ">
-            <select class="form-select  form-select form-control-custom" name="saisie" id="saisie" required>
-              <option value="W">paiement réel ( W ) </option>
-              <option value="T">paiement test ( T )</option>
-              <option value="X">paiement d'activation ( X )</option>
-            </select>
-            <label for="exer">Saisie</label>
-          </div>
-          <div class="col-2 form-floating">
-            <input required class="form-control form-control-custom" type="text" name="numcli"
-              placeholder="Numéro de client *" maxlength="6" size="6">
-            <label for="numcli">Numéro de client <span class="text-danger">*</span></label>
-          </div>
-
-          <div class="col-md-3 form-floating">
-            <input required class="form-control form-control-custom" type="text" name="refdet"
-              placeholder="Référence de la dette *" minlength="6" maxlength="30" size="15">
-            <label for="refdet">Référence de la dette <span class="text-danger">*</span></label>
-
-          </div>
-
-
-          <div class="col-3 form-floating">
-            <input required class="form-control form-control-custom" type="text" name="montant" placeholder="Montant *"
-              maxlength="11" pattern="[0-9.]{2,12}" size="11">
-            <label for="montant">Montant <span class="text-danger">*</span></label>
-          </div>
-
-
-          <div class="col-md-6 form-floating">
-            <input class="form-control form-control-custom" type="text" name="objet" placeholder="Objet" maxlength="100"
-              value=" " size=" 20">
-            <label for="objet">objet</label>
-          </div>
-          <div class="col-6 form-floating">
-            <input required class="form-control form-control-custom" type="email" name="mel" placeholder="Mail *"
-              minlength="6" maxlength="80" size="20">
-            <label for="mel">Mail <span class="text-danger">*</span></label>
-          </div>
-
-
-          <div class="form-floating" v-if="typePaiement === 'url'">
-            <input required class="form-control form-control-custom" type="text" name="urlcl"
-              placeholder="Url de notification *" maxlength="250" size="30">
-            <label for="urlcl">Url de notification <span class="text-danger">*</span></label>
-          </div>
-          <div v-if="typePaiement === 'soap'">
-          <div class="form-floating mb-3" >
-            <input required class="form-control form-control-custom" type="text" name="urlnotif"
-              placeholder="Url de notification *" maxlength="250" size="30">
-            <label for="urlnotif">Url de notification <span class="text-danger">*</span></label>
-          </div>
-          <div class="form-floating">
-            <input required class="form-control form-control-custom" type="text" name="urlredirect"
-              placeholder="Url de redirection *" maxlength="250" size="30">
-            <label for="urlredirect">Url de redirection <span class="text-danger">*</span></label>
-          </div>
-        </div>
-        </form>
-
-        <div  v-if="typePaiement != 'portail'"  class="d-flex justify-content-end mt-2">
-          <p class="text-danger me-2">*</p> <p class="text-secondary"> Champ obligatoire</p>
-        </div>
-        <div class="d-flex justify-content-center mt-5">
-          <input type="submit" class="btn mtj" @click="paiement" value="Création du paiement">
-        </div>
-      </div>
-    </div>
-  </div>
-</template>
-
-
-<script setup>
-const config = useRuntimeConfig()
-
-// type tError = { [key in 'type' | 'code' | 'descriptif' | 'libelle' | 'severite']: string }
-const typePaiement = ref('soap');
-const title = ref();
-const env = ref('tipi-client');
-const error = ref();
-
-onChangeInfo();
-
-function onChangeInfo() {
-  if (typePaiement.value === 'soap') {
-    title.value = " Création d'un paiement par web service";
-  } else if (typePaiement.value === 'url') {
-    title.value = "Création d'un paiement par URL";
-  } else { title.value = "Redirection pour paiement par portail"; }
-}
-onMounted(() => {
-  const bubbles = document.querySelectorAll('.bubble');
-  bubbles.forEach(bubble => {
-    bubble.style.setProperty('--random-left', Math.random());
-  });
-});
-
-async function paiement() {
-  const ip = config.public.paiement.ip[env.value]
-  // cas portail : une simple redirection vers Tipi ZU IIA
-  if (typePaiement.value === 'portail') {
-    window.open(`http://${ip}/tpi-zu/accueilportail.web`, '_blank');
-    return;
-  }
-
-  const formData = new FormData(document.getElementById('info'));
-
-  if (typePaiement.value === 'soap') {
-    const data = {};
-    formData.forEach((value, key) => {
-      data[key] = value;
-    });
-    const { data: result } = await useFetch(`/api/example/soap/${env.value}`, { query: data });
-    if (result.value.status === 'ok') {
-      window.open(result.value.data.url, '_blank');
-    } else {
-      const rError = result.value.data.error;
-      const key = Object.keys(result.value.data.error)[0];
-      error.value = {
-        type: key,
-        code: rError[key].code ?? '',
-        descriptif: rError[key].descriptif ?? '',
-        libelle: rError[key].libelle ?? '',
-        severite: rError[key].severite ?? ''
-      }
-    }
-  } else {
-    const query = new URLSearchParams();
-    formData.forEach((value, key) => {
-      query.set(key, value);
-    });
-    window.open(`http://${ip}/tpi-zu/paiement.web?${query.toString()}`, '_blank');
-    console.log('ok');
-  }
-}
-</script>
-<style scoped>
-.bgg {
-
-  position: relative;
-  overflow: hidden;
-  padding: 130px;
-}
-
-.bubbles {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 1;
-}
-
-.bubble {
-  position: absolute;
-  bottom: -150px;
-  width: 30px;
-  height: 30px;
-  background-color: rgba(255, 255, 255, 0.3);
-  border-radius: 50%;
-  animation: rise 10s infinite ease-in-out, shimmer 2s infinite;
-}
-
-@keyframes rise {
-  0% {
-    transform: translateY(0) scale(1);
-  }
-
-  50% {
-    transform: translateY(-400px) scale(1.2);
-  }
-
-  75% {
-    transform: translateY(-800px) scale(1);
-
-  }
-
-  100% {
-    transform: translateY(-1400px) scale(1);
-  }
-}
-
-@keyframes shimmer {
-  0% {
-    opacity: 1;
-  }
-
-  50% {
-    opacity: 0.5;
-  }
-
-  100% {
-    opacity: 1;
-  }
-}
-
-.bubble:nth-child(2n) {
-  animation-duration: 12s;
-  animation-delay: 2s;
-}
-
-.bubble:nth-child(3n) {
-  animation-duration: 14s;
-  animation-delay: 4s;
-}
-
-.bubble:nth-child(4n) {
-  animation-duration: 16s;
-  animation-delay: 6s;
-}
-
-.bubble:nth-child(5n) {
-  animation-duration: 18s;
-  animation-delay: 8s;
-}
-
-.bubble:nth-child(6n) {
-  animation-duration: 20s;
-  animation-delay: 10s;
-}
-
-/* Définir des positions aléatoires pour les bulles */
-.bubble {
-  left: calc(100% * var(--random-left));
-}
-
-.payment-form-container {
-  /* background-color: #ffffff; */
-  border: 1px solid #e0e0e0;
-  border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s, box-shadow 0.2s;
-  position: relative;
-  z-index: 2;
-}
-
-/* .payment-form-container:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
-} */
-
-
-
-
-
-
-.form-control-custom {
-  border-radius: 5px;
-  border: 1px solid #cccccc;
-  /* padding: 0.75rem; */
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-.form-control-custom:focus {
-  border-color: #0056b3;
-  box-shadow: 0 0 0 0.2rem rgba(0, 86, 179, 0.25);
-  animation: inputFocus 0.5s ease-in-out;
-}
-
-.form-control-custom:valid {
-  border-color: #28a745;
-  box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
-}
-
-.form-control-custom:invalid {
-  animation: shake 0.5s;
-
-}
-
- .form-control-custom:invalid:focus {
-  border-color: #c9302c;
-  box-shadow: 0 0 0 0.2rem rgba(255, 3, 3, 0.25);
-
-} 
-
-@keyframes inputFocus {
-  0% {
-    transform: scale(1);
-  }
-
-  50% {
-    transform: scale(1.05);
-  }
-
-  100% {
-    transform: scale(1);
-  }
-}
-
-@keyframes shake {
-
-  0%,
-  100% {
-    transform: translateX(0);
-  }
-
-  20%,
-  60% {
-    transform: translateX(-10px);
-  }
-
-  40%,
-  80% {
-    transform: translateX(10px);
-  }
-}
-
-</style>
-
-navbar
-
-<template>
-    <!-- <nav :class="['navbar navbar-expand-lg', isDarkMode ? 'navbar-dark bg-dark' : 'navbar-light ']"> -->
     <nav :class="['navbar navbar-expand-lg']">
         <div class="container-fluid">
-            <NuxtLink class="navbar-brand  " to="/">Accueil</NuxtLink>
+            <NuxtLink class="navbar-brand" to="/">Accueil</NuxtLink>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
                 aria-label="Toggle navigation">
@@ -365,7 +10,7 @@ navbar
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <NuxtLink class="nav-link " to="/dataset">Jeu de données</NuxtLink>
+                        <NuxtLink class="nav-link" to="/dataset">Jeu de données</NuxtLink>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
@@ -394,18 +39,23 @@ navbar
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
                             Paiement
                         </a>
-                        <!-- <NuxtLink class="nav-link" to="/paiement">Paiement</NuxtLink> -->
+                        <ul class="dropdown-menu">
+                            <li>
+                                <NuxtLink class="dropdown-item"
+                                    :to="{ name: 'paiement-env', params: { env: 'tipi' } }">Tipi
+                                </NuxtLink>
+                            </li>
+                            <li>
+                                <NuxtLink class="dropdown-item"
+                                    :to="{ name: 'paiement-env', params: { env: 'tipi-client' } }">Tipi Client
+                                </NuxtLink>
+                            </li>
+                        </ul>
                     </li>
-
-
-
-                    
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
                             Les fichiers
                         </a>
-
-                        
                         <ul class="dropdown-menu">
                             <li>
                                 <NuxtLink class="dropdown-item" to="/download">Télécharger</NuxtLink>
@@ -447,21 +97,87 @@ nav {
 .nav-item {
     cursor: pointer;
 }
+</style>
 
+paiement
 
-/* li a {
-    border-radius: 50px;
-} */
+<template>
+  <!-- ... votre code existant ... -->
+</template>
 
+<script setup>
+import { ref, onMounted, watch } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
 
+const config = useRuntimeConfig();
 
-/* .li {
-    border-radius: 15px;
-} */
+const typePaiement = ref('soap');
+const title = ref();
+const env = ref();
+const error = ref();
 
-/* .li:hover {
-    background-color: black;
-    color: rgb(244, 247, 247);
-    border-radius: 15px;
-} */
+const route = useRoute();
+
+watch(() => route.params.env, (newEnv) => {
+    env.value = newEnv;
+    onChangeInfo();
+}, { immediate: true });
+
+function onChangeInfo() {
+  if (typePaiement.value === 'soap') {
+    title.value = " Création d'un paiement par web service";
+  } else if (typePaiement.value === 'url') {
+    title.value = "Création d'un paiement par URL";
+  } else {
+    title.value = "Redirection pour paiement par portail";
+  }
+}
+
+onMounted(() => {
+  const bubbles = document.querySelectorAll('.bubble');
+  bubbles.forEach(bubble => {
+    bubble.style.setProperty('--random-left', Math.random());
+  });
+});
+
+async function paiement() {
+  const ip = config.public.paiement.ip[env.value];
+  if (typePaiement.value === 'portail') {
+    window.open(`http://${ip}/tpi-zu/accueilportail.web`, '_blank');
+    return;
+  }
+
+  const formData = new FormData(document.getElementById('info'));
+
+  if (typePaiement.value === 'soap') {
+    const data = {};
+    formData.forEach((value, key) => {
+      data[key] = value;
+    });
+    const { data: result } = await useFetch(`/api/example/soap/${env.value}`, { query: data });
+    if (result.value.status === 'ok') {
+      window.open(result.value.data.url, '_blank');
+    } else {
+      const rError = result.value.data.error;
+      const key = Object.keys(result.value.data.error)[0];
+      error.value = {
+        type: key,
+        code: rError[key].code ?? '',
+        descriptif: rError[key].descriptif ?? '',
+        libelle: rError[key].libelle ?? '',
+        severite: rError[key].severite ?? ''
+      };
+    }
+  } else {
+    const query = new URLSearchParams();
+    formData.forEach((value, key) => {
+      query.set(key, value);
+    });
+    window.open(`http://${ip}/tpi-zu/paiement.web?${query.toString()}`, '_blank');
+  }
+}
+</script>
+
+<style scoped>
+/* ... votre style existant ... */
 </style>

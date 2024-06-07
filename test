@@ -1,191 +1,370 @@
-const dirLocal = "/app/tpi/data/local/FichiersMvt";
-const dirEchange = "/app/tpi/data/echanges/sauve/";
-const dirEntrant = "/app/tpi/data/echanges/entrant/";
+list.ts
 
+import { fileIn } from '~/services/files';
 
+export default defineEventHandler(async (event) => {
 
-export interface iFileOutZone {
-  server: {
-    [key: string]: string
-  };
-  data: {
-    [key: string]: {
-      path: string;
-      format: string;
-    } | undefined;
-  };
-  log: {
-    [key: string]: {
-      path: string;
-      format: string;
-    } | undefined;
-  }
-}
+  const data: {
+    zone: string[],
+    env: string[],
+    datacat: { [key: string]: { [key: string]: any } }
+  } | undefined = { zone: [], env: [], datacat: {} }
 
-export const fileOut: {
-  [key: string]: iFileOutZone | undefined;
-} = {
-  zu: {
-    server: {
-      tipi: 'tpiiusa003',
-      'tipi-client': 'tpciusa002',
-    },
-    data: {
-      prevelevement: {
-        // Fichier paiement Prélèvements
-        path: `${dirEchange}/payfip`,
-        format: "SAV-JT_PayFiP_",
-      },
-      cb: {
-        // Fichier paiements CB
-        path: `${dirEchange}/transactions`,
-        format: "TRANSACTIONS_",
-      },
-      regies: {
-        // Fichier paiement régies sont transmis à la banque de France
-        path: `${dirLocal}/REGIES/FLUX_OUT`,
-        format: "REGIES_TPA_REMISEBDF_",
-      },
-      "client-generique": {
-        // Fichier paiement clients génériques réalisés sur comptes Dépôt de Fonds au Trésor (DFT)
-        path: `${dirLocal}/CLIENT_GENERIQUE/FLUX_OUT`,
-        format: "CGEN_TPA_REMISEDFT_",
-      },
-      bdf: {
-        // Fichier tous les paiements Banque de France
-        path: `${dirEchange}/remisebdf`,
-        format: "SL.[VM]_TPA_REMISEBDF_",
-      },
-    },
-    log: {
-      vtom: {
-        // Fichier tous les paiements Banque de France
-        path: "/vtom/logs",
-        format: ''
-
-      },
-    },
-  },
-  za: {
-    server: {
-      tipi: 'tpiigsa003',
-      'tipi-client': 'tpcigsa002',
-    },
-    data: {
-      all: {
-        // Fichier tous les paiements Banque de France
-        path: `${dirEchange}/`,
-        format: "",
-      },
-    },
-    log: {
-      vtom: {
-        // Fichier tous les paiements Banque de France
-        path: "/vtom/logs",
-        format: ''
-
-      },
+  for (let zone in fileIn) {
+    data?.zone.push(zone)
+    for (let env in fileIn[zone]?.server) {
+      if (!(data.env.includes(env))) {
+        data?.env.push(env)
+      }
+    }
+    for (let cat in fileIn[zone]?.data) {
+      data.datacat[zone] = data?.datacat[zone] ?? {}
+      data.datacat[zone][cat] = {
+        extention: fileIn[zone]?.data[cat]?.extention,
+        format: fileIn[zone]?.data[cat]?.format
+      }
     }
   }
+
+  return data
+
+});
+
+upload.vue 
+<template>
+  <div class="bgg ">
+    <div class="container ">
+      <h1 class=" d-flex justify-content-center">Déposer des fichiers</h1>
+
+      <div class="alert alert-danger  " role="alert" v-if="erreur">
+        <p>{{ erreur }}</p>
+      </div>
+      <div class="row mt-4  d-flex justify-content-center ">
+       
+        <div class="col-md-6 ">
+          <div class="card ">
+            <div class="card-body border border-white ">
+              <h5 class="card-title">Sélectionner les fichiers à déposer</h5>
+              <div class="input-group input-test ">
+                <input type="file" class="form-control" id="inputGroupFile01" multiple @change="uploadFiles"
+                  :accept="extension" />
+                  <!-- accept=".jpg, .jpeg, .png,.doc,.docx,.xml,.pdf,.org,.csv,.sql,.txt,.tar.gz,.tar,.doc,.docx,.xls,.xlsx,.mp3,.mp4,html,.json," -->
+              </div>
+
+              <div class="mt-3">
+                <label for="categorySelect" class="form-label">Type de client </label>
+              <select class="form-select" v-model="env">
+                  <option value="tipi">Tipi</option>
+                  <option value="tipi_client">Tipi Client</option>
+                </select>
+              </div>
+
+              <div class="mt-3">
+                <label for="categorySelect" class="form-label">Zone</label>
+                <select class="form-select" id="categorySelect"  v-model="zone">
+                  <option value="zone">Sélectionner une zone</option>
+                  <option value="za">ZA</option>
+                  <option value="zu">ZU</option>
+                </select>
+              </div>
+              
+              <div class="mt-3">
+                <label for="categorySelect" class="form-label">Choisir la catégorie :</label>
+                <select class="form-select" id="categorySelect" v-model="selectedCategory">
+                  <option value="">Sélectionner une catégorie</option>
+                  <option v-for="category in datacat" :value="category" :key="category">{{ category }}</option>
+                </select>
+
+              </div>
+              <div class="d-flex justify-content-center ">
+                <button class="btn mtj mt-3 " @click="uploadFiles">Déposer les fichiers</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="card mt-3 border border-white" v-if="depositedFiles.length > 0">
+            <div class="card-body ">
+              <h3 class="card-title ">Fichiers déposés</h3>
+              <div class="row mt-4 ">
+                <div v-for="(file, index) in depositedFiles" :key="index" class="col-6 mb-3 ">
+                  <div class="card h-100 file">
+                    <div class="card-body">
+                      <h6>
+                        {{ file.name }}
+                        <button class="btn btn-danger btn-sm" @click="removeFile(index)"> <i class="bi bi-trash"></i>
+                        </button>
+
+                      </h6>
+                      <span class="badge bg-secondary">{{ file.category }}</span>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="d-flex justify-content-center">
+                <button class="btn btn-success mt-3" @click="sendFilesToServer">Envoyer les fichiers</button>
+              </div>
+
+              <div class="mt-4">
+                <div class="progress" role="progressbar" aria-label="Animated striped example" aria-valuenow="0"
+                  aria-valuemin="0" aria-valuemax="100">
+                  <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 0%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-4" v-if="fileStatuses.length > 0">
+            <h3>Statuts des fichiers envoyés</h3>
+            <div class="alert alert-success  " role="alert" v-if="success">
+              <p>{{ success }}</p>
+            </div>
+            <ul class="list-group">
+              <li v-for="(status, index) in fileStatuses" :key="index"
+                :class="{ 'list-group-item-success': status.success, 'list-group-item-danger': !status.success }"
+                class="list-group-item d-flex justify-content-between align-items-center">
+
+                {{ status.name }}
+                <span v-if="status.success" class="badge bg-success">✔️</span>
+                <span v-else class="badge bg-danger">❌ {{ status.error }}</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+
+
+    </div>
+  </div>
+</template>
+<script setup lang="ts">
+type tStatus = { name: string; success: boolean; error?: string }
+type tFile = { name: string; category: string; file: File }
+
+// const categories = ref<string[]>(["Catégorie 1", "Catégorie 2", "Catégorie 3"]);
+
+const selectedCategory = ref<string>('');
+const depositedFiles = ref<tFile[]>([]);
+const fileStatuses = ref<tStatus[]>([]);
+const erreur = ref()
+const success = ref()
+const extension = ref('.pdf')
+
+const zone = ref<'zu' | 'za'>('za');
+const env = ref<'tipi' | 'tipi_client'>( 'tipi');
+const datacat = ref();
+
+
+onMounted( async () => {
+ //appel list  et determine les selection avec les ref 
+ try {
+  const data: any[] = await $fetch(`/api/file/tipi/upload/${env.value}/${zone.value}/${datacat.value}/list`);
+ }
+ 
+ catch{
+ }
+
+})
+
+
+const uploadFiles = () => {
+  if (selectedCategory.value === "") {
+    erreur.value = "Veuillez sélectionner une catégorie."
+
+    return;
+  }
+  erreur.value = ""
+  fileStatuses.value = []; // Reset status
+  const input = document.querySelector('input[type="file"]') as HTMLInputElement;
+  const files = Array.from(input.files as FileList);
+  if (files.length === 0) {
+    erreur.value = "Veuillez sélectionner au moins un fichier."
+    return;
+  }
+  erreur.value = ""
+
+  console.log('ttt')
+  files.forEach((file) => {
+    depositedFiles.value.push({ name: file.name, category: selectedCategory.value, file });
+  });
+
+  input.value = "";
+};
+
+
+const removeFile = (index: number) => {
+  depositedFiles.value.splice(index, 1);
+};
+
+const sendFilesToServer = async () => {
+  const progressBar = document.querySelector(".progress-bar") as HTMLElement;
+  fileStatuses.value = []; // Reset status
+
+  let totalSize = 0;
+  let uploadedSize = 0;
+
+  depositedFiles.value.forEach((file: { file: { size: number; }; }) => {
+    totalSize += file.file.size;
+  });
+
+  for (const file of depositedFiles.value) {
+    const formData = new FormData();
+    formData.append("file", file.file);
+
+    try {
+      const response = await fetch(`/api/file/${env}/upload/depot`, {
+        method: "POST",
+        body: formData,
+      });
+
+      const responseData = await response.json();
+
+      if (!response.ok || !responseData.success) {
+        throw new Error(responseData.message || 'Erreur inconnue');
+      }
+
+      uploadedSize += file.file.size;
+      const progress = (uploadedSize / totalSize) * 100;
+      progressBar.style.width = `${progress}%`;
+      progressBar.setAttribute("aria-valuenow", progress.toString());
+
+      fileStatuses.value.push({
+        name: file.name,
+        success: true,
+      });
+    } catch (error) {
+      console.error("Erreur lors de l'envoi des fichiers:", error);
+      fileStatuses.value.push({
+        name: file.name,
+        success: false,
+        error: error instanceof Error ? error.message : String(error)
+      });
+    }
+  }
+
+  //  une seconde pour s'assurer que la barre de progression atteint 100%
+  setTimeout(() => {
+    if (fileStatuses.value.every((status: { success: any; }) => status.success)) {
+      success.value = "Fichiers envoyé avec succés"
+    } else {
+      erreur.value = "Certains fichiers n'ont pas été envoyés correctement"
+    }
+
+    depositedFiles.value = [];
+    progressBar.style.width = '0%'; // Réinitialiser la barre de progression
+  }, 1000); // Délai de 1 seconde avant d'afficher l'alerte
 };
 
 
 
-export interface iFileInZone {
-  server: {
-    [key: string]: string
-  };
-  data: {
-    [key: string]: {
-      path: string;
-      extention: string;
-      format: string;
-    } | undefined;
-  };
-  log: {
-    [key: string]: {
-      path: string;
-      extention: string;
-    } | undefined;
-  }
+</script>
+
+
+<style scoped>
+.card-body h6 {
+  display: flex;
+
+  justify-content: space-between;
+  align-items: center;
 }
 
-export const fileIn: {
-  [key: string]: iFileInZone | undefined;
-} = {
-  za: {
-    server: {
-      tipi: 'tpiigsa003',
-      'tipi-client': 'tpcigsa002',
-    },
-    data: {
-      nominoe: {
-        path: dirEntrant,
-        extention: 'xml',
-        format: 'nominoe.xml'
-      },
-      ics: {
-        path: dirEntrant,
-        extention: 'txt',
-        format: 'LISTE_ICS_FRANCE'
-      },
-      bambou: {
-        path: dirEntrant,
-        extention: 'zip,csv',
-        format: 'BAMBOU_Fichier_Unique'
-      },
-      refgenerique: {
-        path: `${dirLocal}/CLIENT_GENERIQUE/FLUX_IN`,
-        extention: 'xml',
-        format: 'TIPICGEN'
-      },
-      majrefgenerique: {
-        path: `${dirLocal}/CLIENT_GENERIQUE/FLUX_IN`,
-        extention: 'xml',
-        format: 'MAJREFGEN'
-      },
-      helioscodique: {
-        path: dirEntrant,
-        extention: 'txt',
-        format: 'HELCODIQUE_'
-      },
-      heltrf: {
-        path: dirEntrant,
-        extention: 'txt',
-        format: 'HELTRF_SL'
+/*.card-body h6 button {
+  margin-left: 10px;
+} */
+
+.badge {
+  font-size: 12px;
+  padding: 5px 10px;
+  border-radius: 50px;
+  background-color: #337ab7;
+  color: #fff;
+}
+</style> 
+
+et depot.ts
+import fs from 'fs';
+import path from 'path';
+import { SFTPClient } from '~/services/sftp.service';
+
+export default defineEventHandler(async (event) => {
+  const formData = await readMultipartFormData(event);
+
+  if (!formData || formData.length === 0) {
+    return { message: 'Aucun fichier trouvé.', success: false, files: [] };
+  }
+
+  // Fonction pour générer un nom de dossier aléatoire de 6 caractères
+  const generateRandomDirectoryName = () => {
+    return Math.random().toString(36).substring(2, 8);
+  };
+
+  // Créer un répertoire temporaire avec un nom aléatoire
+  const tempUploadDirectoryName = generateRandomDirectoryName();
+  const uploadsDirectory = path.join(process.cwd(), 'tmp', 'uploads', tempUploadDirectoryName);
+
+  const resultFiles: { name: string; success: boolean; error?: string; }[] = [];
+  const sftp = new SFTPClient();
+
+  try {
+    await sftp.connect({ host: 'tpiiusa003' });
+
+    // Créer le répertoire s'il n'existe pas
+    try {
+      if (!fs.existsSync(uploadsDirectory)) {
+        fs.mkdirSync(uploadsDirectory, { recursive: true });
       }
-    },
-    log: {
-      vtom: {
-        path: "/vtom/logs",
-        extention: ''
-      }
+    } catch (error) {
+      const errorMessage = `Erreur lors de la création du répertoire de destination "${uploadsDirectory}".`;
+      console.error(errorMessage, error);
+      return { message: errorMessage, success: false, files: resultFiles };
     }
-  },
-  zu: {
-    server: {
-      tipi: 'tpiiusa003',
-      'tipi-client': 'tpciusa002',
-    },
-    data: {
-      helios: {
-        path: dirEntrant,
-        extention: 'xml',
-        format: 'TIPI'
-      },
-      rep: {
-        path: dirEntrant,
-        extention: '',
-        format: 'RNF_'
+
+    // Gestion d'erreur
+    try {
+      for (const file of formData) {
+        const remoteFilePath = `/tmp/${file.filename}`;
+        const fileBuffer: Buffer = file.data;
+        if (!file.filename) {
+          const errorMessage = 'Le nom du fichier est indéfini.';
+          console.error(errorMessage);
+          resultFiles.push({ name: 'Indéfini', success: false, error: errorMessage });
+          continue;
+        }
+
+        const filePath = path.join(uploadsDirectory, file.filename);
+
+        try {
+          fs.writeFileSync(filePath, fileBuffer);
+          await sftp.uploadFile(filePath, remoteFilePath);
+          resultFiles.push({ name: file.filename, success: true });
+        } catch (error) {
+          const errorMessage = `Erreur lors de l'enregistrement du fichier: ${file.filename}`;
+          console.error(errorMessage, error);
+          resultFiles.push({ name: file.filename, success: false, error: errorMessage });
+        }
       }
-    },
-    log: {
-      vtom: {
-        path: "/vtom/logs",
-        extention: ''
-      }
+
+      return { message: 'Fichiers traités.', success: true, files: resultFiles };
+    } catch (error) {
+      console.error('Erreur lors de l\'enregistrement des fichiers :', error);
+      return { message: 'Erreur lors de l\'enregistrement des fichiers.', success: false, files: resultFiles };
+    }
+  } catch (error) {
+    console.error('Erreur lors de la connexion SFTP:', error);
+    throw createError({ statusCode: 500, statusMessage: 'Erreur lors de la connexion SFTP' });
+  } finally {
+    sftp.close();
+
+    // Supprimer le répertoire temporaire des uploads
+    try {
+      fs.rmSync(uploadsDirectory, { recursive: true, force: true });
+      console.log(`Répertoire temporaire supprimé : ${uploadsDirectory}`);
+    } catch (error) {
+      console.error(`Erreur lors de la suppression du répertoire temporaire : ${uploadsDirectory}`, error);
     }
   }
-};
-
-
+});

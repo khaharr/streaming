@@ -1,70 +1,32 @@
-list.ts
-
-import { fileIn } from '~/services/files';
-
-export default defineEventHandler(async (event) => {
-
-  const data: {
-    zone: string[],
-    env: string[],
-    datacat: { [key: string]: { [key: string]: any } }
-  } | undefined = { zone: [], env: [], datacat: {} }
-
-  for (let zone in fileIn) {
-    data?.zone.push(zone)
-    for (let env in fileIn[zone]?.server) {
-      if (!(data.env.includes(env))) {
-        data?.env.push(env)
-      }
-    }
-    for (let cat in fileIn[zone]?.data) {
-      data.datacat[zone] = data?.datacat[zone] ?? {}
-      data.datacat[zone][cat] = {
-        extention: fileIn[zone]?.data[cat]?.extention,
-        format: fileIn[zone]?.data[cat]?.format
-      }
-    }
-  }
-
-  return data
-
-});
-
-upload.vue 
 <template>
-  <div class="bgg ">
-    <div class="container ">
-      <h1 class=" d-flex justify-content-center">Déposer des fichiers</h1>
+  <div class="bgg">
+    <div class="container">
+      <h1 class="d-flex justify-content-center">Déposer des fichiers</h1>
 
-      <div class="alert alert-danger  " role="alert" v-if="erreur">
+      <div class="alert alert-danger" role="alert" v-if="erreur">
         <p>{{ erreur }}</p>
       </div>
-      <div class="row mt-4  d-flex justify-content-center ">
-       
-        <div class="col-md-6 ">
-          <div class="card ">
-            <div class="card-body border border-white ">
+      <div class="row mt-4 d-flex justify-content-center">
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-body border border-white">
               <h5 class="card-title">Sélectionner les fichiers à déposer</h5>
-              <div class="input-group input-test ">
+              <div class="input-group input-test">
                 <input type="file" class="form-control" id="inputGroupFile01" multiple @change="uploadFiles"
                   :accept="extension" />
-                  <!-- accept=".jpg, .jpeg, .png,.doc,.docx,.xml,.pdf,.org,.csv,.sql,.txt,.tar.gz,.tar,.doc,.docx,.xls,.xlsx,.mp3,.mp4,html,.json," -->
               </div>
 
               <div class="mt-3">
                 <label for="categorySelect" class="form-label">Type de client </label>
-              <select class="form-select" v-model="env">
-                  <option value="tipi">Tipi</option>
-                  <option value="tipi_client">Tipi Client</option>
+                <select class="form-select" v-model="env">
+                  <option v-for="e in envOptions" :key="e" :value="e">{{ e }}</option>
                 </select>
               </div>
 
               <div class="mt-3">
-                <label for="categorySelect" class="form-label">Zone</label>
-                <select class="form-select" id="categorySelect"  v-model="zone">
-                  <option value="zone">Sélectionner une zone</option>
-                  <option value="za">ZA</option>
-                  <option value="zu">ZU</option>
+                <label for="zoneSelect" class="form-label">Zone</label>
+                <select class="form-select" id="zoneSelect" v-model="zone">
+                  <option v-for="z in zoneOptions" :key="z" :value="z">{{ z }}</option>
                 </select>
               </div>
               
@@ -72,12 +34,12 @@ upload.vue
                 <label for="categorySelect" class="form-label">Choisir la catégorie :</label>
                 <select class="form-select" id="categorySelect" v-model="selectedCategory">
                   <option value="">Sélectionner une catégorie</option>
-                  <option v-for="category in datacat" :value="category" :key="category">{{ category }}</option>
+                  <option v-for="(categories, zone) in datacat" :key="zone" v-for="category in categories" :value="category">{{ category }}</option>
                 </select>
-
               </div>
-              <div class="d-flex justify-content-center ">
-                <button class="btn mtj mt-3 " @click="uploadFiles">Déposer les fichiers</button>
+
+              <div class="d-flex justify-content-center">
+                <button class="btn mtj mt-3" @click="uploadFiles">Déposer les fichiers</button>
               </div>
             </div>
           </div>
@@ -85,20 +47,18 @@ upload.vue
 
         <div>
           <div class="card mt-3 border border-white" v-if="depositedFiles.length > 0">
-            <div class="card-body ">
-              <h3 class="card-title ">Fichiers déposés</h3>
-              <div class="row mt-4 ">
-                <div v-for="(file, index) in depositedFiles" :key="index" class="col-6 mb-3 ">
+            <div class="card-body">
+              <h3 class="card-title">Fichiers déposés</h3>
+              <div class="row mt-4">
+                <div v-for="(file, index) in depositedFiles" :key="index" class="col-6 mb-3">
                   <div class="card h-100 file">
                     <div class="card-body">
                       <h6>
                         {{ file.name }}
                         <button class="btn btn-danger btn-sm" @click="removeFile(index)"> <i class="bi bi-trash"></i>
                         </button>
-
                       </h6>
                       <span class="badge bg-secondary">{{ file.category }}</span>
-
                     </div>
                   </div>
                 </div>
@@ -119,14 +79,13 @@ upload.vue
 
           <div class="mt-4" v-if="fileStatuses.length > 0">
             <h3>Statuts des fichiers envoyés</h3>
-            <div class="alert alert-success  " role="alert" v-if="success">
+            <div class="alert alert-success" role="alert" v-if="success">
               <p>{{ success }}</p>
             </div>
             <ul class="list-group">
               <li v-for="(status, index) in fileStatuses" :key="index"
                 :class="{ 'list-group-item-success': status.success, 'list-group-item-danger': !status.success }"
                 class="list-group-item d-flex justify-content-between align-items-center">
-
                 {{ status.name }}
                 <span v-if="status.success" class="badge bg-success">✔️</span>
                 <span v-else class="badge bg-danger">❌ {{ status.error }}</span>
@@ -134,67 +93,63 @@ upload.vue
             </ul>
           </div>
         </div>
-
       </div>
-
-
     </div>
   </div>
 </template>
-<script setup lang="ts">
-type tStatus = { name: string; success: boolean; error?: string }
-type tFile = { name: string; category: string; file: File }
 
-// const categories = ref<string[]>(["Catégorie 1", "Catégorie 2", "Catégorie 3"]);
+<script setup lang="ts">
+import { onMounted, ref } from 'vue';
+
+type tStatus = { name: string; success: boolean; error?: string };
+type tFile = { name: string; category: string; file: File };
 
 const selectedCategory = ref<string>('');
 const depositedFiles = ref<tFile[]>([]);
 const fileStatuses = ref<tStatus[]>([]);
-const erreur = ref()
-const success = ref()
-const extension = ref('.pdf')
+const erreur = ref<string | undefined>();
+const success = ref<string | undefined>();
+const extension = ref<string>('.pdf');
 
-const zone = ref<'zu' | 'za'>('za');
-const env = ref<'tipi' | 'tipi_client'>( 'tipi');
-const datacat = ref();
+const zone = ref<string>('');
+const env = ref<string>('');
+const datacat = ref<{ [key: string]: any }>({});
+const envOptions = ref<string[]>([]);
+const zoneOptions = ref<string[]>([]);
 
-
-onMounted( async () => {
- //appel list  et determine les selection avec les ref 
- try {
-  const data: any[] = await $fetch(`/api/file/tipi/upload/${env.value}/${zone.value}/${datacat.value}/list`);
- }
- 
- catch{
- }
-
-})
-
+onMounted(async () => {
+  try {
+    const data = await $fetch('/api/list');
+    envOptions.value = data.env;
+    zoneOptions.value = data.zone;
+    datacat.value = data.datacat;
+  } catch (error) {
+    erreur.value = "Erreur lors de la récupération des données.";
+    console.error(error);
+  }
+});
 
 const uploadFiles = () => {
   if (selectedCategory.value === "") {
-    erreur.value = "Veuillez sélectionner une catégorie."
-
+    erreur.value = "Veuillez sélectionner une catégorie.";
     return;
   }
-  erreur.value = ""
+  erreur.value = "";
   fileStatuses.value = []; // Reset status
   const input = document.querySelector('input[type="file"]') as HTMLInputElement;
   const files = Array.from(input.files as FileList);
   if (files.length === 0) {
-    erreur.value = "Veuillez sélectionner au moins un fichier."
+    erreur.value = "Veuillez sélectionner au moins un fichier.";
     return;
   }
-  erreur.value = ""
+  erreur.value = "";
 
-  console.log('ttt')
   files.forEach((file) => {
     depositedFiles.value.push({ name: file.name, category: selectedCategory.value, file });
   });
 
   input.value = "";
 };
-
 
 const removeFile = (index: number) => {
   depositedFiles.value.splice(index, 1);
@@ -207,7 +162,7 @@ const sendFilesToServer = async () => {
   let totalSize = 0;
   let uploadedSize = 0;
 
-  depositedFiles.value.forEach((file: { file: { size: number; }; }) => {
+  depositedFiles.value.forEach((file) => {
     totalSize += file.file.size;
   });
 
@@ -216,7 +171,7 @@ const sendFilesToServer = async () => {
     formData.append("file", file.file);
 
     try {
-      const response = await fetch(`/api/file/${env}/upload/depot`, {
+      const response = await fetch(`/api/file/${env.value}/upload/depot`, {
         method: "POST",
         body: formData,
       });
@@ -246,125 +201,27 @@ const sendFilesToServer = async () => {
     }
   }
 
-  //  une seconde pour s'assurer que la barre de progression atteint 100%
+  // une seconde pour s'assurer que la barre de progression atteint 100%
   setTimeout(() => {
-    if (fileStatuses.value.every((status: { success: any; }) => status.success)) {
-      success.value = "Fichiers envoyé avec succés"
+    if (fileStatuses.value.every((status) => status.success)) {
+      success.value = "Fichiers envoyés avec succès";
     } else {
-      erreur.value = "Certains fichiers n'ont pas été envoyés correctement"
+      erreur.value = "Certains fichiers n'ont pas été envoyés correctement";
     }
 
     depositedFiles.value = [];
     progressBar.style.width = '0%'; // Réinitialiser la barre de progression
   }, 1000); // Délai de 1 seconde avant d'afficher l'alerte
 };
-
-
-
 </script>
-
 
 <style scoped>
 .card-body h6 {
   display: flex;
-
   justify-content: space-between;
   align-items: center;
 }
 
-/*.card-body h6 button {
-  margin-left: 10px;
-} */
-
 .badge {
   font-size: 12px;
-  padding: 5px 10px;
-  border-radius: 50px;
-  background-color: #337ab7;
-  color: #fff;
-}
-</style> 
-
-et depot.ts
-import fs from 'fs';
-import path from 'path';
-import { SFTPClient } from '~/services/sftp.service';
-
-export default defineEventHandler(async (event) => {
-  const formData = await readMultipartFormData(event);
-
-  if (!formData || formData.length === 0) {
-    return { message: 'Aucun fichier trouvé.', success: false, files: [] };
-  }
-
-  // Fonction pour générer un nom de dossier aléatoire de 6 caractères
-  const generateRandomDirectoryName = () => {
-    return Math.random().toString(36).substring(2, 8);
-  };
-
-  // Créer un répertoire temporaire avec un nom aléatoire
-  const tempUploadDirectoryName = generateRandomDirectoryName();
-  const uploadsDirectory = path.join(process.cwd(), 'tmp', 'uploads', tempUploadDirectoryName);
-
-  const resultFiles: { name: string; success: boolean; error?: string; }[] = [];
-  const sftp = new SFTPClient();
-
-  try {
-    await sftp.connect({ host: 'tpiiusa003' });
-
-    // Créer le répertoire s'il n'existe pas
-    try {
-      if (!fs.existsSync(uploadsDirectory)) {
-        fs.mkdirSync(uploadsDirectory, { recursive: true });
-      }
-    } catch (error) {
-      const errorMessage = `Erreur lors de la création du répertoire de destination "${uploadsDirectory}".`;
-      console.error(errorMessage, error);
-      return { message: errorMessage, success: false, files: resultFiles };
-    }
-
-    // Gestion d'erreur
-    try {
-      for (const file of formData) {
-        const remoteFilePath = `/tmp/${file.filename}`;
-        const fileBuffer: Buffer = file.data;
-        if (!file.filename) {
-          const errorMessage = 'Le nom du fichier est indéfini.';
-          console.error(errorMessage);
-          resultFiles.push({ name: 'Indéfini', success: false, error: errorMessage });
-          continue;
-        }
-
-        const filePath = path.join(uploadsDirectory, file.filename);
-
-        try {
-          fs.writeFileSync(filePath, fileBuffer);
-          await sftp.uploadFile(filePath, remoteFilePath);
-          resultFiles.push({ name: file.filename, success: true });
-        } catch (error) {
-          const errorMessage = `Erreur lors de l'enregistrement du fichier: ${file.filename}`;
-          console.error(errorMessage, error);
-          resultFiles.push({ name: file.filename, success: false, error: errorMessage });
-        }
-      }
-
-      return { message: 'Fichiers traités.', success: true, files: resultFiles };
-    } catch (error) {
-      console.error('Erreur lors de l\'enregistrement des fichiers :', error);
-      return { message: 'Erreur lors de l\'enregistrement des fichiers.', success: false, files: resultFiles };
-    }
-  } catch (error) {
-    console.error('Erreur lors de la connexion SFTP:', error);
-    throw createError({ statusCode: 500, statusMessage: 'Erreur lors de la connexion SFTP' });
-  } finally {
-    sftp.close();
-
-    // Supprimer le répertoire temporaire des uploads
-    try {
-      fs.rmSync(uploadsDirectory, { recursive: true, force: true });
-      console.log(`Répertoire temporaire supprimé : ${uploadsDirectory}`);
-    } catch (error) {
-      console.error(`Erreur lors de la suppression du répertoire temporaire : ${uploadsDirectory}`, error);
-    }
-  }
-});
+  padding: 5px 10px

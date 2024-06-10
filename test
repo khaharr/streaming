@@ -1,3 +1,4 @@
+upload.vue 
 <template>
   <div class="bgg">
     <div class="container">
@@ -10,35 +11,42 @@
         <div class="col-md-6">
           <div class="card">
             <div class="card-body border border-white">
-              <h5 class="card-title">Sélectionner les fichiers à déposer</h5>
-              <div class="input-group input-test">
+              
+              
+
+              <div class="mt-3" >
+                <label for="categorySelect" class="form-label">environnement</label>
+                <select class="form-select" v-model="env">
+                  <option value="">Sélectionner un environnement</option>
+                  <option v-for="e in envOptions" :key="e" :value="e">{{ e }}</option>
+                </select>
+              </div>
+
+              <div class="mt-3" v-if="!(env === '' ) ">
+                <label for="zoneSelect" class="form-label">Zone</label>
+                <select class="form-select" id="zoneSelect" v-model="zone">
+                  <option value="">Sélectionner une zone</option>
+                  <option v-for="z in zoneOptions" :key="z" :value="z">{{ z }}</option>
+                </select>
+              </div>
+
+              <div class="mt-3" v-if="!(zone === '' )">
+                <label for="categorySelect" class="form-label">Choisir la catégorie :</label>
+                <select class="form-select" id="categorySelect" v-model="selectedCategory">
+                  <option value="">Sélectionner une catégorie</option>
+                  <option v-for="category in getCategories()" :key="category" :value="category">{{ category }}</option>
+                </select>
+              </div>
+
+              <div v-if="!(selectedCategory === '') ">
+              <h5 class="card-title mt-2">Sélectionner les fichiers à déposer</h5>
+              <div class="input-group input-test mt-3">
                 <input type="file" class="form-control" id="inputGroupFile01" multiple @change="uploadFiles"
                   :accept="extension" />
               </div>
 
-              <div class="mt-3">
-                <label for="categorySelect" class="form-label">Type de client </label>
-                <select class="form-select" v-model="env">
-                  <option v-for="option in envOptions" :value="option" :key="option">{{ option }}</option>
-                </select>
-              </div>
-
-              <div class="mt-3">
-                <label for="zoneSelect" class="form-label">Zone</label>
-                <select class="form-select" id="zoneSelect" v-model="zone">
-                  <option v-for="option in zoneOptions" :value="option" :key="option">{{ option }}</option>
-                </select>
-              </div>
-
-              <div class="mt-3">
-                <label for="categorySelect" class="form-label">Choisir la catégorie :</label>
-                <select class="form-select" id="categorySelect" v-model="selectedCategory" @change="updateExtension">
-                  <option value="">Sélectionner une catégorie</option>
-                  <option v-for="category in getCategories()" :value="category" :key="category">{{ category }}</option>
-                </select>
-              </div>
-
-              <div class="d-flex justify-content-center">
+            </div>
+              <div class="d-flex justify-content-center mt-3">
                 <button class="btn mtj mt-3" @click="uploadFiles">Déposer les fichiers</button>
               </div>
             </div>
@@ -99,7 +107,6 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue';
 
 type tStatus = { name: string; success: boolean; error?: string };
 type tFile = { name: string; category: string; file: File };
@@ -109,7 +116,8 @@ const depositedFiles = ref<tFile[]>([]);
 const fileStatuses = ref<tStatus[]>([]);
 const erreur = ref<string | undefined>();
 const success = ref<string | undefined>();
-const extension = ref<string>('.pdf'); // Valeur par défaut
+const extension = ref<string>('');
+const format = ref<string>('');
 
 const zone = ref<string>('');
 const env = ref<string>('');
@@ -119,10 +127,11 @@ const zoneOptions = ref<string[]>([]);
 
 onMounted(async () => {
   try {
-    const data = await $fetch('/api/list'); // Assure-toi que cette route est correcte
+    const data = await $fetch('/api/file/inconnue/upload/list');
     envOptions.value = data.env;
     zoneOptions.value = data.zone;
     datacat.value = data.datacat;
+    // extension.value = data.datacat.extension;
   } catch (error) {
     erreur.value = "Erreur lors de la récupération des données.";
     console.error(error);
@@ -182,9 +191,9 @@ const sendFilesToServer = async () => {
   for (const file of depositedFiles.value) {
     const formData = new FormData();
     formData.append("file", file.file);
-
     try {
-      const response = await fetch(`/api/file/${env.value}/upload/depot`, {
+      console.log(zone.value)
+      const response = await fetch(`/api/file/${env.value}/upload/${zone.value}/${selectedCategory.value}/depot`, {
         method: "POST",
         body: formData,
       });
@@ -214,7 +223,73 @@ const sendFilesToServer = async () => {
     }
   }
 
-  // une seconde pour s'assurer que la barre de progression atteint 100%
+
+  //  une seconde pour s'assurer que la barre de progression atteint 100%
   setTimeout(() => {
-    if (fileStatuses.value.every((status) => status.success)) {
-      success.value = "Fich
+    if (fileStatuses.value.every((status: { success: any; }) => status.success)) {
+      success.value = "Fichiers envoyé avec succés"
+    } else {
+      erreur.value = "Certains fichiers n'ont pas été envoyés correctement"
+    }
+
+    depositedFiles.value = [];
+    progressBar.style.width = '0%'; // Réinitialiser la barre de progression
+  }, 1000); // Délai de 1 seconde avant d'afficher l'alerte
+};
+
+
+
+</script>
+
+
+<style scoped>
+.card-body h6 {
+  display: flex;
+
+  justify-content: space-between;
+  align-items: center;
+}
+
+/*.card-body h6 button {
+  margin-left: 10px;
+} */
+
+.badge {
+  font-size: 12px;
+  padding: 5px 10px;
+  border-radius: 50px;
+  background-color: #337ab7;
+  color: #fff;
+}
+</style>
+list.ts 
+
+import { fileIn } from '~/services/files';
+
+export default defineEventHandler(async (event) => {
+
+  const data: {
+    zone: string[],
+    env: string[],
+    datacat: { [key: string]: { [key: string]: any } }
+  } | undefined = { zone: [], env: [], datacat: {} }
+
+  for (let zone in fileIn) {
+    data?.zone.push(zone)
+    for (let env in fileIn[zone]?.server) {
+      if (!(data.env.includes(env))) {
+        data?.env.push(env)
+      }
+    }
+    for (let cat in fileIn[zone]?.data) {
+      data.datacat[zone] = data?.datacat[zone] ?? {}
+      data.datacat[zone][cat] = {
+        extention: fileIn[zone]?.data[cat]?.extention,
+        format: fileIn[zone]?.data[cat]?.format
+      }
+    }
+  }
+
+  return data
+
+});

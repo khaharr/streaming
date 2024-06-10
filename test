@@ -293,3 +293,177 @@ export default defineEventHandler(async (event) => {
   return data
 
 });
+voici mon file.ts 
+const dirLocal = "/app/tpi/data/local/FichiersMvt";
+const dirEchange = "/app/tpi/data/echanges/sauve/";
+const dirEntrant = "/app/tpi/data/echanges/entrant/";
+
+
+
+export interface iFileOutZone {
+  server: {
+    [key: string]: string
+  };
+  data: {
+    [key: string]: {
+      path: string;
+      format: string;
+    } | undefined;
+  };
+  log: {
+    [key: string]: {
+      path: string;
+      format: string;
+    } | undefined;
+  }
+}
+
+export const fileOut: {
+  [key: string]: iFileOutZone | undefined;
+} = {
+  zu: {
+    server: {
+      tipi: 'tpiiusa003',
+      'tipi-client': 'tpciusa002',
+    },
+    data: {
+      prevelevement: {
+        // Fichier paiement Prélèvements
+        path: `${dirEchange}/payfip`,
+        format: "SAV-JT_PayFiP_",
+      },
+      cb: {
+        // Fichier paiements CB
+        path: `${dirEchange}/transactions`,
+        format: "TRANSACTIONS_",
+      },
+      regies: {
+        // Fichier paiement régies sont transmis à la banque de France
+        path: `${dirLocal}/REGIES/FLUX_OUT`,
+        format: "REGIES_TPA_REMISEBDF_",
+      },
+      "client-generique": {
+        // Fichier paiement clients génériques réalisés sur comptes Dépôt de Fonds au Trésor (DFT)
+        path: `${dirLocal}/CLIENT_GENERIQUE/FLUX_OUT`,
+        format: "CGEN_TPA_REMISEDFT_",
+      },
+      bdf: {
+        // Fichier tous les paiements Banque de France
+        path: `${dirEchange}/remisebdf`,
+        format: "SL.[VM]_TPA_REMISEBDF_",
+      },
+    },
+    log: {
+      vtom: {
+        // Fichier tous les paiements Banque de France
+        path: "/vtom/logs",
+        format: ''
+
+      },
+    },
+  },
+  za: {
+    server: {
+      tipi: 'tpiigsa003',
+      'tipi-client': 'tpcigsa002',
+    },
+    data: {
+      all: {
+        // Fichier tous les paiements Banque de France
+        path: `${dirEchange}/`,
+        format: "",
+      },
+    },
+    log: {
+      vtom: {
+        // Fichier tous les paiements Banque de France
+        path: "/vtom/logs",
+        format: ''
+
+      },
+    }
+  }
+};
+
+
+
+export interface iFileInZone {
+  server: {
+    [key: string]: string
+  };
+  data: {
+    [key: string]: {
+      path: string;
+      extention: string;
+      format: string;
+    } | undefined;
+  };
+}
+
+export const fileIn: {
+  [key: string]: iFileInZone | undefined;
+} = {
+  za: {
+    server: {
+      tipi: 'tpiigsa003',
+      'tipi-client': 'tpcigsa002',
+    },
+    data: {
+      nominoe: {
+        path: dirEntrant,
+        extention: '.xml',
+        format: 'nominoe.xml'
+      },
+      ics: {
+        path: dirEntrant,
+        extention: '.txt',
+        format: 'LISTE_ICS_FRANCE'
+      },
+      bambou: {
+        path: dirEntrant,
+        extention: '.zip,.csv',
+        format: 'BAMBOU_Fichier_Unique'
+      },
+      refgenerique: {
+        path: `${dirLocal}/CLIENT_GENERIQUE/FLUX_IN`,
+        extention: '.xml',
+        format: 'TIPICGEN'
+      },
+      majrefgenerique: {
+        path: `${dirLocal}/CLIENT_GENERIQUE/FLUX_IN`,
+        extention: '.xml',
+        format: 'MAJREFGEN'
+      },
+      helioscodique: {
+        path: dirEntrant,
+        extention: '.txt',
+        format: 'HELCODIQUE_'
+      },
+      heltrf: {
+        path: dirEntrant,
+        extention: '.txt',
+        format: 'HELTRF_SL'
+      }
+    }
+
+  },
+  zu: {
+    server: {
+      tipi: 'tpiiusa003',
+      'tipi-client': 'tpciusa002',
+    },
+    data: {
+      helios: {
+        path: dirEntrant,
+        extention: '.xml',
+        format: 'TIPI'
+      },
+      rep: {
+        path: dirEntrant,
+        extention: '',
+        format: 'RNF_'
+      }
+    }
+  }
+};
+

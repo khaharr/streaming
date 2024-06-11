@@ -97,3 +97,26 @@ const select = (name: string) => {
 
 
 <style scoped></style>
+
+suiviExploit.ts
+
+import scheduler from "~/services/scheduler.service"
+import { Env } from "~/types"
+
+
+export default defineEventHandler(async (event) => {
+    try {
+        const env = getRouterParam(event, 'env') as Env
+        // Mise en commentaire a decommenter pour le test
+        const data = await scheduler.getAllJobs(env)
+        return data.result?.rows || []
+
+        return []
+    }
+    catch (e) {
+        console.log(e)
+        return e
+    }
+
+
+})

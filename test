@@ -1,595 +1,495 @@
-donload.vue
+
 <template>
   <div class="bgg">
+    <!-- Élément pour l'animation d'attente -->
     <div id="loading-animation">
       <div class="loader"></div>
     </div>
-    <h1 class="text-center">Téléchargement de fichiers</h1>
 
-    <!-- Formulaire de sélection -->
-    <div v-if="!isSelectionConfirmed" class="p-4 mx-auto w-75 border border-white rounded-4">
-      <h4 class="d-flex justify-content-center">Sélectionnez les options</h4>
-      <div class="row justify-content-center">
-        <div class="col-3">
-          <label class="form-label mb-2 white">Type de données :</label>
-          <select class="form-select" v-model="typeData">
-            <option value="data">Données</option>
-            <option value="log">Log</option>
-          </select>
+    <div class="container m-auto mb-5  ">
+      <div class="form-container card p-3 rounded border  mt-5 mx-auto">
+        <div class="alert alert-danger  " role="alert" v-if="error">
+          ERREUR : {{ error }}
         </div>
-        <div class="col-3">
-          <label class="form-label mb-2 white">Environnement : </label>
-          <select class="form-select" v-model="typeClient">
-            <option value="tipi">Tipi</option>
-            <option value="tipi_client">Tipi Client</option>
-          </select>
-        </div>
-        <div class="col-3">
-          <label class="form-label mb-2 white">Zone : </label>
-          <select class="form-select" v-model="zone">
-            <option value="za">ZA</option>
-            <option value="zu">ZU</option>
-          </select>
-        </div>
-        <div class="col-3 d-flex align-items-end">
-          <button class="btn mtj" @click="confirmSelection">Valider</button>
-        </div>
-      </div>
-    </div>
+        <h1 class="text-center"> {{ title }}</h1>
 
-    <!-- Bouton pour afficher le formulaire de sélection -->
-    <div v-if="isSelectionConfirmed" class="d-flex justify-content-center my-3">
-      <button class="btn mtj" @click="showSelectionForm = true">Modifier la sélection</button>
-    </div>
-
-    <!-- Filtre de recherche et tableau -->
-    <div v-if="isSelectionConfirmed" class="border border-white  shadow-lg rounded-3 p-4 my-3 mx-auto w-75">
-      <h4 class="d-flex justify-content-center">Filtre de recherche <i class="bi bi-search ms-2"></i></h4>
-      <div class="row justify-content-center">
-        <div class="col-2">
-          <label for="dateFrom" class="form-label mb-2 white">Date de début :</label>
-          <input type="date" class="form-control" id="dateFrom" v-model="dateFrom" @change="applyDateFilter" />
-        </div>
-        <div class="col-2">
-          <label for="dateTo" class="form-label mb-2 white">Date de fin :</label>
-          <input type="date" class="form-control" id="dateTo" v-model="dateTo" @change="applyDateFilter" />
-        </div>
-        <div class="col-2">
-          <label class="form-label mb-2 white">Nom du fichier :</label>
-          <input type="text" id="customSearch" class="form-control form-control-simple" placeholder="rechercher" />
-        </div>
-        <div class="col-2" id="filter">
-          <label class="select-label mb-2 white">Catégorie :</label>
-          <select class="form-select bootstrap-table-filter-control-category">
-            <option value="">Afficher tout</option>
-          </select>
-        </div>
-      </div><br>
-      <div v-if="errorMessage" class="alert alert-danger" role="alert">
-        {{ errorMessage }}
-      </div>
-    </div>
-
-    <div v-if="isSelectionConfirmed" class="w-75 m-auto my-3">
-      <div :class="sizeClass"
-        class="d-flex justify-content-center card border border-white p-2 my-2 mx-auto text-center sticky-top flex text-align">
-        <p> <span class=" MO">(Limite de 200 Mo)</span> {{ animatedTotalSize }} Mo</p>
-      </div>
-
-      <table id="table" data-filter-control-container="#filter" data-toggle="table" data-pagination="true"
-        data-search="true" data-filter-control="true" data-maintain-meta-data="true" data-click-to-select="true"
-        data-search-highlight="true" data-search-selector="#customSearch"></table>
-
-      <div v-if="parseFloat(totalSizeInMo) < 200" class="text-center mb-4 d-flex justify-content-center">
-        <button class="btn mtj validerCouleur  sticky-bottom" @click="generateFile" type="button" data-dismiss="alert">
-          Générer Fichiers
-        </button>
-      </div>
-      <div v-else class="text-center mb-4 d-flex justify-content-center">
-        <button class="btn mtj validerCouleur  sticky-bottom disabled" @click="generateFile" type="button"
-          data-dismiss="alert">
-          Générer Fichiers
-        </button>
-      </div>
-    </div>
-
-    <!-- Popup pour le formulaire de sélection -->
-    <div v-if="showSelectionForm" class="modal" tabindex="-1" role="dialog" style="display: block;">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">Modifier la sélection</h5>
-            <button type="button" class="btn-close " @click="showSelectionForm = false" aria-label="Close">
-            </button>
+        <div class="d-flex justify-content-center">
+          <div class="form-check form-switch m-3">
+            <input @change="changeEnv" class="form-check-input" type="checkbox" id="env" checked value="{{ env }}">
+            <label class="form-check-label white" for="env">{{ env.toUpperCase() }}</label>
           </div>
-          <div class="modal-body">
-            <div class="row justify-content-center">
-              <div class="col-4">
-                <label class="form-label mb-2 white">Type de données :</label>
-                <select class="form-control" v-model="typeData">
-                  <option value="data">Data</option>
-                  <option value="log">Log</option>
-                </select>
-              </div>
-              <div class="col-4">
-                <label class="form-label mb-2 white">Environnement :</label>
-                <select class="form-control" v-model="typeClient">
-                  <option value="tipi">Tipi</option>
-                  <option value="tipi_client">Tipi Client</option>
-                </select>
-              </div>
-              <div class="col-4">
-                <label class="form-label mb-2 white">Zone :</label>
-                <select class="form-control" v-model="zone">
-                  <option value="za">ZA</option>
-                  <option value="zu">ZU</option>
-                </select>
-              </div>
-            </div>
+          <div class="form-check m-3">
+            <input @change='onChangeInfo' class="form-check-input" type="radio" name="radio" value="rnf"
+              v-model="typeDataset" id="radio1" checked>
+            <label class="form-check-label white" for="radio1">
+              RNF
+            </label>
           </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-primary" @click="confirmSelection">Enregistrer</button>
-            <button type="button" class="btn btn-secondary" @click="showSelectionForm = false">Fermer</button>
+          <div class="form-check  m-3">
+            <input @change='onChangeInfo' class="form-check-input" type="radio" name="radio" value="titre"
+              v-model="typeDataset" id="radio2">
+            <label class="form-check-label white" for="radio2">
+              Titre
+            </label>
+          </div>
+          <div class="form-check m-3">
+            <input @change='onChangeInfo' class="form-check-input" type="radio" name="radio" value="role"
+              v-model="typeDataset" id="radio3">
+            <label class="form-check-label white" for="radio3">
+              Rôle
+            </label>
+          </div>
+          <div class="form-check m-3">
+            <input @change='onChangeInfo' class="form-check-input" type="radio" name="radio" value="eps"
+              v-model="typeDataset" id="radio4">
+            <label class="form-check-label white" for="radio4">
+              EPS
+            </label>
+          </div>
+          <!-- <div class="form-check m-3">
+            <input @change='onChangeInfo' class="form-check-input" type="radio" name="radio" value="tipi"
+              v-model="typeDataset" id="radio5">
+            <label class="form-check-label white" for="radio5">
+              Tipi
+            </label>
+          </div> -->
+        </div>
+        <div class="input-group w-50 mx-auto my-3" v-show="action === 'dataset'">
+          <label class="input-group-text black text-black" for="modalLimit">Nombre de ligne</label>
+          <select v-model="limit" id="modalLimit" class="form-select">
+            <option value="20">20</option>
+            <option value="50">50</option>
+            <option value="70">70</option>
+            <option value="100">100</option>
+          </select>
+        </div>
+        <div class="d-flex justify-content-center mb-3">
+          <div class="form-check m-3 col" v-if="typeDataset != 'rnf'">
+            <input class="form-check-input col" type="checkbox" value="avec" v-model='url' id='url'>
+            <label class="form-check-label white" for="url">Si coché seulement les clients url</label>
+          </div>
+          <div class="form-check m-3 col" v-if="typeDataset == 'eps'">
+            <input class="form-check-input col" type="checkbox" value="yes" v-model='eps' id='eps'>
+            <label class="form-check-label white" for="eps">Si coché avec malade</label>
           </div>
         </div>
+        <div class="d-flex justify-content-center">
+
+          <button type="button" v-show="action !== 'dataset'" class="btn btn-success mx-3 col-2 "
+            @click="refresh">Afficher</button>
+          <button type="button" v-show="action === 'dataset'" class="btn btn-danger mx-3 col-2"
+            @click="closeUpdate">Annuler</button>
+          <button type="button" class="btn col-2 mtj" @click="update">Mettre à jour</button>
+        </div>
+
       </div>
     </div>
+    <div class="container my-3 text-center" v-if="typeDataset === 'rnf'">Pour les paiements des RNF, voici le numéro
+      client fictif à utiliser: 91524A </div>
+    <div class="p-5">
+      <table id="table" data-toggle="table" data-pagination="true" data-search="true" data-sortable="true"
+        data-show-export="true" data-show-columns="true" data-page-size="25"
+        data-export-types="[ 'csv', 'txt', 'excel', 'pdf']" :data-export-options='fileName'>
+      </table>
+    </div>
+
+
+
+
+
   </div>
 </template>
 
 <script setup lang="ts">
 
-// Interface pour les items
-interface Item {
-  id: number;
-  nomfichier: string;
-  category: string;
-  date: string;
-  pathFull: string;
-  zone: string;
-  size: number;
+// import { type NitroFetchOptions } from '~/node_modules/nitropack/types'
+import { epsStructure } from '~/public/strutureTableEps'
+import { rnfStructure } from '~/public/strutureTableRnf'
+import { roleStructure } from '~/public/strutureTableRole'
+import { titreStructure } from '~/public/strutureTableTitre'
+import { formaterDate } from '~/services/utils';
+
+
+type query = {
+  query: {
+    eps: string,
+    ifurl: string,
+    limit: number,
+
+  },
+  storage: string
 }
 
-const items = ref<Item[]>([]);
-const selectedItems = ref<Item[]>([]);
-const dateFrom = ref<string | null>(null);
-const dateTo = ref<string | null>(null);
-const errorMessage = ref<string | null>(null);
+const typeDataset = ref('rnf')
+const env = ref('tipi')
+const title = ref(`Environnement ${env.value.toUpperCase()} : Jeu de données [ ${typeDataset.value.toUpperCase()} ]`)
+const url = ref('')
+const eps = ref('')
+const action = ref('update')
+const error = ref()
+const limit = ref(50)
+const fileName = ref()
+
+onMounted(() => {
+  onChangeInfo()
+})
+
+function changeEnv() {
+  env.value = env.value === 'tipi' ? 'tipi-client' : 'tipi'
+  const upperEnv = env.value.toUpperCase()
+  const upperTypeDataset = typeDataset.value.toUpperCase()
+  title.value = `Environnement ${upperEnv} : Jeu de données [ ${upperTypeDataset} ] `
+  $('#table').bootstrapTable('destroy')
+}
 
 
-const typeData = ref<'data' | 'log'>('data');
-const typeClient = ref<'tipi' | 'tipi_client'>('tipi');
-const zone = ref<'zu' | 'za'>('za');
+function onChangeInfo() {
+  const upperEnv = env.value.toUpperCase()
+  const upperTypeDataset = typeDataset.value.toUpperCase()
+  title.value = ` Environnement ${upperEnv} : Jeu de données [ ${upperTypeDataset} ] `
+  const date = formaterDate(new Date())
+  url.value = ''
+  eps.value = ''
+  fileName.value = `{"fileName" : "JDD_${upperEnv.toLowerCase()}_${typeDataset.value.toLowerCase()}_${date}"}`
+  $('#table').bootstrapTable('destroy')
+}
 
-const isSelectionConfirmed = ref(false);
-const showSelectionForm = ref(false);
-const currentSize = ref(0);
-const animatedTotalSize = ref("0.00");
+function getQueryParam() {
+  const vquery: query = {
+    query: {
+      eps: eps.value ? 'avec' : '',
+      ifurl: url.value ? 'yes' : '',
+      limit: limit.value,
 
-// Calcul du total en Mo
-const totalSizeInMo = computed(() => {
-  const total = selectedItems.value.reduce((total, item) => total + item.size, 0);
-  return total.toFixed(2);
-});
+    },
+    storage: ''
+  }
+  vquery.storage = typeDataset.value + '_' + env.value + '_' + vquery.query.ifurl + '_' + vquery.query.eps
+  return vquery
+}
+function closeUpdate() {
+  action.value = "update"
+}
+async function update() {
+  if (action.value === "update") {
+    action.value = "dataset"
+    return
+  }
+  closeUpdate()
+  waitAnimation()
+  const path = `/api/dataset/${env.value}/update${typeDataset.value}`
+  const vquery = getQueryParam()
+  try {
+    await $fetch(path, ({ query: vquery.query }) as any)
+    localStorage.setItem(vquery.storage, '{}')
+    await refresh()
+  } catch {
+    console.log('ERROR')
+  }
+  hideWaitAnimation()
+}
 
-// Classe CSS dynamique pour la couleur du texte
-const sizeClass = computed(() => {
-  const total = parseFloat(totalSizeInMo.value);
-  if (total < 150) {
-    return 'text-success';
-  } else if (total >= 150 && total < 200) {
-    return 'text-warning';
+async function refresh() {
+  const vquery = getQueryParam()
+  let value = localStorage.getItem(vquery.storage) || '{}'
+  let json = JSON.parse(value)
+  if (Object.keys(json).length === 0) {
+    waitAnimation()
+    const path = `/api/dataset/${env.value}/list${typeDataset.value}`
+
+    try {
+      value = await $fetch(path, ({ query: vquery.query }) as any)
+      localStorage.setItem(vquery.storage, JSON.stringify(value))
+    }
+    catch (e) {
+      error.value = e
+    }
+    finally{
+  hideWaitAnimation()
+}
+  }
+  
+  json = localStorage.getItem(vquery.storage)
+  value = json ? JSON.parse(json) : []
+  createTable(typeDataset.value, value)
+
+}
+
+
+const createTable = (name: string, data: any) => {
+  $('#table').bootstrapTable('destroy')
+  if (name == 'eps') {
+    $('#table').bootstrapTable({
+      columns: epsStructure.columns,
+      data: data
+    })
+  } else if (name == 'role') {
+    $('#table').bootstrapTable({
+      columns: roleStructure.columns,
+      data: data
+    })
+  } else if (name == 'titre') {
+    $('#table').bootstrapTable({
+      columns: titreStructure.columns,
+      data: data
+    })
   } else {
-    return 'text-danger';
+    $('#table').bootstrapTable({
+      columns: rnfStructure.columns,
+      data: data
+    })
   }
-});
+}
 
-// Animation du compteur
-watch(totalSizeInMo, (newValue) => {
-  const target = parseFloat(newValue);
-  const step = (target - currentSize.value) / 23;
-  const interval = setInterval(() => {
-    currentSize.value += step;
-    animatedTotalSize.value = currentSize.value.toFixed(2);
-    if ((step > 0 && currentSize.value >= target) || (step < 0 && currentSize.value <= target)) {
-      currentSize.value = target;
-      animatedTotalSize.value = currentSize.value.toFixed(2);
-      clearInterval(interval);
-    }
-  }, 20);
-});
-
-const columns = [
-  { checkbox: true, field: 'check' },
-  { field: 'nomfichier', sortable: true, searchable: true, title: 'Nom fichier' },
-  { field: 'size', sortable: true, searchable: false, title: 'Taille (Mo)' },
-  { field: 'category', sortable: true, filterControl: 'select', title: 'Catégorie' },
-  { field: 'date', searchable: false, title: 'Date mise en ligne' },
-];
-
+// Fonction pour afficher l'animation d'attente
 function waitAnimation() {
-  const loadingAnimation = document.getElementById("loading-animation");
-  if (loadingAnimation) {
-    loadingAnimation.style.display = "block";
-  }
+  $("#loading-animation").show();
 }
 
+// Fonction pour afficher l'animation d'attente
 function hideWaitAnimation() {
-  const loadingAnimation = document.getElementById("loading-animation");
-  if (loadingAnimation) {
-    loadingAnimation.style.display = "none";
-  }
+  $("#loading-animation").hide();
 }
 
-const confirmSelection = () => {
-  isSelectionConfirmed.value = true;
-  showSelectionForm.value = false;
-  localStorage.setItem('typeData', typeData.value);
-  localStorage.setItem('typeClient', typeClient.value);
-  localStorage.setItem('zone', zone.value);
-  loadData();
-};
-
-const loadData = async () => {
-  waitAnimation();
-  try {
-    const data: any[] = await $fetch(`/api/file/tipi/download/${typeData.value}/${zone.value}/listfile`);
-    if (data.length > 0) {
-      items.value = data.map((el) => ({
-        ...el,
-        date: new Intl.DateTimeFormat('fr-FR', {
-          year: 'numeric',
-          month: 'numeric',
-          day: 'numeric',
-          hour: 'numeric',
-          minute: 'numeric',
-          second: 'numeric',
-          timeZone: 'GMT',
-        }).format(el.date),
-        size: parseFloat((parseInt(el.size, 10) / (1024 * 1024)).toFixed(5)), // Convertir colonne size en Mo
-      }));
-
-      $('#table').bootstrapTable('destroy');
-      $('#table').bootstrapTable({ columns: columns, data: items.value });
-
-      // Ajouter les événements de mise à jour du compteur après le chargement des données
-      $('#table').on('check.bs.table uncheck.bs.table check-all.bs.table uncheck-all.bs.table', updateSelectedItems);
-    }
-  } catch (error: any) {
-    errorMessage.value = 'Erreur lors de la récupération des données. Veuillez réessayer plus tard. ' + error.message;
-  } finally {
-    hideWaitAnimation();
-  }
-};
-
-const applyDateFilter = () => {
-  const table = $('#table');
-  table.bootstrapTable('load', items.value);
-  table.bootstrapTable(
-    'filterBy',
-    {},
-    {
-      filterAlgorithm: function (row: { date: string | number | Date }, filters: any) {
-        const day = row.date.toString().slice(0, 2);
-        const month = row.date.toString().slice(3, 5) + '/';
-        const year = row.date.toString().slice(6, 10);
-        const itemDate = new Date(year + '/' + month + '/' + day);
-        const fromDate = dateFrom.value ? new Date(dateFrom.value) : undefined;
-        const toDate = dateTo.value ? new Date(dateTo.value) : undefined;
-
-        if (fromDate && toDate) {
-          return itemDate >= fromDate && itemDate <= toDate;
-        } else if (!fromDate && toDate) {
-          return itemDate <= toDate;
-        } else if (fromDate && !toDate) {
-          return itemDate >= fromDate;
-        }
-
-        return true;
-      },
-    }
-  );
-};
-
-const updateSelectedItems = () => {
-  const selectedRows: any = $('#table').bootstrapTable('getSelections');
-  selectedItems.value = selectedRows.map((row: any) => ({
-    ...row,
-    size: parseFloat(row.size),
-  }));
-};
-
-const generateFile = async () => {
-  waitAnimation();
-  try {
-    const selectedRows: any = $('#table').bootstrapTable('getSelections');
-    if (selectedRows.length === 0) {
-      window.scroll(100, 0);
-      errorMessage.value = 'Veuillez sélectionner au moins un fichier.';
-      return;
-    }
-
-    const totalSize = selectedItems.value.reduce((total, item) => total + item.size, 0);
-    if (totalSize > 200) {
-      window.scroll(100, 0);
-      errorMessage.value = 'Limite de 200 Mo dépassée. Veuillez réduire la sélection.';
-      return;
-    }
-
-    const filenames = selectedRows.map((row: any) => ({
-      name: row.nomfichier,
-      pathFull: row.pathFull,
-      zone: row.zone,
-    }));
-
-    const response = await fetch(`/api/file/tipi/download/${typeData.value}/download`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ filenames }),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.statusMessage || 'Erreur lors du téléchargement des fichiers.');
-    }
-
-    const blob = await response.blob();
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `Fichiers_${typeData.value}_${zone.value}.zip`;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    $('#table').bootstrapTable('uncheckAll');
-  } catch (error: any) {
-    console.error('Erreur lors de la génération du fichier ZIP:', error.message);
-    errorMessage.value = 'Erreur lors de la génération du fichier ZIP. ' + error.message;
-  } finally {
-    hideWaitAnimation();
-  }
-};
 </script>
 
-<style lang="scss" scoped>
-// .tbl-filters {
-//     // margin: 20px auto;
-//     // padding: 20px;
-//     // background-color: #ddd0c8;
-//     // width: 70vw;
-//     // border-radius: 10px;
-//     // box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-// }
+<style scoped>
+.form-container {
+  /* background-color: rgb(255, 255, 255); */
 
-// .form-row {
-//     margin-bottom: 20px;
-// }
+}
 
-// .form-label {
-//     margin-bottom: 10px;
-// }
+body {
+  background-color: rgb(233, 233, 233);
+}
 
-// .form-control {
-//     height: calc(1.5em + 0.75rem + 2px);
-//     // padding: 0.375rem 0.75rem;
-//     font-size: 0.875rem;
-//     line-height: 1.5;
-// }
 
-// .table {
-//     background-color: rgb(231, 231, 231);
-// }
+</style>
 
-// .filter-title {
-//     color: rgb(0, 0, 0);
-//     animation: slide-in 0.5s ease-in-out;
-
-//     .bi-search {
-//         margin-left: 5px;
-//     }
-// }
-
-// h1 {
-//     //     font-size: 32px;
-//     //     font-family: Arial, Helvetica, sans-serif;
-//     //     color: rgb(0, 0, 0);
-//     //     padding: 16px;
-//     //     font-weight: lighter;
-//     //     box-shadow: 2px 2px 6px #9e9e9e;
-//          text-align: center;
-//     //     display: block;
-//     //     border-radius: 20px;
-// }
-
-// .fixer {
-//     position: fixed;
-
-// }
-
-// .bgg {
-//     background-color: #ddd0c8;
-//     min-height: 93.8vh;
-//     margin: 0;
-//     padding: 0;
-// }</style>
-
-listfile.ts 
-
-import { SFTPClient, optionsRegex } from '~/services/sftp.service';
-import { fileOut } from '~/services/files'
+listeps.ts 
+import ClientBdd from "~/services/clientBdd.service"
+import { listEps, params } from "~/services/dataset.service"
 
 export default defineEventHandler(async (event) => {
-
-    const env = getRouterParam(event, 'env') as string
-    const typeData = getRouterParam(event, 'typedata') as string
-    let zone = getRouterParam(event, 'zone')?.toLowerCase() as string
-
-
-    if (!(Object.keys(fileOut).includes(zone || ''))) {
-        const err = "Erreur Pas de zone de defini ou incorrecte"
-        console.error(err);
-        throw createError({ statusCode: 500, statusMessage: err });
-    }
-
-    if (!(Object.keys(fileOut[zone]?.server || {}).includes(env))) {
-        console.error("Erreur Pas d'environnement de defini");
-        throw createError({ statusCode: 500, statusMessage: "Erreur Pas d'environnement de defini" });
-    }
-
-
-    const sftp = new SFTPClient()
     try {
-        let files: any[] = []
 
-        console.log(fileOut[zone]?.server[env])
-        await sftp.connect({ host: fileOut[zone]?.server[env] || '' })
-
-
-        let myData
-        if (typeData === 'log') {
-            myData = fileOut[zone]?.log;
+        const env = getRouterParam(event, 'env') as string
+        const limit = getQuery(event).limit as number ?? useRuntimeConfig().limit
+        const tiers = getQuery(event).eps as 'avec' | undefined
+        const url = getQuery(event).ifurl as 'yes' | undefined
+        if (!params.hasOwnProperty(env)) {
+            return { error: "Erreur l'environnement n'existe pas" }
         }
-        else {
-            myData = fileOut[zone]?.data;
-        }
+        console.log(params[env])
+        console.log(env)
 
-        for (let category in myData) {
 
-            const options: optionsRegex = {
-                type: '-',
-                name: myData[category]?.format
-            }
-            const values = await sftp.listFiles(myData[category]?.path || '', options)
-            const value: any[] = values.map((file, index) => {
-
-                return {
-                    nomfichier: file.name,
-                    size: file.size + ' ' + 'Mo',
-                    category: category,
-                    pathFull: (myData[category]?.path || '') + '/' + file.name,
-                    date: file.modifyTime,
-                    zone: zone.toUpperCase()
-                };
-            })
-            files = files.concat(value)
-
-        }
-        await sftp.close()
-
-        return files
-    } catch (error) {
-        console.error('Erreur lors de la récupération des fichiers du répertoire', error);
-        throw createError({ statusCode: 500, statusMessage: 'Erreur lors de la récupération des fichiers du répertoire' });
-    } finally {
-        await sftp.close()
-    }
-});
-
-download.ts 
-import fs from 'fs';
-import path from 'path';
-import archiver from 'archiver';
-import { SFTPClient } from '~/services/sftp.service';
-import { generateRandomDirectoryName, removeDir } from '~/services/utils';
-import { fileOut } from '~/services/files';
-
-export default defineEventHandler(async (event) => {
-    const env = getRouterParam(event, 'env') as string
-
-    const body = await readBody(event); // Lire le corps de la requête pour obtenir la liste des noms de fichiers
-    const { filenames } = body;
-
-    console.log("Filenames reçus:", filenames); // Log des noms de fichiers reçus
-
-    if (!Array.isArray(filenames) || filenames.length === 0) {
-        console.error("Aucun fichier sélectionné ou format incorrect");
-        throw createError({ statusCode: 400, statusMessage: 'Filenames nécessaire' });
+        const clientBdd = new ClientBdd(params[env])
+        await clientBdd.connect()
+        const data = await clientBdd.query(listEps(limit, tiers, url))
+        clientBdd.close()
+        return data
+    } catch (e) {
+        console.log(e)
+        return e
     }
 
-
-    // Créer des répertoires temporaires avec des noms aléatoires
-    const tempUploadDirectoryName = generateRandomDirectoryName();
-    const uploadDir = path.join(process.cwd(), 'tmp', 'uploads', tempUploadDirectoryName);
-
-    const tempZipDirectoryName = generateRandomDirectoryName();
-    const zipDir = path.join(process.cwd(), 'tmp', 'zipfiles', tempZipDirectoryName);
-    const zipFilePath = path.join(zipDir, 'fichier.zip');
-
-    // Créer les répertoires nécessaires s'ils n'existent pas
-    try {
-        if (!fs.existsSync(uploadDir)) {
-            fs.mkdirSync(uploadDir, { recursive: true });
-        }
-        if (!fs.existsSync(zipDir)) {
-            fs.mkdirSync(zipDir, { recursive: true });
-        }
-    } catch (error) {
-        const errorMessage = `Erreur lors de la création des répertoires nécessaires.`;
-        console.error(errorMessage, error);
-        throw createError({ statusCode: 500, statusMessage: errorMessage });
-    }
-
-
-    const sftp = new SFTPClient();
-    console.log("Création de l'archive...");
-    // Créer un fichier pour diffuser les données de l'archive.
-    const output = fs.createWriteStream(zipFilePath);
-    const archive = archiver('zip', {
-        zlib: { level: 9 } // Niveau de compression.
-    });
-    // Configure archiver pour écrire les données de l'archive dans le flux de sortie
-    archive.pipe(output);
-
-    try {
-        for (const zone in fileOut) {
-            const files = filenames.filter((el) => el.zone === zone.toUpperCase())
-            if (files.length === 0)
-                continue
-
-            await sftp.connect({ host: fileOut[zone]?.server[env] || '' });
-
-            for (const file of files) {
-                const filePath = path.join(uploadDir, file.name);
-                // const dst = fs.createWriteStream(filePath);
-                await sftp.downloadFile(file.pathFull, filePath);
-
-                if (fs.existsSync(filePath)) {
-                    console.log(`Ajout du fichier: ${file.name}`);
-                    archive.file(filePath, { name: file.name });
-                    // dst.close();
-                } else {
-                    console.warn(`Fichier non trouvé: ${file.name}`);
-                }
-            }
-
-
-            await sftp.close()
-        }
-
-        await archive.finalize();
-        console.log("Archivage finalisé.");
-
-        // Attendre que le flux de sortie soit fermé avant de lire le fichier ZIP
-        await new Promise((resolve, reject) => {
-            output.on('close', resolve);
-            output.on('error', reject);
-        });
-
-        console.log("Lecture du fichier ZIP généré...");
-        // Lire le fichier ZIP généré
-        const zipFile = await fs.promises.readFile(zipFilePath);
-        console.log("Fichier ZIP généré avec succès.");
-        return zipFile; // Retourner directement le fichier ZIP
-
-    } catch (error) {
-        console.error('Erreur lors de la création du fichier ZIP:', error);
-        throw createError({ statusCode: 500, statusMessage: 'Erreur lors de la création du fichier ZIP' });
-    } finally {
-        sftp.close();
-        // Supprime le répertoire temporaires
-        removeDir(uploadDir, { recursive: true, force: true });
-        removeDir(zipDir, { recursive: true, force: true });
-    }
 })
+
+listernf.ts
+
+import ClientBdd from "~/services/clientBdd.service"
+import { listRnf, params } from "~/services/dataset.service"
+
+export default defineEventHandler(async (event) => {
+    try {
+
+        const env = getRouterParam(event, 'env') as string
+        if (!params.hasOwnProperty(env)) {
+            return { error: "Erreur l'environnement n'existe pas" }
+        }
+        const limit = (getQuery(event).limit ?? useRuntimeConfig().limit) as number
+        const clientBdd = new ClientBdd(params[env])
+        await clientBdd.connect()
+        const data = await clientBdd.query(listRnf(limit))
+        clientBdd.close()
+        console.log(data)
+        return data
+    } catch (e) {
+        return []
+    }
+
+})
+
+listerole.ts
+import ClientBdd from "~/services/clientBdd.service"
+import { listRole, params } from "~/services/dataset.service"
+
+export default defineEventHandler(async (event) => {
+    try {
+
+        const env = getRouterParam(event, 'env') as string
+        const limit = getQuery(event).limit as number ?? useRuntimeConfig().limit
+        const url = getQuery(event).ifurl as 'yes' | undefined
+        if (!params.hasOwnProperty(env)) {
+            return { error: "Erreur l'environnement n'existe pas" }
+        }
+
+
+
+        const clientBdd = new ClientBdd(params[env])
+        await clientBdd.connect()
+        console.log(listRole(limit, url))
+        const data = await clientBdd.query(listRole(limit, url))
+        clientBdd.close()
+        return data
+    } catch (e) {
+        console.log(e)
+        return e
+    }
+
+})
+
+listetitre.ts
+
+import ClientBdd from "~/services/clientBdd.service"
+import { listRnf, listTitre, params } from "~/services/dataset.service"
+
+export default defineEventHandler(async (event) => {
+    try {
+
+        const env = getRouterParam(event, 'env') as string
+        const limit = getQuery(event).limit as number ?? useRuntimeConfig().limit
+        const url = getQuery(event).ifurl as 'yes' | undefined
+        if (!params.hasOwnProperty(env)) {
+            return { error: "Erreur l'environnement n'existe pas" }
+        }
+
+        const clientBdd = new ClientBdd(params[env])
+        await clientBdd.connect()
+        const data = await clientBdd.query(listTitre(limit, url))
+        clientBdd.close()
+        return data
+    } catch (e) {
+        console.log(e)
+        return e
+    }
+
+})
+
+
+updateeps.ts
+import ClientBdd from "~/services/clientBdd.service"
+import { params, updateEps, updateRnf } from "~/services/dataset.service"
+
+export default defineEventHandler(async (event) => {
+    try {
+
+        const env = getRouterParam(event, 'env') as string
+        const limit = getQuery(event).limit as number ?? useRuntimeConfig().limit
+        const tiers = getQuery(event).eps as 'avec' | undefined
+        const url = getQuery(event).ifurl as 'yes' | undefined
+        if (!params.hasOwnProperty(env)) {
+            return { error: "Erreur l'environnement n'existe pas" }
+        }
+
+        const clientBdd = new ClientBdd(params[env])
+        await clientBdd.connect()
+        const data = await clientBdd.query(updateEps(limit, tiers, url))
+        clientBdd.close()
+        return data
+    } catch (e) {
+        console.log(e)
+        return e
+    }
+
+})
+
+
+updaternf.ts
+import ClientBdd from "~/services/clientBdd.service"
+import { params, updateRnf } from "~/services/dataset.service"
+
+export default defineEventHandler(async (event) => {
+    try {
+
+        const env = getRouterParam(event, 'env') as string
+        const limit = (getQuery(event).limit ?? useRuntimeConfig().limit) as number
+        if (!params.hasOwnProperty(env)) {
+            return { error: "Erreur l'environnement n'existe pas" }
+        }
+
+        const clientBdd = new ClientBdd(params[env])
+        await clientBdd.connect()
+        const data = await clientBdd.query(updateRnf(limit))
+        clientBdd.close()
+        return data
+    } catch (e) {
+        console.log(e)
+        return e
+    }
+
+})
+
+updaterole.ts
+
+import ClientBdd from "~/services/clientBdd.service"
+import { params, updateRnf, updateRole } from "~/services/dataset.service"
+
+export default defineEventHandler(async (event) => {
+    try {
+
+        const env = getRouterParam(event, 'env') as string
+        const limit = getQuery(event).limit as number ?? useRuntimeConfig().limit
+        const url = getQuery(event).ifurl as 'yes' | undefined
+
+        if (!params.hasOwnProperty(env)) {
+            return { error: "Erreur l'environnement n'existe pas" }
+        }
+
+        const clientBdd = new ClientBdd(params[env])
+        await clientBdd.connect()
+        const data = await clientBdd.query(updateRole(limit, url))
+        clientBdd.close()
+        return data
+    } catch (e) {
+        console.log(e)
+        return e
+    }
+
+})
+
+
+updatetitre.ts
+
+import ClientBdd from "~/services/clientBdd.service"
+import { params, updateRnf, updateTitre } from "~/services/dataset.service"
+
+export default defineEventHandler(async (event) => {
+    try {
+
+        const env = getRouterParam(event, 'env') as string
+        const limit = getQuery(event).limit as number ?? useRuntimeConfig().limit
+        const url = getQuery(event).ifurl as 'yes' | undefined
+        if (!params.hasOwnProperty(env)) {
+            return { error: "Erreur l'environnement n'existe pas" }
+        }
+
+        const clientBdd = new ClientBdd(params[env])
+        await clientBdd.connect()
+        const data = await clientBdd.query(updateTitre(limit, url))
+        clientBdd.close()
+        return data
+    } catch (e) {
+        console.log(e)
+        return e
+    }
+
+})
+
+
+
+
+
+
+

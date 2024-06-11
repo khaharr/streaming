@@ -1,375 +1,390 @@
 <template>
-  <div class="bgg">
-    <div class="bubbles">
-      <div class="bubble" v-for="n in 20" :key="n"></div>
+    <div class="container">
+      <div class="d-flex justify-content-center ">
+      <h1>Documentation API</h1>
     </div>
-    <div class="container footer-space">
-      <div class="payment-form-container card p-4 rounded shadow">
-        <h1 class="text-center mb-4 ">{{ title }} [ {{ env.toUpperCase() }} ]</h1>
-        <div class="d-flex justify-content-center mb-4">
-          <div class="form-check mx-2">
-            <input @change="onChangeInfo" class="form-check-input" type="radio" name="radio" value="soap"
-              v-model="typePaiement" id="radio1" checked>
-            <label class="form-check-label white" for="radio1">Web service</label>
-          </div>
-          <div class="form-check mx-2">
-            <input @change="onChangeInfo" class="form-check-input" type="radio" name="radio" value="url"
-              v-model="typePaiement" id="radio2">
-            <label class="form-check-label white" for="radio2">URL</label>
-          </div>
-          <div class="form-check mx-2">
-            <input @change="onChangeInfo" class="form-check-input" type="radio" name="radio" value="portail"
-              v-model="typePaiement" id="radio3">
-            <label class="form-check-label white" for="radio3">Portail</label>
-          </div>
-        </div>
-        <div class="alert alert-danger  " role="alert" v-if="error">
-          ERREUR :<br />
-          - Type : {{ error.type }}<br />
-          - Code : {{ error.code }}<br />
-          - Descriptif : {{ error.descriptif }}<br />
-          - libelle : {{ error.libelle }} <br />
-          - Severite : {{ error.severite }}
-        </div>
-
-        <form id="info" class="row g-3" v-if="typePaiement !== 'portail'">
-          <div class="col-2 form-floating ">
-            <input required class="form-control form-control-custom" type="years" name="exer" placeholder="Exercice *"
-              minlength="4" maxlength="4" pattern="\d{4,4}" size="4">
-            <label for="exer">Exercice <span class="text-danger">*</span></label>
-          </div>
-
-          <div class="col-2 form-floating ">
-            <select class="form-select  form-select form-control-custom" name="saisie" id="saisie" required>
-              <option value="W">paiement réel ( W ) </option>
-              <option value="T">paiement test ( T )</option>
-              <option value="X">paiement d'activation ( X )</option>
-            </select>
-            <label for="exer">Saisie</label>
-          </div>
-          <div class="col-2 form-floating">
-            <input required class="form-control form-control-custom" type="text" name="numcli"
-              placeholder="Numéro de client *" maxlength="6" size="6">
-            <label for="numcli">Numéro de client <span class="text-danger">*</span></label>
-          </div>
-
-          <div class="col-md-3 form-floating">
-            <input required class="form-control form-control-custom" type="text" name="refdet"
-              placeholder="Référence de la dette *" minlength="6" maxlength="30" size="15">
-            <label for="refdet">Référence de la dette <span class="text-danger">*</span></label>
-
-          </div>
-
-
-          <div class="col-3 form-floating">
-            <input required class="form-control form-control-custom" type="text" name="montant" placeholder="Montant *"
-              maxlength="11" pattern="[0-9.]{2,12}" size="11">
-            <label for="montant">Montant <span class="text-danger">*</span></label>
-          </div>
-
-
-          <div class="col-md-6 form-floating">
-            <input class="form-control form-control-custom" type="text" name="objet" placeholder="Objet" maxlength="100"
-              value=" " size=" 20">
-            <label for="objet">objet</label>
-          </div>
-          <div class="col-6 form-floating">
-            <input required class="form-control form-control-custom" type="email" name="mel" placeholder="Mail *"
-              minlength="6" maxlength="80" size="20">
-            <label for="mel">Mail <span class="text-danger">*</span></label>
-          </div>
-
-
-          <div class="form-floating" v-if="typePaiement === 'url'">
-            <input required class="form-control form-control-custom" type="text" name="urlcl"
-              placeholder="Url de notification *" maxlength="250" size="30">
-            <label for="urlcl">Url de notification <span class="text-danger">*</span></label>
-          </div>
-          <div v-if="typePaiement === 'soap'">
-            <div class="form-floating mb-3">
-              <input required class="form-control form-control-custom" type="text" name="urlnotif"
-                placeholder="Url de notification *" maxlength="250" size="30">
-              <label for="urlnotif">Url de notification <span class="text-danger">*</span></label>
-            </div>
-            <div class="form-floating">
-              <input required class="form-control form-control-custom" type="text" name="urlredirect"
-                placeholder="Url de redirection *" maxlength="250" size="30">
-              <label for="urlredirect">Url de redirection <span class="text-danger">*</span></label>
-            </div>
-          </div>
-        </form>
-
-        <div v-if="typePaiement != 'portail'" class="d-flex justify-content-end mt-2">
-          <p class="text-danger me-2">*</p>
-          <p class="text-secondary"> Champ obligatoire</p>
-        </div>
-        <div class="d-flex justify-content-center mt-5">
-          <input type="submit" class="btn mtj" @click="paiement" value="Création du paiement">
-        </div>
-      </div>
+      <section v-for="(api, index) in apis" :key="index">
+        <h4 class="text-center text-primary">{{ api.titre }}</h4>
+        <h2>{{ api.method }} {{ api.url }}</h2>
+        <p><strong>Description:</strong> {{ api.description }}</p>
+        <p><strong>Résultat:</strong></p>
+        <pre>{{ api.result }}</pre>
+      </section>
     </div>
-  </div>
-</template>
+  </template>
+  
+  <script setup lang="ts">
+  const apis = [
+        {
+        titre : "Récuperation de fichiers",
+        method: 'GET',
+        url: '/api/file/[env]/upload/list',
+        description: "Récupère les options d'environnement, de zone et de catégories de fichiers disponibles pour le dépôt.", 
+        result: `
+                {
+                "zone": ["za", "zu"],
+                "env": ["tipi", "tipi-client"],
+                "datacat": {
+                "za": {
+                    "nominoe": {
+                    "extention": ".xml",
+                    "format": "nominoe.xml"
+                    },
+                    "ics": {
+                    "extention": ".txt",
+                    "format": "LISTE_ICS_FRANCE"
+                    }
+                },
+                "zu": {
+                    "helios": {
+                    "extention": ".xml",
+                    "format": "TIPI"
+                    }
+                }
+                }
+            }`
+    },
+    
+    {
+      titre : "Récuperation de fichiers",
+      method: 'POST',
+      url: '/api/file/{env}/upload/{zone}/{category}/depot',
+      description: 'Dépose un fichier dans la catégorie spécifiée pour l\'environnement et la zone donnés.',
+      result: `
+            {
+                "success": true,
+                "message": "Fichier déposé avec succès."
+            }
+            ou
+            {
+                "success": false,
+                "message": "Erreur lors du dépôt du fichier."
+            }`
+    },
+
+   
+    {
+      titre : "Télechargement fichier",
+      method: 'GET',
+      url: '/api/file/tipi/download/{typedata}/{zone}/listfile',
+      description: 'Récupère une liste de fichiers disponible pour le téléchargement dans une zone spécifique .',
+      result: `
+               EXEMPLE DE réponse
+            {
+       
+                "nomfichier": "exemple.log",
+                "size": "5.000000 Mo",
+                " pathFull: "/path/to/exemple2.log"
+                    date: 11/06/2023,
+                    zone: "ZA"
+            }
+        `
+    },
+    {
+      titre : "Télechargement fichier",
+      method: 'POST',
+      url: '/api/file/tipi/download/{typedata}/download.ts',
+      description: 'Permet de générer et de télécharger un fichier zip contenant les fichiers sélectionnés .',
+      result: `
+               EXEMPLE DE requete
+            {
+       
+                download HTTP/1.1
+                host: exemple.com
+                Content-Type : application/json
+            }
+
+            EXEMPLE DE Réponse
+            {
+                HTTP/1.1  OK
+                Content-Type : application/zip
+            }
+        `
+    },
+    {
+      titre : "Jeux de données",
+      method: 'GET',
+      url: '/api/dataset/{env}/listeps',
+      description: 'Récupère une liste EPS avec des options de filtrage',
+      result: `
+               PARAMETRES DE requete
+            {
+                 	• limit(optionnel) : nombre maximal de résultats a retourner.
+                 	• eps(optionnel): filtrer les clients URL.
+                  • ifurl(optionnel): filtrer les clients URL.
+            }
+
+               EXEMPLE DE Requete:
+            {
+                GET /api/dataset/tipi/listeeps?
+                limit=50&eps=avec&ifurl=yes
+            }
+               EXEMPLE DE Réponse:
+               [
+               {"id":1, "name":"EPS1"}
+               {"id":2, "name":"EPS2"}
+
+               ]
+        `
+    },
+    {
+      titre : "Jeux de données",
+      method: 'GET',
+      url: '/api/dataset/{env}/listrnf',
+      description: 'Récupère une liste de RNF',
+      result: `
+               PARAMETRES DE requete
+            {
+                 	• limit(optionnel) : nombre maximal de résultats a retourner.
+                 	
+            }
+
+               EXEMPLE DE Requete:
+            {
+                GET /api/dataset/tipi/listernf?
+                limit=50
+            }
+
+               EXEMPLE DE Réponse:
+               [
+               {rnf.numeroclient,rnf.referencerole,rnf.montant, rnf.objet,rnf.dtepcepec,rnf.delaimisenligne,rnf.statutclientcb,rnf.statutclientprelev,}
+               {008571	00022399	2023-02088807-000001	1393.50	-	10/01/2025	-	10/04/2025	90	-	DARLIX}
+               ]
+        `
+    },
+    {
+      titre : "Jeux de données",
+      method: 'GET',
+      url: '/api/dataset/{env}/listrole',
+      description: 'Récupère une liste de role  avev des options de filtrage.',
+      result: `
+               PARAMETRES DE requete
+            {
+                 	• limit(optionnel) : nombre maximal de résultats a retourner.
+                 	• ifurl(optionnel): filtrer les clients URL.
+            }
+
+               EXEMPLE DE Requete:
+            {
+                GET /api/dataset/tipi/listerole?
+                limit=50&ifurl=yes
+            }
+
+               EXEMPLE DE Réponse:
+               [
+               {rol.numeroclient,rol.referencerole,rol.montant, rol.objet,rol.dtepcepec,cnt.delaimisenligne,cli.statutclientcb,cli.statutclientprelev,}
+               {038712	00159143	2023-EA-00-0000000017474	84.35	-	10/01/2025	10/04/2025	90	A	A}
+               ]
+        `
+    },
+    {
+      titre : "Jeux de données",
+      method: 'GET',
+      url: '/api/dataset/{env}/listtitre',
+      description: 'Récupère une liste de titre avec des options de filtrage.',
+      result: `
+               PARAMETRES DE requete
+            {
+                 	• limit(optionnel) : nombre maximal de résultats a retourner.
+                 	• ifurl(optionnel): filtrer les clients URL.
+            }
+
+               EXEMPLE DE Requete:
+            {
+                GET /api/dataset/tipi/listtitre?
+                limit=50&ifurl=yes
+            }
+
+               EXEMPLE DE Réponse:
+               [
+               {titr.numeroclient,titr.referencerole,titr.montant, titr.objet,titr.dtepcepec,titr.delaimisenligne,titre.statutclientcb,titre.statutclientprelev,}
+               {003751	00298959	2023-00015384-000001	29.00	PARTICIPATION OA 06/2023 SR SOMMIER MARIE JOSE JUIN 2023 RIB :	10/01/2025	-	09/07/2025	180}
+               ]
+        `
+    },
+    {
+      titre : "Jeux de données",
+      method: 'POST',
+      url: '/api/dataset/{env}/updateeps',
+      description: 'Met a jour les données d\'EPS avec des options de filtrage ',
+      result: `
+               PARAMETRES DE requete
+            {
+                 	• limit(optionnel) : nombre maximal de résultats a retourner.
+                  • eps(optionnel): Filtrer les EPS avec des tiers.
+                 	• ifurl(optionnel): filtrer les clients URL.
+            }
+
+               EXEMPLE DE Requete:
+            {
+                GET /api/dataset/tipi/updateeps?
+                limit=50&eps=avec&ifurl=yes
+            }
+
+               EXEMPLE DE Réponse:
+               [
+               {"status": "success","updated":50}
+               ]
+        `
+    },
+    {
+      titre : "Jeux de données",
+      method: 'POST',
+      url: '/api/dataset/{env}/updaternf',
+      description: 'Met a jour les données de RNF',
+      result: `
+               PARAMETRES DE requete
+            {
+                 	• limit(optionnel) : nombre maximal de résultats a retourner.
+                 
+            }
+
+               EXEMPLE DE Requete:
+            {
+                GET /api/dataset/tipi/updaternf?
+                limit=50
+            }
+
+               EXEMPLE DE Réponse:
+               [
+               {"status": "success","updated":50}
+               ]
+        `
+    },
+    {
+      titre : "Jeux de données",
+      method: 'POST',
+      url: '/api/dataset/{env}/updaterole',
+      description: 'Met a jour les données de role avec des options de filtrage.',
+      result: `
+               PARAMETRES DE requete
+            {
+                 	• limit(optionnel) : nombre maximal de résultats a retourner.
+                 	• ifurl(optionnel): filtrer les clients URL.
+            }
+
+               EXEMPLE DE Requete:
+            {
+                GET /api/dataset/tipi/updaterole?
+                limit=50&ifurl=yes
+            }
+
+               EXEMPLE DE Réponse:
+               [
+               {"status": "success","updated":50}
+               ]
+        `
+    },
+    {
+      titre : "Jeux de données",
+      method: 'POST',
+      url: '/api/dataset/{env}/updattitre',
+      description: 'Met a jour les données de titre avec des options de filtrage ',
+      result: `
+               PARAMETRES DE requete
+            {
+                 	• limit(optionnel) : nombre maximal de résultats a retourner.
+                 	• ifurl(optionnel): filtrer les clients URL.
+            }
+
+               EXEMPLE DE Requete:
+            {
+                GET /api/dataset/tipi/updattitre?
+                limit=50&ifurl=yes
+            }
+
+               EXEMPLE DE Réponse:
+               [
+               {"status": "success","updated":50}
+               ]
+        `
+    },
+    {
+      titre : "Suivi de production",
+      method: 'GET',
+      url: '/api/scheduler/{env}/jobs/suiviExploit',
+      description: 'Récupère la liste des jobs de suivie d\'exploitation.',
+      result: `
+               EXEMPLE DE Requete:
+            {
+                GET /api/scheduler/tipi/suiviExploit
+            }
+
+               EXEMPLE DE Réponse:
+               [
+                {"Application":ZA_ARCHIVE,	"Traitement":ZA_TB_ARCHIVE, 	"Statut":TERMINE,     "information":Traitement termine (0),	"Début d'execution":11/06/2024 07:00:04,	"Fin d'execution":11/06/2024 07:00:35,	"Durée d'execution":00:00:31}
+               ]
+        `
+    },
+    {
+      titre : "Paiement",
+      method: 'POST',
+      url: '/api/paiement{env}',
+      description: 'Crée un paiement en fonction du type de paiement sélectionné (web service ou URL).',
+      result: `
+               PARAMETRES DE requete:
+            {
+               exer (string, requis): Exercice.,
+               mel: (string,requis): Adresse e-mail,
+               montant(string, requis): Montant du paiement.,
+               numcli(string,requis): Numéro de client.,
+               objet(string,optionnel): Objet du paiement  ,
+               refdet(string, requis): réference de la dette. ,
+               saisie(string, requis): Type de saisie (W,T,X),
+               urlnotif(string,requis pour SOAP/URL): URL de notification ,
+               urlredirect(string,requis pour SOAP):URL de redirection 
+            }
 
 
-<script setup>
-const config = useRuntimeConfig()
 
-// type tError = { [key in 'type' | 'code' | 'descriptif' | 'libelle' | 'severite']: string }
-const typePaiement = ref('soap');
-const title = ref();
-const env = ref(useRoute().params.env || 'tipi-client')
-const error = ref();
+               EXEMPLE DE Requete:
+            {
+               "exer":"2024",
+               "mel":"email@gmail.com",
+               "saisie": "W",
+               "numcli": "123456",
+               "refdet": "1000000000",
+               "montant": "100.00",
+               "objet": "objet",
+               "urlnotif": "http://google.fr",
+               "urlnotif": "http://google.fr"
+            }
 
-onChangeInfo();
+               EXEMPLE DE Réponse:
+               [
+                {"status":"ok",
+                "data": {
+                "url": "http://exemple.com/paiement"}
+                }
+               ]
+        `
+    },
+    
+    
 
-function onChangeInfo() {
-  if (typePaiement.value === 'soap') {
-    title.value = " Création d'un paiement par web service ";
-  } else if (typePaiement.value === 'url') {
-    title.value = "Création d'un paiement par URL";
-  } else { title.value = "Redirection pour paiement par portail"; }
-}
-onMounted(() => {
-  const bubbles = document.querySelectorAll('.bubble');
-  bubbles.forEach(bubble => {
-    bubble.style.setProperty('--random-left', Math.random());
-  });
-});
 
-async function paiement() {
-  const ip = config.public.paiement.ip[env.value]
-  // cas portail : une simple redirection vers Tipi ZU IIA
-  if (typePaiement.value === 'portail') {
-    window.open(`http://${ip}/tpi-zu/accueilportail.web`, '_blank');
-    return;
+
+
+
+  ];
+  </script>
+  
+  <style scoped>
+  .container {
+    max-width: 800px;
+    margin: auto;
+    padding: 20px;
   }
-
-  const formData = new FormData(document.getElementById('info'));
-
-  if (typePaiement.value === 'soap') {
-    const data = {};
-    formData.forEach((value, key) => {
-      data[key] = value;
-    });
-    const { data: result } = await useFetch(`/api/paiement/${env.value}`, { query: data });
-    if (result.value.status === 'ok') {
-      window.open(result.value.data.url, '_blank');
-    } else {
-      const rError = result.value.data.error;
-      const key = Object.keys(result.value.data.error)[0];
-      error.value = {
-        type: key,
-        code: rError[key].code ?? '',
-        descriptif: rError[key].descriptif ?? '',
-        libelle: rError[key].libelle ?? '',
-        severite: rError[key].severite ?? ''
-      }
-    }
-  } else {
-    const query = new URLSearchParams();
-    formData.forEach((value, key) => {
-      query.set(key, value);
-    });
-    window.open(`http://${ip}/tpi-zu/paiement.web?${query.toString()}`, '_blank');
-    console.log('ok');
+ 
+  pre {
+    padding: 10px;
+    border: 1px solid #817d7d;
+    border-radius: 5px;
   }
-}
-</script>
-<style scoped>
-.bgg {
-
-  position: relative;
-  overflow: hidden;
-  padding: 130px;
-}
-
-.bubbles {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 1;
-}
-
-.bubble {
-  position: absolute;
-  bottom: -150px;
-  width: 30px;
-  height: 30px;
-  background-color: rgba(255, 255, 255, 0.3);
-  border-radius: 50%;
-  animation: rise 10s infinite ease-in-out, shimmer 2s infinite;
-}
-
-@keyframes rise {
-  0% {
-    transform: translateY(0) scale(1);
+  h4{
+    padding: 10px;
+    border: 1px solid #4c57f0;
+    border-radius: 50px;
+    /* text-align: center; */
   }
-
-  50% {
-    transform: translateY(-400px) scale(1.2);
-  }
-
-  75% {
-    transform: translateY(-800px) scale(1);
-
-  }
-
-  100% {
-    transform: translateY(-1400px) scale(1);
-  }
-}
-
-@keyframes shimmer {
-  0% {
-    opacity: 1;
-  }
-
-  50% {
-    opacity: 0.5;
-  }
-
-  100% {
-    opacity: 1;
-  }
-}
-
-.bubble:nth-child(2n) {
-  animation-duration: 12s;
-  animation-delay: 2s;
-}
-
-.bubble:nth-child(3n) {
-  animation-duration: 14s;
-  animation-delay: 4s;
-}
-
-.bubble:nth-child(4n) {
-  animation-duration: 16s;
-  animation-delay: 6s;
-}
-
-.bubble:nth-child(5n) {
-  animation-duration: 18s;
-  animation-delay: 8s;
-}
-
-.bubble:nth-child(6n) {
-  animation-duration: 20s;
-  animation-delay: 10s;
-}
-
-/* Définir des positions aléatoires pour les bulles */
-.bubble {
-  left: calc(100% * var(--random-left));
-}
-
-.payment-form-container {
-  /* background-color: #ffffff; */
-  border: 1px solid #e0e0e0;
-  border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s, box-shadow 0.2s;
-  position: relative;
-  z-index: 2;
-}
-
-/* .payment-form-container:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
-} */
-
-
-
-
-
-
-.form-control-custom {
-  border-radius: 5px;
-  border: 1px solid #cccccc;
-  /* padding: 0.75rem; */
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-.form-control-custom:focus {
-  border-color: #0056b3;
-  box-shadow: 0 0 0 0.2rem rgba(0, 86, 179, 0.25);
-  animation: inputFocus 0.5s ease-in-out;
-}
-
-.form-control-custom:valid {
-  border-color: #28a745;
-  box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
-}
-
-.form-control-custom:invalid {
-  animation: shake 0.5s;
-
-}
-
-.form-control-custom:invalid:focus {
-  border-color: #c9302c;
-  box-shadow: 0 0 0 0.2rem rgba(255, 3, 3, 0.25);
-
-}
-
-@keyframes inputFocus {
-  0% {
-    transform: scale(1);
-  }
-
-  50% {
-    transform: scale(1.05);
-  }
-
-  100% {
-    transform: scale(1);
-  }
-}
-
-@keyframes shake {
-
-  0%,
-  100% {
-    transform: translateX(0);
-  }
-
-  20%,
-  60% {
-    transform: translateX(-10px);
-  }
-
-  40%,
-  80% {
-    transform: translateX(10px);
-  }
-}
-</style>
-
-[env].ts 
-import { createPaiement, type paramSoap } from "~/services/soap.service"
-import { Env } from "~/types"
-
-
-export default defineEventHandler(async (event) => {
-    const env = getRouterParam(event, 'env') as Env
-    const dataQuery: paramSoap = getQuery(event)
-    const args = {
-        exer: dataQuery.exer || '',
-        mel: dataQuery.mel || '',
-        montant: dataQuery.montant || '',
-        numcli: dataQuery.numcli || '',
-        objet: dataQuery.objet || '',
-        refdet: dataQuery.refdet || '',
-        saisie: dataQuery.saisie || '',
-        urlnotif: dataQuery.urlnotif || '',
-        urlredirect: dataQuery.urlredirect || ''
-    }
-    const result = await createPaiement(env, args)
-
-    return result
-
-})
+  </style>

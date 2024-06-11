@@ -1,495 +1,99 @@
-
 <template>
-  <div class="bgg">
-    <!-- Élément pour l'animation d'attente -->
-    <div id="loading-animation">
-      <div class="loader"></div>
+  <div>
+    <h1 class="my-3 d-flex justify-content-center ">Plan de production de {{ env.toUpperCase() }}</h1>
+    <alert :classAlert="'alert-danger'" v-if="error">
+      {{ error }}
+    </alert>
+    <div class="container row m-auto">
+      <button @click="select(el.name)" class="col m-1 p-2 border border-dark text-center rounded-pill"
+        :class="[objClass[el.name], el.color]" v-for="el in legende" :key="el.name">
+        {{ el.name }}
+      </button>
     </div>
 
-    <div class="container m-auto mb-5  ">
-      <div class="form-container card p-3 rounded border  mt-5 mx-auto">
-        <div class="alert alert-danger  " role="alert" v-if="error">
-          ERREUR : {{ error }}
-        </div>
-        <h1 class="text-center"> {{ title }}</h1>
 
-        <div class="d-flex justify-content-center">
-          <div class="form-check form-switch m-3">
-            <input @change="changeEnv" class="form-check-input" type="checkbox" id="env" checked value="{{ env }}">
-            <label class="form-check-label white" for="env">{{ env.toUpperCase() }}</label>
-          </div>
-          <div class="form-check m-3">
-            <input @change='onChangeInfo' class="form-check-input" type="radio" name="radio" value="rnf"
-              v-model="typeDataset" id="radio1" checked>
-            <label class="form-check-label white" for="radio1">
-              RNF
-            </label>
-          </div>
-          <div class="form-check  m-3">
-            <input @change='onChangeInfo' class="form-check-input" type="radio" name="radio" value="titre"
-              v-model="typeDataset" id="radio2">
-            <label class="form-check-label white" for="radio2">
-              Titre
-            </label>
-          </div>
-          <div class="form-check m-3">
-            <input @change='onChangeInfo' class="form-check-input" type="radio" name="radio" value="role"
-              v-model="typeDataset" id="radio3">
-            <label class="form-check-label white" for="radio3">
-              Rôle
-            </label>
-          </div>
-          <div class="form-check m-3">
-            <input @change='onChangeInfo' class="form-check-input" type="radio" name="radio" value="eps"
-              v-model="typeDataset" id="radio4">
-            <label class="form-check-label white" for="radio4">
-              EPS
-            </label>
-          </div>
-          <!-- <div class="form-check m-3">
-            <input @change='onChangeInfo' class="form-check-input" type="radio" name="radio" value="tipi"
-              v-model="typeDataset" id="radio5">
-            <label class="form-check-label white" for="radio5">
-              Tipi
-            </label>
-          </div> -->
-        </div>
-        <div class="input-group w-50 mx-auto my-3" v-show="action === 'dataset'">
-          <label class="input-group-text black text-black" for="modalLimit">Nombre de ligne</label>
-          <select v-model="limit" id="modalLimit" class="form-select">
-            <option value="20">20</option>
-            <option value="50">50</option>
-            <option value="70">70</option>
-            <option value="100">100</option>
-          </select>
-        </div>
-        <div class="d-flex justify-content-center mb-3">
-          <div class="form-check m-3 col" v-if="typeDataset != 'rnf'">
-            <input class="form-check-input col" type="checkbox" value="avec" v-model='url' id='url'>
-            <label class="form-check-label white" for="url">Si coché seulement les clients url</label>
-          </div>
-          <div class="form-check m-3 col" v-if="typeDataset == 'eps'">
-            <input class="form-check-input col" type="checkbox" value="yes" v-model='eps' id='eps'>
-            <label class="form-check-label white" for="eps">Si coché avec malade</label>
-          </div>
-        </div>
-        <div class="d-flex justify-content-center">
-
-          <button type="button" v-show="action !== 'dataset'" class="btn btn-success mx-3 col-2 "
-            @click="refresh">Afficher</button>
-          <button type="button" v-show="action === 'dataset'" class="btn btn-danger mx-3 col-2"
-            @click="closeUpdate">Annuler</button>
-          <button type="button" class="btn col-2 mtj" @click="update">Mettre à jour</button>
-        </div>
-
-      </div>
-    </div>
-    <div class="container my-3 text-center" v-if="typeDataset === 'rnf'">Pour les paiements des RNF, voici le numéro
-      client fictif à utiliser: 91524A </div>
-    <div class="p-5">
+    <div class="container-fluid p-5">
       <table id="table" data-toggle="table" data-pagination="true" data-search="true" data-sortable="true"
-        data-show-export="true" data-show-columns="true" data-page-size="25"
-        data-export-types="[ 'csv', 'txt', 'excel', 'pdf']" :data-export-options='fileName'>
+        data-page-size="100">
       </table>
     </div>
-
-
-
-
-
   </div>
 </template>
 
 <script setup lang="ts">
-
-// import { type NitroFetchOptions } from '~/node_modules/nitropack/types'
-import { epsStructure } from '~/public/strutureTableEps'
-import { rnfStructure } from '~/public/strutureTableRnf'
-import { roleStructure } from '~/public/strutureTableRole'
-import { titreStructure } from '~/public/strutureTableTitre'
-import { formaterDate } from '~/services/utils';
-
-
-type query = {
-  query: {
-    eps: string,
-    ifurl: string,
-    limit: number,
-
-  },
-  storage: string
-}
-
-const typeDataset = ref('rnf')
-const env = ref('tipi')
-const title = ref(`Environnement ${env.value.toUpperCase()} : Jeu de données [ ${typeDataset.value.toUpperCase()} ]`)
-const url = ref('')
-const eps = ref('')
-const action = ref('update')
+import { legende, columns } from '~/public/structureSuiviProd'
+import { removeItem } from '~/services/utils'
+const env = ref(useRoute().params.env as string || 'tipi')
+const data = ref([])
+const objClass: any = ref({})
+const objName = ref<string[]>([])
 const error = ref()
-const limit = ref(50)
-const fileName = ref()
 
 onMounted(() => {
-  onChangeInfo()
+  refresh()
+ 
 })
 
-function changeEnv() {
-  env.value = env.value === 'tipi' ? 'tipi-client' : 'tipi'
-  const upperEnv = env.value.toUpperCase()
-  const upperTypeDataset = typeDataset.value.toUpperCase()
-  title.value = `Environnement ${upperEnv} : Jeu de données [ ${upperTypeDataset} ] `
-  $('#table').bootstrapTable('destroy')
-}
 
 
-function onChangeInfo() {
-  const upperEnv = env.value.toUpperCase()
-  const upperTypeDataset = typeDataset.value.toUpperCase()
-  title.value = ` Environnement ${upperEnv} : Jeu de données [ ${upperTypeDataset} ] `
-  const date = formaterDate(new Date())
-  url.value = ''
-  eps.value = ''
-  fileName.value = `{"fileName" : "JDD_${upperEnv.toLowerCase()}_${typeDataset.value.toLowerCase()}_${date}"}`
-  $('#table').bootstrapTable('destroy')
-}
-
-function getQueryParam() {
-  const vquery: query = {
-    query: {
-      eps: eps.value ? 'avec' : '',
-      ifurl: url.value ? 'yes' : '',
-      limit: limit.value,
-
-    },
-    storage: ''
-  }
-  vquery.storage = typeDataset.value + '_' + env.value + '_' + vquery.query.ifurl + '_' + vquery.query.eps
-  return vquery
-}
-function closeUpdate() {
-  action.value = "update"
-}
-async function update() {
-  if (action.value === "update") {
-    action.value = "dataset"
-    return
-  }
-  closeUpdate()
-  waitAnimation()
-  const path = `/api/dataset/${env.value}/update${typeDataset.value}`
-  const vquery = getQueryParam()
+const refresh = async () => {
   try {
-    await $fetch(path, ({ query: vquery.query }) as any)
-    localStorage.setItem(vquery.storage, '{}')
-    await refresh()
-  } catch {
-    console.log('ERROR')
+    data.value = await $fetch(`/api/scheduler/${env.value}/jobs/suiviExploit`)
+    resfreshData()
+    // console.log(data.value)
+  } catch (e) {
+    console.log(e)
+    data.value = []
+    error.value = e
+  } finally {
+
+    resfreshData()
   }
-  hideWaitAnimation()
 }
 
-async function refresh() {
-  const vquery = getQueryParam()
-  let value = localStorage.getItem(vquery.storage) || '{}'
-  let json = JSON.parse(value)
-  if (Object.keys(json).length === 0) {
-    waitAnimation()
-    const path = `/api/dataset/${env.value}/list${typeDataset.value}`
+const myFilter = () => {
 
-    try {
-      value = await $fetch(path, ({ query: vquery.query }) as any)
-      localStorage.setItem(vquery.storage, JSON.stringify(value))
-    }
-    catch (e) {
-      error.value = e
-    }
-    finally{
-  hideWaitAnimation()
+  if (objName.value === undefined)
+    return data.value
+
+  const elStatus: string[] = []
+  legende.filter((elt: { name: string, [key: string]: string }) => objName.value.includes(elt.name)).forEach(elt => {
+    elStatus.push(elt.status)
+  })
+
+  if (elStatus.length <= 0)
+    return data.value
+
+  return data.value.filter((elt: any) => elStatus.includes(elt.status))
 }
-  }
-  
-  json = localStorage.getItem(vquery.storage)
-  value = json ? JSON.parse(json) : []
-  createTable(typeDataset.value, value)
+const resfreshData = () => {
+  const data = myFilter();
 
+  $('#table').bootstrapTable("destroy")
+  $('#table').bootstrapTable({
+    columns: columns,
+    data: data
+  })
 }
 
-
-const createTable = (name: string, data: any) => {
-  $('#table').bootstrapTable('destroy')
-  if (name == 'eps') {
-    $('#table').bootstrapTable({
-      columns: epsStructure.columns,
-      data: data
-    })
-  } else if (name == 'role') {
-    $('#table').bootstrapTable({
-      columns: roleStructure.columns,
-      data: data
-    })
-  } else if (name == 'titre') {
-    $('#table').bootstrapTable({
-      columns: titreStructure.columns,
-      data: data
-    })
+const select = (name: string) => {
+  let flag = false
+  if (objClass.value[name]?.border === true) {
+    objName.value = removeItem(objName.value, name) as string[]
   } else {
-    $('#table').bootstrapTable({
-      columns: rnfStructure.columns,
-      data: data
-    })
+    flag = true
+    objName.value.push(name)
   }
+  objClass.value[name] = {
+    border: flag,
+    "border-3": flag
+  }
+  resfreshData()
+
 }
 
-// Fonction pour afficher l'animation d'attente
-function waitAnimation() {
-  $("#loading-animation").show();
-}
-
-// Fonction pour afficher l'animation d'attente
-function hideWaitAnimation() {
-  $("#loading-animation").hide();
-}
 
 </script>
 
-<style scoped>
-.form-container {
-  /* background-color: rgb(255, 255, 255); */
 
-}
-
-body {
-  background-color: rgb(233, 233, 233);
-}
-
-
-</style>
-
-listeps.ts 
-import ClientBdd from "~/services/clientBdd.service"
-import { listEps, params } from "~/services/dataset.service"
-
-export default defineEventHandler(async (event) => {
-    try {
-
-        const env = getRouterParam(event, 'env') as string
-        const limit = getQuery(event).limit as number ?? useRuntimeConfig().limit
-        const tiers = getQuery(event).eps as 'avec' | undefined
-        const url = getQuery(event).ifurl as 'yes' | undefined
-        if (!params.hasOwnProperty(env)) {
-            return { error: "Erreur l'environnement n'existe pas" }
-        }
-        console.log(params[env])
-        console.log(env)
-
-
-        const clientBdd = new ClientBdd(params[env])
-        await clientBdd.connect()
-        const data = await clientBdd.query(listEps(limit, tiers, url))
-        clientBdd.close()
-        return data
-    } catch (e) {
-        console.log(e)
-        return e
-    }
-
-})
-
-listernf.ts
-
-import ClientBdd from "~/services/clientBdd.service"
-import { listRnf, params } from "~/services/dataset.service"
-
-export default defineEventHandler(async (event) => {
-    try {
-
-        const env = getRouterParam(event, 'env') as string
-        if (!params.hasOwnProperty(env)) {
-            return { error: "Erreur l'environnement n'existe pas" }
-        }
-        const limit = (getQuery(event).limit ?? useRuntimeConfig().limit) as number
-        const clientBdd = new ClientBdd(params[env])
-        await clientBdd.connect()
-        const data = await clientBdd.query(listRnf(limit))
-        clientBdd.close()
-        console.log(data)
-        return data
-    } catch (e) {
-        return []
-    }
-
-})
-
-listerole.ts
-import ClientBdd from "~/services/clientBdd.service"
-import { listRole, params } from "~/services/dataset.service"
-
-export default defineEventHandler(async (event) => {
-    try {
-
-        const env = getRouterParam(event, 'env') as string
-        const limit = getQuery(event).limit as number ?? useRuntimeConfig().limit
-        const url = getQuery(event).ifurl as 'yes' | undefined
-        if (!params.hasOwnProperty(env)) {
-            return { error: "Erreur l'environnement n'existe pas" }
-        }
-
-
-
-        const clientBdd = new ClientBdd(params[env])
-        await clientBdd.connect()
-        console.log(listRole(limit, url))
-        const data = await clientBdd.query(listRole(limit, url))
-        clientBdd.close()
-        return data
-    } catch (e) {
-        console.log(e)
-        return e
-    }
-
-})
-
-listetitre.ts
-
-import ClientBdd from "~/services/clientBdd.service"
-import { listRnf, listTitre, params } from "~/services/dataset.service"
-
-export default defineEventHandler(async (event) => {
-    try {
-
-        const env = getRouterParam(event, 'env') as string
-        const limit = getQuery(event).limit as number ?? useRuntimeConfig().limit
-        const url = getQuery(event).ifurl as 'yes' | undefined
-        if (!params.hasOwnProperty(env)) {
-            return { error: "Erreur l'environnement n'existe pas" }
-        }
-
-        const clientBdd = new ClientBdd(params[env])
-        await clientBdd.connect()
-        const data = await clientBdd.query(listTitre(limit, url))
-        clientBdd.close()
-        return data
-    } catch (e) {
-        console.log(e)
-        return e
-    }
-
-})
-
-
-updateeps.ts
-import ClientBdd from "~/services/clientBdd.service"
-import { params, updateEps, updateRnf } from "~/services/dataset.service"
-
-export default defineEventHandler(async (event) => {
-    try {
-
-        const env = getRouterParam(event, 'env') as string
-        const limit = getQuery(event).limit as number ?? useRuntimeConfig().limit
-        const tiers = getQuery(event).eps as 'avec' | undefined
-        const url = getQuery(event).ifurl as 'yes' | undefined
-        if (!params.hasOwnProperty(env)) {
-            return { error: "Erreur l'environnement n'existe pas" }
-        }
-
-        const clientBdd = new ClientBdd(params[env])
-        await clientBdd.connect()
-        const data = await clientBdd.query(updateEps(limit, tiers, url))
-        clientBdd.close()
-        return data
-    } catch (e) {
-        console.log(e)
-        return e
-    }
-
-})
-
-
-updaternf.ts
-import ClientBdd from "~/services/clientBdd.service"
-import { params, updateRnf } from "~/services/dataset.service"
-
-export default defineEventHandler(async (event) => {
-    try {
-
-        const env = getRouterParam(event, 'env') as string
-        const limit = (getQuery(event).limit ?? useRuntimeConfig().limit) as number
-        if (!params.hasOwnProperty(env)) {
-            return { error: "Erreur l'environnement n'existe pas" }
-        }
-
-        const clientBdd = new ClientBdd(params[env])
-        await clientBdd.connect()
-        const data = await clientBdd.query(updateRnf(limit))
-        clientBdd.close()
-        return data
-    } catch (e) {
-        console.log(e)
-        return e
-    }
-
-})
-
-updaterole.ts
-
-import ClientBdd from "~/services/clientBdd.service"
-import { params, updateRnf, updateRole } from "~/services/dataset.service"
-
-export default defineEventHandler(async (event) => {
-    try {
-
-        const env = getRouterParam(event, 'env') as string
-        const limit = getQuery(event).limit as number ?? useRuntimeConfig().limit
-        const url = getQuery(event).ifurl as 'yes' | undefined
-
-        if (!params.hasOwnProperty(env)) {
-            return { error: "Erreur l'environnement n'existe pas" }
-        }
-
-        const clientBdd = new ClientBdd(params[env])
-        await clientBdd.connect()
-        const data = await clientBdd.query(updateRole(limit, url))
-        clientBdd.close()
-        return data
-    } catch (e) {
-        console.log(e)
-        return e
-    }
-
-})
-
-
-updatetitre.ts
-
-import ClientBdd from "~/services/clientBdd.service"
-import { params, updateRnf, updateTitre } from "~/services/dataset.service"
-
-export default defineEventHandler(async (event) => {
-    try {
-
-        const env = getRouterParam(event, 'env') as string
-        const limit = getQuery(event).limit as number ?? useRuntimeConfig().limit
-        const url = getQuery(event).ifurl as 'yes' | undefined
-        if (!params.hasOwnProperty(env)) {
-            return { error: "Erreur l'environnement n'existe pas" }
-        }
-
-        const clientBdd = new ClientBdd(params[env])
-        await clientBdd.connect()
-        const data = await clientBdd.query(updateTitre(limit, url))
-        clientBdd.close()
-        return data
-    } catch (e) {
-        console.log(e)
-        return e
-    }
-
-})
-
-
-
-
-
-
-
+<style scoped></style>

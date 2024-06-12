@@ -1,134 +1,306 @@
 <template>
-  <div class="container">
-    <div class="d-flex justify-content-center">
-      <h1>Documentation API</h1>
+  <div class="bgg">
+    <div class="container">
+      <h1 class="d-flex justify-content-center">Déposer des fichiers</h1>
+
+      <div class="alert alert-danger" role="alert" v-if="erreur">
+        <p>{{ erreur }}</p>
+      </div>
+      <div class="row mt-4 d-flex justify-content-center">
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-body border border-white">
+              
+              <div class="mt-3">
+                <label for="categorySelect" class="form-label">environnement</label>
+                <select class="form-select" v-model="env">
+                  <option value="">Sélectionner un environnement</option>
+                  <option v-for="e in envOptions" :key="e" :value="e">{{ e }}</option>
+                </select>
+              </div>
+
+              <div class="mt-3" v-if="!(env === '')">
+                <label for="zoneSelect" class="form-label">Zone</label>
+                <select class="form-select" id="zoneSelect" v-model="zone">
+                  <option value="">Sélectionner une zone</option>
+                  <option v-for="z in zoneOptions" :key="z" :value="z">{{ z }}</option>
+                </select>
+              </div>
+
+              <div class="mt-3" v-if="!(zone === '')">
+                <label for="categorySelect" class="form-label">Choisir la catégorie :</label>
+                <select class="form-select" id="categorySelect" v-model="selectedCategory">
+                  <option value="">Sélectionner une catégorie</option>
+                  <option v-for="category in getCategories()" :key="category" :value="category">{{ category }}</option>
+                </select>
+              </div>
+
+              <div v-if="!(selectedCategory === '')">
+                <h5 class="card-title mt-2">Sélectionner les fichiers à déposer</h5>
+                <div class="input-group input-test mt-3">
+                  <input type="file" class="form-control" id="inputGroupFile01" multiple @change="uploadFiles" :accept="extension" />
+                </div>
+              </div>
+
+              <div class="d-flex justify-content-center mt-3">
+                <button class="btn mtj mt-3" @click="uploadFiles">Déposer les fichiers</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="card mt-3 border border-white" v-if="depositedFiles.length > 0">
+            <div class="card-body">
+              <h3 class="card-title">Fichiers déposés</h3>
+              <div class="row mt-4">
+                <div v-for="(file, index) in depositedFiles" :key="index" class="col-6 mb-3">
+                  <div class="card h-100 file">
+                    <div class="card-body">
+                      <h6>
+                        {{ file.name }}
+                        <button class="btn btn-danger btn-sm" @click="removeFile(index)"> <i class="bi bi-trash"></i>
+                        </button>
+                      </h6>
+                      <span class="badge bg-secondary">{{ file.category }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="d-flex justify-content-center">
+                <button class="btn btn-success mt-3" @click="sendFilesToServer">Envoyer les fichiers</button>
+              </div>
+
+              <div class="mt-4">
+                <div class="progress" role="progressbar" aria-label="Animated striped example" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                  <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 0%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-4" v-if="fileStatuses.length > 0">
+            <h3>Statuts des fichiers envoyés</h3>
+            <div class="alert alert-success" role="alert" v-if="success">
+              <p>{{ success }}</p>
+            </div>
+            <ul class="list-group">
+              <li v-for="(status, index) in fileStatuses" :key="index" :class="{ 'list-group-item-success': status.success, 'list-group-item-danger': !status.success }" class="list-group-item d-flex justify-content-between align-items-center">
+                {{ status.name }}
+                <span v-if="status.success" class="badge bg-success">✔️</span>
+                <span v-else class="badge bg-danger">❌ {{ status.error }}</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
     </div>
-    <div>
-      <button v-for="(category, index) in categories" :key="index" @click="setActiveCategory(index)" class="category-button">
-        {{ category.name }}
-      </button>
-    </div>
-    <section v-for="(api, index) in activeCategory.apis" :key="index">
-      <h4 class="text-center text-primary">{{ api.titre }}</h4>
-      <h2>{{ api.method }} {{ api.url }}</h2>
-      <p><strong>Description:</strong> {{ api.description }}</p>
-      <p><strong>Résultat:</strong></p>
-      <pre>{{ api.result }}</pre>
-    </section>
   </div>
 </template>
 
 <script setup lang="ts">
-const apis = [
-  {
-    category: "Fichiers",
-    endpoints: [
-      {
-        titre: "Récupération de fichiers",
-        method: 'GET',
-        url: '/api/file/[env]/upload/list',
-        description: "Récupère les options d'environnement, de zone et de catégories de fichiers disponibles pour le dépôt.",
-        result: `{
-          "zone": ["za", "zu"],
-          "env": ["tipi", "tipi-client"],
-          "datacat": {
-            "za": {
-              "nominoe": {
-                "extention": ".xml",
-                "format": "nominoe.xml"
-              },
-              "ics": {
-                "extention": ".txt",
-                "format": "LISTE_ICS_FRANCE"
-              }
-            },
-            "zu": {
-              "helios": {
-                "extention": ".xml",
-                "format": "TIPI"
-              }
-            }
-          }
-        }`
-      },
-      // autres endpoints pour Fichiers
-    ]
-  },
-  {
-    category: "Jeux de données",
-    endpoints: [
-      {
-        titre: "Jeux de données",
-        method: 'GET',
-        url: '/api/dataset/{env}/listeps',
-        description: 'Récupère une liste EPS avec des options de filtrage',
-        result: `PARAMETRES DE requete {
-          • limit(optionnel) : nombre maximal de résultats a retourner.
-          • eps(optionnel): filtrer les clients URL.
-          • ifurl(optionnel): filtrer les clients URL.
-        }
+type tStatus = { name: string; success: boolean; error?: string };
+type tFile = { name: string; category: string; file: File };
 
-        EXEMPLE DE Requete:
-        GET /api/dataset/tipi/listeeps?limit=50&eps=avec&ifurl=yes
+const selectedCategory = ref<string>('');
+const depositedFiles = ref<tFile[]>([]);
+const fileStatuses = ref<tStatus[]>([]);
+const erreur = ref<string | undefined>();
+const success = ref<string | undefined>();
+const extension = ref<string>('');
+const format = ref<string>('');
 
-        EXEMPLE DE Réponse:
-        [
-          {"id":1, "name":"EPS1"},
-          {"id":2, "name":"EPS2"}
-        ]`
-      },
-      // autres endpoints pour Jeux de données
-    ]
-  },
-  // autres catégories
-];
+const zone = ref<string>('');
+const env = ref<string>('');
+const datacat = ref<{ [key: string]: { [key: string]: any } }>({});
+const envOptions = ref<string[]>([]);
+const zoneOptions = ref<string[]>([]);
 
-const categories = [
-  { name: "Fichiers", apis: apis.find(api => api.category === "Fichiers").endpoints },
-  { name: "Jeux de données", apis: apis.find(api => api.category === "Jeux de données").endpoints },
-  // autres catégories
-];
+onMounted(async () => {
+  try {
+    const data = await $fetch('/api/file/inconnue/upload/list');
+    envOptions.value = data.env;
+    zoneOptions.value = data.zone;
+    datacat.value = data.datacat;
+  } catch (error) {
+    erreur.value = "Erreur lors de la récupération des données.";
+    console.error(error);
+  }
+});
 
-const activeCategoryIndex = ref(0);
-const activeCategory = computed(() => categories[activeCategoryIndex.value]);
-
-const setActiveCategory = (index: number) => {
-  activeCategoryIndex.value = index;
+const getCategories = () => {
+  if (!zone.value) return [];
+  return Object.keys(datacat.value[zone.value] || {});
 };
+
+const updateExtension = () => {
+  if (!zone.value || !selectedCategory.value) return;
+  const categoryData = datacat.value[zone.value][selectedCategory.value];
+  extension.value = categoryData ? categoryData.extention : '';
+  format.value = categoryData ? categoryData.format : '';
+};
+
+watch(selectedCategory, updateExtension);
+
+const uploadFiles = () => {
+  //condition d'erreur 
+  if (env.value === "") {
+    erreur.value = "Veuillez sélectionner un environnement";
+    return;
+  }
+  if (zone.value === "") {
+    erreur.value = "Veuillez sélectionner une zone";
+    return;
+  }
+  if (selectedCategory.value === "") {
+    erreur.value = "Veuillez sélectionner une catégorie";
+    return;
+  }
+  erreur.value = "";
+  fileStatuses.value = []; // Reset status
+  const input = document.querySelector('input[type="file"]') as HTMLInputElement;
+  const files = Array.from(input.files as FileList);
+  if (files.length === 0) {
+    erreur.value = "Veuillez sélectionner au moins un fichier.";
+    return;
+  }
+  erreur.value = "";
+
+  const invalidFiles: string[] = [];
+
+  files.forEach((file) => {
+    if (file.name.startsWith(format.value)) {
+      depositedFiles.value.push({ name: file.name, category: selectedCategory.value, file });
+    } else {
+      invalidFiles.push(file.name);
+    }
+  });
+
+  if (invalidFiles.length > 0) {
+    erreur.value = ` ${invalidFiles.join(" , ")} ne correspondent pas au format requis :`+ ' '+ '['+format.value+' .*]' ;
+  }
+
+  input.value = "";
+};
+
+const removeFile = (index: number) => {
+  depositedFiles.value.splice(index, 1);
+};
+
+const sendFilesToServer = async () => {
+  const progressBar = document.querySelector(".progress-bar") as HTMLElement;
+  fileStatuses.value = []; // Reset status
+
+  let totalSize = 0;
+  let uploadedSize = 0;
+
+  depositedFiles.value.forEach((file) => {
+    totalSize += file.file.size;
+  });
+
+  for (const file of depositedFiles.value) {
+    const formData = new FormData();
+    formData.append("file", file.file);
+    try {
+      const response = await fetch(`/api/file/${env.value}/upload/${zone.value}/${selectedCategory.value}/depot`, {
+        method: "POST",
+        body: formData,
+      });
+
+      const responseData = await response.json();
+
+      if (!response.ok || !responseData.success) {
+        throw new Error(responseData.message || 'Erreur inconnue');
+      }
+
+      uploadedSize += file.file.size;
+      const progress = (uploadedSize / totalSize) * 100;
+      progressBar.style.width = `${progress}%`;
+      progressBar.setAttribute("aria-valuenow", progress.toString());
+
+      fileStatuses.value.push({
+        name: file.name,
+        success: true,
+      });
+    } catch (error) {
+      console.error("Erreur lors de l'envoi des fichiers:", error);
+      fileStatuses.value.push({
+        name: file.name,
+        success: false,
+        error: error instanceof Error ? error.message : String(error)
+      });
+    }
+  }
+
+  //  une seconde pour s'assurer que la barre de progression atteint 100%
+  setTimeout(() => {
+    if (fileStatuses.value.every((status: { success: any; }) => status.success)) {
+      success.value = "Fichiers envoyé avec succés"
+    } else {
+      erreur.value = "Certains fichiers n'ont pas été envoyés correctement"
+    }
+
+    depositedFiles.value = [];
+    progressBar.style.width = '0%'; // Réinitialiser la barre de progression
+  }, 1000); // Délai de 1 seconde avant d'afficher l'alerte
+};
+
+
+
 </script>
 
+
 <style scoped>
-.container {
-  max-width: 800px;
-  margin: auto;
-  padding: 20px;
+.card-body h6 {
+  display: flex;
+
+  justify-content: space-between;
+  align-items: center;
 }
 
-pre {
-  padding: 10px;
-  border: 1px solid #817d7d;
-  border-radius: 5px;
-  background-color: #f8f8f8;
-}
+/*.card-body h6 button {
+  margin-left: 10px;
+} */
 
-h4 {
-  padding: 10px;
-  border: 1px solid #4c57f0;
+.badge {
+  font-size: 12px;
+  padding: 5px 10px;
   border-radius: 50px;
-  text-align: center;
-}
-
-.category-button {
-  margin: 10px 5px;
-  padding: 10px 15px;
-  background-color: #4c57f0;
+  background-color: #337ab7;
   color: #fff;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.category-button:hover {
-  background-color: #3b45c4;
 }
 </style>
+
+list.ts
+
+
+import { fileIn } from '~/services/files';
+
+export default defineEventHandler(async (event) => {
+
+  const data: {
+    zone: string[],
+    env: string[],
+    datacat: { [key: string]: { [key: string]: any } }
+  } | undefined = { zone: [], env: [], datacat: {} }
+
+  for (let zone in fileIn) {
+    data?.zone.push(zone)
+    for (let env in fileIn[zone]?.server) {
+      if (!(data.env.includes(env))) {
+        data?.env.push(env)
+      }
+    }
+    for (let cat in fileIn[zone]?.data) {
+      data.datacat[zone] = data?.datacat[zone] ?? {}
+      data.datacat[zone][cat] = {
+        extention: fileIn[zone]?.data[cat]?.extention,
+        format: fileIn[zone]?.data[cat]?.format
+      }
+    }
+  }
+
+  return data
+
+});

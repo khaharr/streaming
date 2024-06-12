@@ -1,26 +1,26 @@
 <template>
-  <div class="container">
-    <div class="d-flex justify-content-center text-center p-3 rounded border border-white mt-5 mx-auto animate__animated animate__fadeIn">
+  <div class="container my-5">
+    <div class="header text-center py-5 rounded shadow animate__animated animate__fadeIn">
       <h1>Documentation Utilisateur</h1>
     </div>
-    <div>
-      <div class="d-flex justify-content-center">
-        <button v-for="(category, index) in categories" :key="index" @click="setActiveCategory(index)" class="btn btn-primary category-button animate__animated animate__fadeInUp">
-          {{ category.name }}
-        </button>
-      </div>
+    <div class="buttons my-4 text-center">
+      <button v-for="(category, index) in categories" :key="index" @click="setActiveCategory(index)" class="btn btn-primary mx-2 animate__animated animate__fadeInUp">
+        {{ category.name }}
+      </button>
     </div>
-    <section v-for="(page, index) in activeCategory.pages" :key="index" class="animate__animated animate__fadeIn">
-      <h4 class="text-center text-primary">{{ page.title }}</h4>
-      <div class="page-content">
-        <p>{{ page.description }}</p>
-        <div v-if="page.image" class="image-container">
-          <img :src="page.image" :alt="page.title" class="img-fluid rounded">
+    <section v-for="(page, index) in activeCategory.pages" :key="index" class="page-section animate__animated animate__fadeIn">
+      <div class="card mb-4 shadow-sm">
+        <div class="card-body">
+          <h4 class="card-title text-center text-primary">{{ page.title }}</h4>
+          <p class="card-text">{{ page.description }}</p>
+          <div v-if="page.image" class="text-center my-3">
+            <img :src="page.image" :alt="page.title" class="img-fluid rounded shadow-sm">
+          </div>
+          <p><strong>Fonctionnalités:</strong></p>
+          <ul>
+            <li v-for="(feature, featureIndex) in page.features" :key="featureIndex">{{ feature }}</li>
+          </ul>
         </div>
-        <p><strong>Fonctionnalités:</strong></p>
-        <ul>
-          <li v-for="(feature, featureIndex) in page.features" :key="featureIndex">{{ feature }}</li>
-        </ul>
       </div>
     </section>
   </div>
@@ -28,6 +28,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import 'animate.css';
 
 const pages = [
@@ -117,47 +118,51 @@ const setActiveCategory = (index: number) => {
   max-width: 900px;
   margin: auto;
   padding: 20px;
+  background-color: #f8f9fa;
 }
 
-pre {
-  padding: 10px;
-  border: 1px solid #817d7d;
+.header {
+  background-color: #007bff;
+  color: white;
   border-radius: 5px;
 }
 
-h4 {
-  padding: 10px;
-  border: 1px solid #4c57f0;
-  border-radius: 50px;
-  text-align: center;
-}
-
-.page-content {
-  margin-top: 20px;
-}
-
-.image-container {
-  text-align: center;
-  margin: 20px 0;
-}
-
-.image-container img {
-  max-width: 100%;
-  height: auto;
-}
-
-.category-button {
-  margin: 10px 5px;
-  padding: 10px 15px;
-  background-color: #4c57f0;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
+.buttons .btn {
+  padding: 10px 20px;
+  margin: 5px;
   transition: background-color 0.3s;
 }
 
-.category-button:hover {
-  background-color: #787986;
+.buttons .btn:hover {
+  background-color: #0056b3;
+}
+
+.page-section {
+  margin-top: 20px;
+}
+
+.card {
+  border: none;
+}
+
+.card-title {
+  margin-bottom: 20px;
+}
+
+.card-text {
+  margin-bottom: 20px;
+}
+
+ul {
+  padding-left: 20px;
+}
+
+li {
+  margin-bottom: 10px;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
 }
 </style>

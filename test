@@ -1,168 +1,218 @@
 <template>
-  <div class="container my-5">
-    <div class="header text-center py-5 rounded shadow animate__animated animate__fadeIn">
-      <h1>Documentation Utilisateur</h1>
-    </div>
-    <div class="buttons my-4 text-center">
-      <button v-for="(category, index) in categories" :key="index" @click="setActiveCategory(index)" class="btn btn-primary mx-2 animate__animated animate__fadeInUp">
-        {{ category.name }}
-      </button>
-    </div>
-    <section v-for="(page, index) in activeCategory.pages" :key="index" class="page-section animate__animated animate__fadeIn">
-      <div class="card mb-4 shadow-sm">
-        <div class="card-body">
-          <h4 class="card-title text-center text-primary">{{ page.title }}</h4>
-          <p class="card-text">{{ page.description }}</p>
-          <div v-if="page.image" class="text-center my-3">
-            <img :src="page.image" :alt="page.title" class="img-fluid rounded shadow-sm">
-          </div>
-          <p><strong>Fonctionnalités:</strong></p>
-          <ul>
-            <li v-for="(feature, featureIndex) in page.features" :key="featureIndex">{{ feature }}</li>
-          </ul>
-        </div>
+    <div class="container my-5">
+      <div class="header text-center py-5 rounded shadow animate__animated animate__fadeIn">
+        <h1>Documentation Utilisateur</h1>
       </div>
-    </section>
-  </div>
-</template>
+      <div class="buttons my-4 text-center">
+        <button v-for="(category, index) in categories" :key="index" @click="setActiveCategory(index)" class="btn btn-primary mx-2 animate__animated animate__fadeInUp">
+          {{ category.name }}
+        </button>
+      </div>
+      <section v-for="(page, index) in activeCategory.pages" :key="index" class="page-section animate__animated animate__fadeIn">
+        <div class="card mb-4 shadow-sm">
+          <div class="card-body">
+            <h4 class="card-title text-center text-primary">{{ page.title }}</h4>
+            <p class="card-text">{{ page.description }}</p>
+            <div v-if="page.image" class="text-center my-3">
+              <img :src="page.image" :alt="page.title" class="img-fluid rounded shadow-sm">
+            </div>
+            <p><strong>Fonctionnalités:</strong></p>
+            <ul>
+              <li v-for="(feature, featureIndex) in page.features" :key="featureIndex">{{ feature }}</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+    </div>
+  </template>
+  
+  <script setup lang="ts">
+  import 'animate.css';
+  
+  const pages = [
+  {
+      category: "Navigation",
+      sections: [
+        {
+          title: "Barre de navigation",
+          description: "La barre de navigation permet d'accéder facilement aux différentes sections du site.",
+          image: "/images/navbar.jpg",
+          features: [
+            "Menu déroulant pour les sections principales",
+            "Liens vers les pages ",
+            "possiblité de changer de théme (sombre | clair ) avec  l'icone en haut a droite de votre page  "
+          ]
+        },
 
-<script setup lang="ts">
-import { ref, computed } from 'vue';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'animate.css';
+      ]
+    },
+    {
+      category: "Jeux de données",
+      sections: [
+        {
+          title: "Jeux de données",
+          description: "La page des Jeux de données vous permettre de génerer les jeux de données  ",
+          image: "/images/jeuxdedonnées.PNG",
+          features: [
+            "possiblité de changer d'environnement (tipi/tipi-client).",
+            "Accès rapide aux sections (RNF, Titre, Role, EPS).",
+            "Mettre a jour les dérniére données (20,50,70,100 lignes).",
+            "afficher les données sous forme de tableau. ",
+            "il est possible de trier chaque colonne par ordre croissant ou décroissant ,il suffit de cliquer sur l'en-tete en noir.",
+            "rechercher les référence présente dans le tableau avec la barre de recherche placé en haut a droite du tableau.",
+            "afficher plus de lignes par pages (10,25)."
+          ]
+        },
 
-const pages = [
-  {
-    category: "Accueil",
-    sections: [
-      {
-        title: "Page d'accueil",
-        description: "La page d'accueil est le point de départ de votre site. Elle présente un aperçu des principales fonctionnalités et des dernières mises à jour.",
-        image: "/images/homepage-image.jpg",
-        features: [
-          "Présentation générale du site",
-          "Accès rapide aux principales sections",
-          "Dernières mises à jour et actualités"
+      ]
+    },
+   
+    {
+      category: "Suivi de production",
+      sections: [
+        {
+          title: "Suivi de production (tipi/tipi client/Payfip)",
+          description: "Cette page permet de faire un Suivi de production de la IIA(tipi/tipi client/Payfip)",
+          image: "/images/suivideproduction.PNG",
+          features: [
+            "Gestion des traitement, choisir un ou plusieurs cas exemple: A venir et terminé va permettre d'afficher dans le tableau tous les traitements A venir et les traitements terminé"
+          ]
+        },
+      ]
+    },
+    {
+      category: "Paiement",
+      sections: [
+        {
+          title: "Paiement (tipi/tipi client)",
+          description: "La page de paiement vous permettra de faciliter tous vos test de paiement ",
+          image: "/images/Paiement.PNG",
+          features: [
+            " tout les champs du Formulaire doivent etre verte pour pouvoir creer un paiement ",
+            "possiblité de réaliser des paiement Web service , URL et via le portail PAYFIP",
+  
+          ]
+        },
+       {
+        title: "Paiement cas d'erreur (tipi/tipi client)",
+          description: "La page de paiement vous avertira si il y a une erreur, l'erreur peut etre due a une faute d'orthographe dans l'un des formulaires ou suite a une erreur du Numéro de Client ",
+          image: "/images/paiementerreur.PNG",
+          features: [
+  
+          ]
+       },
+       {
+        title: "Création de Paiement réussi (tipi/tipi client)",
+          description: "La page de paiement vous redirigera vers la page de Payfip ou vous pourrez faire vos paiement par prélèvement ou par carte bancaire ",
+          image: "/images/paiementreussi.PNG",
+          features: [
+  
+          ]
+       }
+      ]
+    },
+    {
+      category: "fichiers",
+      sections: [
+        {
+          title: "Téléchargement de fichiers de la MOA , séléction ",
+          description: "arrivé sur la page de téléchargement vous devrez sélectionnez des options afin de pouvoir afficher les fichiers que vous souhaiter télécharger.",
+          image: "/images/téléchargement.PNG",
+          features: [
+            " le type de données : Données/Log",
+            " Environnement : Tipi/tipi client",
+            " zone : ZA/ZU"
+          ]
+        },
+        {
+          title: "Téléchargement de fichiers de la MOA , liste des fichiers ",
+          description: "Une fois la sélection faite ,vous aurez un tableau contenant des fichiers ",
+          image: "/images/listefichier.PNG",
+          features: [
+            " possibilité de modifier la sélection précedente",
+            " filtre de recherche est mis a votre disposition vous pouvez effectuer un filtre par date insérer 2 dates qui est la plage de date, vous pouvez aussi rechercher le nom du fichier directement et enfin rechercher la catégorie des fichiers",
+            " pour lancer le téléchargement il faut séléctionner 1 ou plusieurs fichier, vous avez la possiblités de tout séléctionner directement avec la case présente dans l'en-tete noir du tableau",
+            " vous pouvez changer de page avec la pagination présente en bas a droite du tableau "
         ]
-      },
-      // Ajoutez d'autres sections pour la catégorie "Accueil" ici
-    ]
-  },
-  {
-    category: "Navigation",
-    sections: [
-      {
-        title: "Barre de navigation",
-        description: "La barre de navigation permet d'accéder facilement aux différentes sections du site.",
-        image: "/images/navbar-image.jpg",
-        features: [
-          "Menu déroulant pour les sections principales",
-          "Liens vers les pages de contact et d'aide",
-          "Recherche rapide sur le site"
-        ]
-      },
-      // Ajoutez d'autres sections pour la catégorie "Navigation" ici
-    ]
-  },
-  {
-    category: "Fonctionnalités",
-    sections: [
-      {
-        title: "Gestion des utilisateurs",
-        description: "Cette page permet de gérer les utilisateurs inscrits sur le site.",
-        image: "/images/user-management-image.jpg",
-        features: [
-          "Ajout et suppression d'utilisateurs",
-          "Modification des informations de profil",
-          "Gestion des droits d'accès"
-        ]
-      },
-      // Ajoutez d'autres sections pour la catégorie "Fonctionnalités" ici
-    ]
-  },
-  {
-    category: "Contact",
-    sections: [
-      {
-        title: "Page de contact",
-        description: "La page de contact permet aux utilisateurs de vous envoyer des messages et des demandes.",
-        image: "/images/contact-image.jpg",
-        features: [
-          "Formulaire de contact",
-          "Informations de contact direct",
-          "Carte interactive"
-        ]
-      },
-      // Ajoutez d'autres sections pour la catégorie "Contact" ici
-    ]
-  }
-];
+        },
+        {
+        title: "Téléchargement de fichiers de la MOA , téléchargement en ZIP ",
+          description: "une fois le bouton générer fichier est cliquer cela vous lancera un chargement plus ou moins long en fonction du nombre de fichier séléctionner mais surtout le nombre de Mo!",
+          image: "/images/récupération.PNG",
+          features: [
+            " génére un fichier zip contenant la liste des fichier que vous avez séléctionner dans le tableau",
+          ]
+        }
 
-const categories = [
-  { name: "Accueil", pages: pages.find(page => page.category === "Accueil")?.sections },
+      ]
+    },
+  ];
+  
+  const categories = [
   { name: "Navigation", pages: pages.find(page => page.category === "Navigation")?.sections },
-  { name: "Fonctionnalités", pages: pages.find(page => page.category === "Fonctionnalités")?.sections },
-  { name: "Contact", pages: pages.find(page => page.category === "Contact")?.sections },
-];
-
-const activeCategoryIndex = ref(0);
-const activeCategory = computed(() => categories[activeCategoryIndex.value]);
-
-const setActiveCategory = (index: number) => {
-  activeCategoryIndex.value = index;
-};
-</script>
-
-<style scoped>
+    { name: "jeux de données", pages: pages.find(page => page.category === "Jeux de données")?.sections },
+    { name: "Suivi de production", pages: pages.find(page => page.category === "Suivi de production")?.sections },
+    { name: "Paiement", pages: pages.find(page => page.category === "Paiement")?.sections },
+    { name: "fichiers", pages: pages.find(page => page.category === "fichiers")?.sections },
+  ];
+  
+  const activeCategoryIndex = ref(0);
+  const activeCategory = computed(() => categories[activeCategoryIndex.value]);
+  
+  const setActiveCategory = (index: number) => {
+    activeCategoryIndex.value = index;
+  };
+  </script>
+  
+  <style scoped>
 .container {
-  max-width: 900px;
-  margin: auto;
-  padding: 20px;
-  background-color: #f8f9fa;
-}
+    margin: auto;
+    padding: 20px;
+    background-color: #f8f9fa;
+  }
 
-.header {
-  background-color: #007bff;
-  color: white;
-  border-radius: 5px;
-}
-
-.buttons .btn {
-  padding: 10px 20px;
-  margin: 5px;
-  transition: background-color 0.3s;
-}
-
-.buttons .btn:hover {
-  background-color: #0056b3;
-}
-
-.page-section {
-  margin-top: 20px;
-}
-
-.card {
-  border: none;
-}
-
-.card-title {
-  margin-bottom: 20px;
-}
-
-.card-text {
-  margin-bottom: 20px;
-}
-
-ul {
-  padding-left: 20px;
-}
-
-li {
-  margin-bottom: 10px;
-}
-
-img {
-  max-width: 100%;
-  height: auto;
-}
-</style>
+  .header {
+    background-color: #007bff;
+    color: white;
+    border-radius: 5px;
+  }
+  
+  .buttons .btn {
+    padding: 10px 20px;
+    margin: 5px;
+    transition: background-color 0.3s;
+  }
+  
+  .buttons .btn:hover {
+    background-color: #0056b3;
+  }
+  
+  .page-section {
+    margin-top: 20px;
+  }
+  
+  .card {
+    border: none;
+  }
+  
+  .card-title {
+    margin-bottom: 20px;
+  }
+  
+  .card-text {
+    margin-bottom: 20px;
+  }
+  
+  ul {
+    padding-left: 20px;
+  }
+  
+  li {
+    margin-bottom: 10px;
+  }
+  
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+  </style>

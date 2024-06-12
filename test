@@ -304,3 +304,115 @@ export default defineEventHandler(async (event) => {
   return data
 
 });
+
+depot.ts
+import fs from 'fs';
+import path from 'path';
+import { fileIn } from '~/services/files';
+import { SFTPClient } from '~/services/sftp.service';
+import { Env } from '~/types';
+
+export default defineEventHandler(async (event) => {
+  const formData = await readMultipartFormData(event);
+  const env = getRouterParam(event, 'env') as Env
+  const zone = getRouterParam(event, 'zone') || ''
+  const cat = getRouterParam(event, 'category')
+
+
+  //test si zone existe  ma variable fileIn
+  if (!(zone in fileIn)) {
+    return { message: 'erreur zone introuvable', success: false, files: [] };
+  }
+
+
+  if (!formData || formData.length === 0) {
+    return { message: 'Aucun fichier trouvé.', success: false, files: [] };
+  }
+
+  // Fonction pour générer un nom de dossier aléatoire de 6 caractères
+  const generateRandomDirectoryName = () => {
+    return Math.random().toString(36).substring(2, 8);
+  };
+
+  // Créer un répertoire temporaire avec un nom aléatoire
+  const tempUploadDirectoryName = generateRandomDirectoryName();
+  const uploadsDirectory = path.join(process.cwd(), 'tmp', 'uploads', tempUploadDirectoryName);
+
+  const resultFiles: { name: string; success: boolean; error?: string; }[] = [];
+  const sftp = new SFTPClient();
+
+  try {
+    const server = fileIn[zone]?.server[env] || ''
+    ///test si env est bien dans fileIn[zone]?.server
+    if (!(env in fileIn)) {
+      return { message: 'erreur zone introuvable', success: false, files: [] };
+    }
+
+
+    await sftp.connect({ host: server });
+    console.log(fileIn[zone]?.server[env])
+    // Créer le répertoire s'il n'existe pas
+    try {
+      if (!fs.existsSync(uploadsDirectory)) {
+        fs.mkdirSync(uploadsDirectory, { recursive: true });
+      }
+    } catch (error) {
+      const errorMessage = `Erreur lors de la création du répertoire de destination "${uploadsDirectory}".`;
+      console.error(errorMessage, error);
+      return { message: errorMessage, success: false, files: resultFiles };
+    }
+
+    // Gestion d'erreur
+    try {
+      for (const file of formData) {
+        const pathFile = fileIn[zone]?.data[cat || '']?.path || ''
+        //test si path  existe 
+        if (pathFile === '') {
+          return ''
+        }
+
+
+        const remoteFilePath = `${pathFile}/${file.filename}`;
+        const fileBuffer: Buffer = file.data;
+        if (!file.filename) {
+          const errorMessage = 'Le nom du fichier est indéfini.';
+          console.error(errorMessage);
+          resultFiles.push({ name: 'Indéfini', success: false, error: errorMessage });
+          continue;
+        }
+
+        const filePath = path.join(uploadsDirectory, file.filename);
+
+        try {
+          fs.writeFileSync(filePath, fileBuffer);
+          await sftp.uploadFile(filePath, remoteFilePath);
+          resultFiles.push({ name: file.filename, success: true });
+        } catch (error) {
+          const errorMessage = `Erreur lors de l'enregistrement du fichier: ${file.filename}`;
+          console.error(errorMessage, error);
+          resultFiles.push({ name: file.filename, success: false, error: errorMessage });
+        }
+      }
+
+      return { message: 'Fichiers traités.', success: true, files: resultFiles };
+    } catch (error) {
+      console.error('Erreur lors de l\'enregistrement des fichiers :', error);
+      return { message: 'Erreur lors de l\'enregistrement des fichiers.', success: false, files: resultFiles };
+    }
+  } catch (error) {
+    console.error('Erreur lors de la connexion SFTP:', error);
+    throw createError({ statusCode: 500, statusMessage: 'Erreur lors de la connexion SFTP' });
+  } finally {
+    sftp.close();
+
+    // Supprimer le répertoire temporaire des uploads
+    try {
+      fs.rmSync(uploadsDirectory, { recursive: true, force: true });
+      console.log(`Répertoire temporaire supprimé : ${uploadsDirectory}`);
+    } catch (error) {
+      console.error(`Erreur lors de la suppression du répertoire temporaire : ${uploadsDirectory}`, error);
+    }
+  }
+});
+
+

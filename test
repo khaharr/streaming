@@ -1,16 +1,16 @@
 <template>
   <div class="container">
-    <div class="d-flex justify-content-center text-center p-3 rounded border border-white mt-5 mx-auto">
+    <div class="d-flex justify-content-center text-center p-3 rounded border border-white mt-5 mx-auto animate__animated animate__fadeIn">
       <h1>Documentation Utilisateur</h1>
     </div>
     <div>
       <div class="d-flex justify-content-center">
-        <button v-for="(category, index) in categories" :key="index" @click="setActiveCategory(index)" class="btn btn-primary category-button">
+        <button v-for="(category, index) in categories" :key="index" @click="setActiveCategory(index)" class="btn btn-primary category-button animate__animated animate__fadeInUp">
           {{ category.name }}
         </button>
       </div>
     </div>
-    <section v-for="(page, index) in activeCategory.pages" :key="index">
+    <section v-for="(page, index) in activeCategory.pages" :key="index" class="animate__animated animate__fadeIn">
       <h4 class="text-center text-primary">{{ page.title }}</h4>
       <div class="page-content">
         <p>{{ page.description }}</p>
@@ -28,6 +28,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import 'animate.css';
 
 const pages = [
   {
@@ -36,7 +37,7 @@ const pages = [
       {
         title: "Page d'accueil",
         description: "La page d'accueil est le point de départ de votre site. Elle présente un aperçu des principales fonctionnalités et des dernières mises à jour.",
-        image: "path/to/homepage-image.jpg",
+        image: "/images/homepage-image.jpg",
         features: [
           "Présentation générale du site",
           "Accès rapide aux principales sections",
@@ -52,7 +53,7 @@ const pages = [
       {
         title: "Barre de navigation",
         description: "La barre de navigation permet d'accéder facilement aux différentes sections du site.",
-        image: "path/to/navbar-image.jpg",
+        image: "/images/navbar-image.jpg",
         features: [
           "Menu déroulant pour les sections principales",
           "Liens vers les pages de contact et d'aide",
@@ -68,7 +69,7 @@ const pages = [
       {
         title: "Gestion des utilisateurs",
         description: "Cette page permet de gérer les utilisateurs inscrits sur le site.",
-        image: "path/to/user-management-image.jpg",
+        image: "/images/user-management-image.jpg",
         features: [
           "Ajout et suppression d'utilisateurs",
           "Modification des informations de profil",
@@ -84,7 +85,7 @@ const pages = [
       {
         title: "Page de contact",
         description: "La page de contact permet aux utilisateurs de vous envoyer des messages et des demandes.",
-        image: "path/to/contact-image.jpg",
+        image: "/images/contact-image.jpg",
         features: [
           "Formulaire de contact",
           "Informations de contact direct",
@@ -153,6 +154,7 @@ h4 {
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  transition: background-color 0.3s;
 }
 
 .category-button:hover {

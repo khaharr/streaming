@@ -1,14 +1,14 @@
 <template>
   <div class="container">
-    <div class="d-flex justify-content-center text-center  p-3 rounded border border-white mt-5 mx-auto ">
+    <div class="d-flex justify-content-center text-center p-3 rounded border border-white mt-5 mx-auto">
       <h1>Documentation API</h1>
     </div>
     <div>
       <div class="d-flex justify-content-center">
-      <button v-for="(category, index) in categories" :key="index" @click="setActiveCategory(index)" class="btn btn-primary category-button">
-        {{ category.name }}
-      </button>
-    </div>
+        <button v-for="(category, index) in categories" :key="index" @click="setActiveCategory(index)" class="btn btn-primary category-button">
+          {{ category.name }}
+        </button>
+      </div>
     </div>
     <section v-for="(api, index) in activeCategory.apis" :key="index">
       <h4 class="text-center text-primary">{{ api.titre }}</h4>
@@ -16,12 +16,14 @@
       <p><strong>Description:</strong> {{ api.description }}</p>
       <p><strong>Résultat:</strong></p>
       <pre>{{ api.result }}</pre>
+      <p><strong>Erreurs:</strong></p>
+      <pre>{{ api.errors }}</pre>
     </section>
   </div>
 </template>
-  
-  <script setup lang="ts">
- const apis = [
+
+<script setup lang="ts">
+const apis = [
   {
     category: "Fichiers",
     endpoints: [
@@ -51,401 +53,243 @@
               }
             }
           }
+        }`,
+        errors: `{
+          "error": true,
+          "message": "Impossible de récupérer les fichiers."
         }`
-      
+      },
+      {
+        titre: "Récuperation de fichiers",
+        method: 'POST',
+        url: '/api/file/{env}/upload/{zone}/{category}/depot',
+        description: "Dépose un fichier dans la catégorie spécifiée pour l'environnement et la zone donnés.",
+        result: `{
+          "success": true,
+          "message": "Fichier déposé avec succès."
+        }`,
+        errors: `{
+          "success": false,
+          "message": "Erreur lors du dépôt du fichier."
+        }`
+      },
+      {
+        titre: "Téléchargement fichier",
+        method: 'GET',
+        url: '/api/file/tipi/download/{typedata}/{zone}/listfile',
+        description: "Récupère une liste de fichiers disponible pour le téléchargement dans une zone spécifique.",
+        result: `{
+          "nomfichier": "exemple.log",
+          "size": "5.000000 Mo",
+          "pathFull": "/path/to/exemple2.log",
+          "date": "11/06/2023",
+          "zone": "ZA"
+        }`,
+        errors: `{
+          "error": true,
+          "message": "Impossible de récupérer la liste des fichiers."
+        }`
+      },
+      {
+        titre: "Téléchargement fichier",
+        method: 'POST',
+        url: '/api/file/tipi/download/{typedata}/download.ts',
+        description: "Permet de générer et de télécharger un fichier zip contenant les fichiers sélectionnés.",
+        result: `{
+          "Content-Type": "application/zip"
+        }`,
+        errors: `{
+          "error": true,
+          "message": "Erreur lors du téléchargement des fichiers."
+        }`
+      }
+    ]
   },
-    {
-      titre : "Récuperation de fichiers",
-      method: 'POST',
-      url: '/api/file/{env}/upload/{zone}/{category}/depot',
-      description: 'Dépose un fichier dans la catégorie spécifiée pour l\'environnement et la zone donnés.',
-      result: `
-            {
-                "success": true,
-                "message": "Fichier déposé avec succès."
-            }
-            ou
-            {
-                "success": false,
-                "message": "Erreur lors du dépôt du fichier."
-            }`
-    },
-
-   
-    {
-      titre : "Télechargement fichier",
-      method: 'GET',
-      url: '/api/file/tipi/download/{typedata}/{zone}/listfile',
-      description: 'Récupère une liste de fichiers disponible pour le téléchargement dans une zone spécifique .',
-      result: `
-               EXEMPLE DE réponse
-            {
-       
-                "nomfichier": "exemple.log",
-                "size": "5.000000 Mo",
-                " pathFull: "/path/to/exemple2.log"
-                    date: 11/06/2023,
-                    zone: "ZA"
-            }
-        `
-    },
-    {
-      titre : "Télechargement fichier",
-      method: 'POST',
-      url: '/api/file/tipi/download/{typedata}/download.ts',
-      description: 'Permet de générer et de télécharger un fichier zip contenant les fichiers sélectionnés .',
-      result: `
-               EXEMPLE DE requete
-            {
-       
-                download HTTP/1.1
-                host: exemple.com
-                Content-Type : application/json
-            }
-
-            EXEMPLE DE Réponse
-            {
-                HTTP/1.1  OK
-                Content-Type : application/zip
-            }
-        `
+  {
+    category: "Jeux de données",
+    endpoints: [
+      {
+        titre: "Jeux de données",
+        method: 'GET',
+        url: '/api/dataset/{env}/listeps',
+        description: "Récupère une liste EPS avec des options de filtrage.",
+        result: `{
+          "id": 1,
+          "name": "EPS1"
+        }`,
+        errors: `{
+          "error": true,
+          "message": "Erreur lors de la récupération de la liste EPS."
+        }`
       },
-     
-     ]
-    },
-    
-    {
-      category: "Jeux de données",
-    endpoints: [
       {
-
-      titre : "Jeux de données",
-      method: 'GET',
-      url: '/api/dataset/{env}/listeps',
-      description: 'Récupère une liste EPS avec des options de filtrage',
-      result: `
-               PARAMETRES DE requete
+        titre: "Jeux de données",
+        method: 'GET',
+        url: '/api/dataset/{env}/listrnf',
+        description: "Récupère une liste de RNF.",
+        result: `{
+          "rnf": [
             {
-                 	• limit(optionnel) : nombre maximal de résultats a retourner.
-                 	• eps(optionnel): filtrer les clients URL.
-                  • ifurl(optionnel): filtrer les clients URL.
+              "numeroclient": "008571",
+              "referencerole": "00022399",
+              "montant": "1393.50",
+              "objet": "-",
+              "dtepcepec": "10/01/2025",
+              "delaimisenligne": "10/04/2025",
+              "statutclientcb": "90",
+              "statutclientprelev": "-"
             }
-
-               EXEMPLE DE Requete:
-            {
-                GET /api/dataset/tipi/listeeps?
-                limit=50&eps=avec&ifurl=yes
-            }
-               EXEMPLE DE Réponse:
-               [
-               {"id":1, "name":"EPS1"}
-               {"id":2, "name":"EPS2"}
-
-               ]
-        limite en caractere INT seulement !
-               `
-    },
-    {
-      titre : "Jeux de données",
-      method: 'GET',
-      url: '/api/dataset/{env}/listrnf',
-      description: 'Récupère une liste de RNF',
-      result: `
-               PARAMETRES DE requete
-            {
-                 	• limit(optionnel) : nombre maximal de résultats a retourner.
-                 	
-            }
-
-               EXEMPLE DE Requete:
-            {
-                GET /api/dataset/tipi/listernf?
-                limit=50
-            }
-
-               EXEMPLE DE Réponse:
-               [
-               {rnf.numeroclient,rnf.referencerole,rnf.montant, rnf.objet,rnf.dtepcepec,rnf.delaimisenligne,rnf.statutclientcb,rnf.statutclientprelev,}
-               {008571	00022399	2023-02088807-000001	1393.50	-	10/01/2025	-	10/04/2025	90	-	DARLIX}
-               ]
-        `
-    },
-    {
-      titre : "Jeux de données",
-      method: 'GET',
-      url: '/api/dataset/{env}/listrole',
-      description: 'Récupère une liste de role  avev des options de filtrage.',
-      result: `
-               PARAMETRES DE requete
-            {
-                 	• limit(optionnel) : nombre maximal de résultats a retourner.
-                 	• ifurl(optionnel): filtrer les clients URL.
-            }
-
-               EXEMPLE DE Requete:
-            {
-                GET /api/dataset/tipi/listerole?
-                limit=50&ifurl=yes
-            }
-
-               EXEMPLE DE Réponse:
-               [
-               {rol.numeroclient,rol.referencerole,rol.montant, rol.objet,rol.dtepcepec,cnt.delaimisenligne,cli.statutclientcb,cli.statutclientprelev,}
-               {038712	00159143	2023-EA-00-0000000017474	84.35	-	10/01/2025	10/04/2025	90	A	A}
-               ]
-        `
-    },
-    {
-      titre : "Jeux de données",
-      method: 'GET',
-      url: '/api/dataset/{env}/listtitre',
-      description: 'Récupère une liste de titre avec des options de filtrage.',
-      result: `
-               PARAMETRES DE requete
-            {
-                 	• limit(optionnel) : nombre maximal de résultats a retourner.
-                 	• ifurl(optionnel): filtrer les clients URL.
-            }
-
-               EXEMPLE DE Requete:
-            {
-                GET /api/dataset/tipi/listtitre?
-                limit=50&ifurl=yes
-            }
-
-               EXEMPLE DE Réponse:
-               [
-               {titr.numeroclient,titr.referencerole,titr.montant, titr.objet,titr.dtepcepec,titr.delaimisenligne,titre.statutclientcb,titre.statutclientprelev,}
-               {003751	00298959	2023-00015384-000001	29.00	PARTICIPATION OA 06/2023 SR SOMMIER MARIE JOSE JUIN 2023 RIB :	10/01/2025	-	09/07/2025	180}
-               ]
-        `
-    },
-    {
-      titre : "Jeux de données",
-      method: 'POST',
-      url: '/api/dataset/{env}/updateeps',
-      description: 'Met a jour les données d\'EPS avec des options de filtrage ',
-      result: `
-               PARAMETRES DE requete
-            {
-                 	• limit(optionnel) : nombre maximal de résultats a retourner.
-                  • eps(optionnel): Filtrer les EPS avec des tiers.
-                 	• ifurl(optionnel): filtrer les clients URL.
-            }
-
-               EXEMPLE DE Requete:
-            {
-                GET /api/dataset/tipi/updateeps?
-                limit=50&eps=avec&ifurl=yes
-            }
-
-               EXEMPLE DE Réponse:
-               [
-               {"status": "success","updated":50}
-               ]
-        `
-    },
-    {
-      titre : "Jeux de données",
-      method: 'POST',
-      url: '/api/dataset/{env}/updaternf',
-      description: 'Met a jour les données de RNF',
-      result: `
-               PARAMETRES DE requete
-            {
-                 	• limit(optionnel) : nombre maximal de résultats a retourner.
-                 
-            }
-
-               EXEMPLE DE Requete:
-            {
-                GET /api/dataset/tipi/updaternf?
-                limit=50
-            }
-
-               EXEMPLE DE Réponse:
-               [
-               {"status": "success","updated":50}
-               ]
-        `
-    },
-    {
-      titre : "Jeux de données",
-      method: 'POST',
-      url: '/api/dataset/{env}/updaterole',
-      description: 'Met a jour les données de role avec des options de filtrage.',
-      result: `
-               PARAMETRES DE requete
-            {
-                 	• limit(optionnel) : nombre maximal de résultats a retourner.
-                 	• ifurl(optionnel): filtrer les clients URL.
-            }
-
-               EXEMPLE DE Requete:
-            {
-                GET /api/dataset/tipi/updaterole?
-                limit=50&ifurl=yes
-            }
-
-               EXEMPLE DE Réponse:
-               [
-               {"status": "success","updated":50}
-               ]
-        `
-    },
-    {
-      titre : "Jeux de données",
-      method: 'POST',
-      url: '/api/dataset/{env}/updattitre',
-      description: 'Met a jour les données de titre avec des options de filtrage ',
-      result: `
-               PARAMETRES DE requete
-            {
-                 	• limit(optionnel) : nombre maximal de résultats a retourner.
-                 	• ifurl(optionnel): filtrer les clients URL.
-            }
-
-               EXEMPLE DE Requete:
-            {
-                GET /api/dataset/tipi/updattitre?
-                limit=50&ifurl=yes
-            }
-
-               EXEMPLE DE Réponse:
-               [
-               {"status": "success","updated":50}
-               ]
-        `
+          ]
+        }`,
+        errors: `{
+          "error": true,
+          "message": "Erreur lors de la récupération de la liste RNF."
+        }`
       },
-     
-     ]
-    },
-    {
-      
-      category: "Suivi de production",
+      {
+        titre: "Jeux de données",
+        method: 'GET',
+        url: '/api/dataset/{env}/listrole',
+        description: "Récupère une liste de rôle avec des options de filtrage.",
+        result: `{
+          "role": [
+            {
+              "numeroclient": "038712",
+              "referencerole": "00159143",
+              "montant": "84.35",
+              "objet": "2023-EA-00-0000000017474",
+              "dtepcepec": "10/01/2025",
+              "delaimisenligne": "10/04/2025",
+              "statutclientcb": "90",
+              "statutclientprelev": "A"
+            }
+          ]
+        }`,
+        errors: `{
+          "error": true,
+          "message": "Erreur lors de la récupération de la liste de rôles."
+        }`
+      },
+      {
+        titre: "Jeux de données",
+        method: 'GET',
+        url: '/api/dataset/{env}/listtitre',
+        description: "Récupère une liste de titres avec des options de filtrage.",
+        result: `{
+          "titre": [
+            {
+              "numeroclient": "003751",
+              "referencerole": "00298959",
+              "montant": "29.00",
+              "objet": "PARTICIPATION OA 06/2023 SR SOMMIER MARIE JOSE JUIN 2023 RIB :",
+              "dtepcepec": "10/01/2025",
+              "delaimisenligne": "09/07/2025",
+              "statutclientcb": "180",
+              "statutclientprelev": "-"
+            }
+          ]
+        }`,
+        errors: `{
+          "error": true,
+          "message": "Erreur lors de la récupération de la liste de titres."
+        }`
+      },
+      {
+        titre: "Jeux de données",
+        method: 'POST',
+        url: '/api/dataset/{env}/updateeps',
+        description: "Met à jour les données d'EPS avec des options de filtrage.",
+        result: `{
+          "status": "success",
+          "updated": 50
+        }`,
+        errors: `{
+          "error": true,
+          "message": "Erreur lors de la mise à jour des EPS."
+        }`
+      },
+      {
+        titre: "Jeux de données",
+        method: 'POST',
+        url: '/api/dataset/{env}/updaternf',
+        description: "Met à jour les données de RNF.",
+        result: `{
+          "status": "success",
+          "updated": 50
+        }`,
+        errors: `{
+          "error": true,
+          "message": "Erreur lors de la mise à jour des RNF."
+        }`
+      },
+      {
+        titre: "Jeux de données",
+        method: 'POST',
+        url: '/api/dataset/{env}/updaterole',
+        description: "Met à jour les données de rôle avec des options de filtrage.",
+        result: `{
+          "status": "success",
+          "updated": 50
+        }`,
+        errors: `{
+          "error": true,
+          "message": "Erreur lors de la mise à jour des rôles."
+        }`
+      },
+      {
+        titre: "Jeux de données",
+        method: 'POST',
+        url: '/api/dataset/{env}/updatetitre',
+        description: "Met à jour les données de titre avec des options de filtrage.",
+        result: `{
+          "status": "success",
+          "updated": 50
+        }`,
+        errors: `{
+          "error": true,
+          "message": "Erreur lors de la mise à jour des titres."
+        }`
+      }
+    ]
+  },
+  {
+    category: "Suivi de production",
     endpoints: [
       {
-      titre : "Suivi de production",
-      method: 'GET',
-      url: '/api/scheduler/{env}/jobs/suiviExploit',
-      description: 'Récupère la liste des jobs de suivie d\'exploitation.',
-      result: `
-               EXEMPLE DE Requete:
-            {
-                GET /api/scheduler/tipi/suiviExploit
-            }
+        titre: "Suivi de production",
+       method: ‘GET’,
+url: ‘/api/scheduler/{env}/jobs/suiviExploit’,
+description: “Récupère la liste des jobs de suivi d’exploitation.”,
+result: { "Application": "ZA_ARCHIVE", "Traitement": "ZA_TB_ARCHIVE", "Statut": "TERMINE", "information": "Traitement termine (0)", "Début d'execution": "11/06/2024 07:00:04", "Fin d'execution": "11/06/2024 07:00:35", "Durée d'execution": "00:00:31" },
+errors: { "error": true, "message": "Erreur lors de la récupération du suivi d'exploitation." }
+}
+]
+},
+{
+category: “Paiement”,
+endpoints: [
+{
+titre: “Paiement”,
+method: ‘POST’,
+url: ‘/api/paiement{env}’,
+description: “Crée un paiement en fonction du type de paiement sélectionné (web service ou URL).”,
+result: { "status": "ok", "data": { "url": "http://exemple.com/paiement" } },
+errors: { "error": true, "message": "Erreur lors de la création du paiement." }
+}
+]
+}
+];
 
-               EXEMPLE DE Réponse:
-               [
-                {"Application":ZA_ARCHIVE,	"Traitement":ZA_TB_ARCHIVE, 	"Statut":TERMINE,     "information":Traitement termine (0),	"Début d'execution":11/06/2024 07:00:04,	"Fin d'execution":11/06/2024 07:00:35,	"Durée d'execution":00:00:31}
-               ]
-        `
-      }]
-    },
-    {
-      category: "Paiement",
-    endpoints: [
-      {
-      titre : "Paiement",
-      method: 'POST',
-      url: '/api/paiement{env}',
-      description: 'Crée un paiement en fonction du type de paiement sélectionné (web service ou URL).',
-      result: `
-               PARAMETRES DE requete:
-            {
-               exer (string, requis): Exercice.,
-               mel: (string,requis): Adresse e-mail,
-               montant(string, requis): Montant du paiement.,
-               numcli(string,requis): Numéro de client.,
-               objet(string,optionnel): Objet du paiement  ,
-               refdet(string, requis): réference de la dette. ,
-               saisie(string, requis): Type de saisie (W,T,X),
-               urlnotif(string,requis pour SOAP/URL): URL de notification ,
-               urlredirect(string,requis pour SOAP):URL de redirection 
-            }
-
-
-
-               EXEMPLE DE Requete:
-            {
-               "exer":"2024",
-               "mel":"email@gmail.com",
-               "saisie": "W",
-               "numcli": "123456",
-               "refdet": "1000000000",
-               "montant": "100.00",
-               "objet": "objet",
-               "urlnotif": "http://google.fr",
-               "urlnotif": "http://google.fr"
-            }
-
-               EXEMPLE DE Réponse:
-               [
-                {"status":"ok",
-                "data": {
-                "url": "http://exemple.com/paiement"}
-                }
-               ]
-        `
-      }]
-    },
-    
-    
-
-
-
-
-
-  ];
-  
 const categories = [
-  { name: "fichiers", apis: apis.find(api => api.category === "Fichiers")?.endpoints },
-  { name: "Jeux de données", apis: apis.find(api => api.category === "Jeux de données")?.endpoints },
-  { name: "Suivi de production", apis: apis.find(api => api.category === "Suivi de production")?.endpoints },
-  { name: "Paiement", apis: apis.find(api => api.category === "Paiement")?.endpoints },
-
-
+{ name: “fichiers”, apis: apis.find(api => api.category === “Fichiers”)?.endpoints },
+{ name: “Jeux de données”, apis: apis.find(api => api.category === “Jeux de données”)?.endpoints },
+{ name: “Suivi de production”, apis: apis.find(api => api.category === “Suivi de production”)?.endpoints },
+{ name: “Paiement”, apis: apis.find(api => api.category === “Paiement”)?.endpoints },
 ];
 
 const activeCategoryIndex = ref(0);
 const activeCategory = computed(() => categories[activeCategoryIndex.value]);
 
 const setActiveCategory = (index: number) => {
-  activeCategoryIndex.value = index;
+activeCategoryIndex.value = index;
 };
-  </script>
-  
-  <style scoped>
-  .container {
-    max-width: 900px;
-    margin: auto;
-    padding: 20px;
-  }
-  
-  pre {
-    padding: 10px;
-    border: 1px solid #817d7d;
-    border-radius: 5px;
-  }
-  
-  h4 {
-    padding: 10px;
-    border: 1px solid #4c57f0;
-    border-radius: 50px;
-    text-align: center;
-  }
-  
-  .category-button {
-    margin: 10px 5px;
-    padding: 10px 15px;
-    background-color: #4c57f0;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .category-button:hover {
-    background-color: #787986;
-  }
-  </style>

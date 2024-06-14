@@ -5,11 +5,9 @@ const applyDateFilter = () => {
     'filterBy',
     {},
     {
-      filterAlgorithm: function (row: { date: string | number | Date }, filters: any) {
-        const day = row.date.toString().slice(0, 2);
-        const month = row.date.toString().slice(3, 5) + '/';
-        const year = row.date.toString().slice(6, 10);
-        const itemDate = new Date(year + '/' + month + '/' + day);
+      filterAlgorithm: function (row, filters) {
+        const [day, month, year] = row.date.split('/');
+        const itemDate = new Date(`${year}-${month}-${day}`);
         const fromDate = dateFrom.value ? new Date(dateFrom.value) : undefined;
         const toDate = dateTo.value ? new Date(dateTo.value) : undefined;
 

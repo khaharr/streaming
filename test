@@ -6,10 +6,20 @@ const applyDateFilter = () => {
     {},
     {
       filterAlgorithm: function (row, filters) {
-        const [day, month, year] = row.date.split('/');
+        const day = row.date.toString().slice(0, 2);
+        const month = row.date.toString().slice(3, 5);
+        const year = row.date.toString().slice(6, 10);
         const itemDate = new Date(`${year}-${month}-${day}`);
-        const fromDate = dateFrom.value ? new Date(dateFrom.value) : undefined;
-        const toDate = dateTo.value ? new Date(dateTo.value) : undefined;
+
+        // Helper function to subtract one day from a date
+        const subtractOneDay = (dateStr) => {
+          const date = new Date(dateStr);
+          date.setDate(date.getDate() - 1);
+          return date;
+        };
+
+        const fromDate = dateFrom.value ? subtractOneDay(dateFrom.value) : undefined;
+        const toDate = dateTo.value ? subtractOneDay(dateTo.value) : undefined;
 
         if (fromDate && toDate) {
           return itemDate >= fromDate && itemDate <= toDate;

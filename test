@@ -1,35 +1,3 @@
-<template>
-  <div class="container my-5">
-    <div class="header text-center py-5 rounded shadow animate__animated animate__fadeIn">
-      <h1>Documentation Utilisateur</h1>
-    </div>
-    <div class="menu-buttons d-flex justify-content-end my-4">
-      <button v-for="(category, index) in categories" :key="index" @click="setActiveCategory(index)" class="btn btn-primary mx-2 animate__animated animate__fadeInUp">
-        {{ category.name }}
-      </button>
-    </div>
-    <div v-if="activeCategoryIndex === categories.findIndex(cat => cat.name === 'Fichiers')" class="sub-menu text-center my-4">
-      <button @click="scrollToSection('Téléchargement')" class="btn btn-secondary mx-2">Téléchargement</button>
-      <button @click="scrollToSection('Récupérer')" class="btn btn-secondary mx-2">Récupérer</button>
-    </div>
-    <section v-for="(page, index) in activeCategory.pages" :key="index" :id="page.title.replace(/[^a-zA-Z]/g, '')" class="page-section animate__animated animate__fadeIn">
-      <div class="card mb-4 shadow-sm">
-        <div class="card-body">
-          <h4 class="card-title text-center text-primary">{{ page.title }}</h4>
-          <p class="card-text">{{ page.description }}</p>
-          <div v-if="page.image" class="text-center my-3">
-            <img :src="page.image" :alt="page.title" class="img-fluid rounded shadow-sm">
-          </div>
-          <p><strong>Fonctionnalités:</strong></p>
-          <ul>
-            <li v-for="(feature, featureIndex) in page.features" :key="featureIndex">{{ feature }}</li>
-          </ul>
-        </div>
-      </div>
-    </section>
-  </div>
-</template>
-
 <script setup lang="ts">
 import 'animate.css';
 
@@ -38,6 +6,7 @@ const pages = [
     category: "Navigation",
     sections: [
       {
+        id: "navigation-bar",
         title: "Barre de navigation",
         description: "La barre de navigation permet d'accéder facilement aux différentes sections du site.",
         image: "/images/navbar.jpg",
@@ -53,6 +22,7 @@ const pages = [
     category: "Jeux de données",
     sections: [
       {
+        id: "jeux-de-donnees",
         title: "Jeux de données",
         description: "La page des jeux de données vous permet de générer des jeux de données.",
         image: "/images/jeuxdedonnées.PNG",
@@ -66,119 +36,241 @@ const pages = [
           "Afficher plus de lignes par page (10, 25)"
         ]
       },
-      // other sections...
+      {
+        id: "changer-environnement",
+        title: "Jeux de données, changer d'environnement",
+        description: "cocher la case afin de changer d'environnement et récupérer les jeux de données de l'environnement choisi ",
+        image: "/images/env.PNG",
+        features: [
+          "changement d'application tipi/tipi-client",
+        ]
+      },
+      {
+        id: "sections",
+        title: "Jeux de données, sections ",
+        description: "Accéder au differentes séction en cliquant sur les différents radios ",
+        image: "/images/sections.PNG",
+        features: [
+          "EXEMPLE : si je clique sur Titre je vais par la suite générer tous les Jeux de données liée au Titre",
+        ]
+      },
+      {
+        id: "afficher-mettre-a-jour",
+        title: "Jeux de données,afficher/Mettre à jour",
+        description: "permet d'afficher les données et de mettre ajour les données afin de récperer les données les plus récentes ",
+        image: "/images/afficher.PNG",
+        features: [
+          "cliquer sur afficher afin de générer le tableau de donnée",
+          "cliquer sur Mettre à jour afin de générer le tableau avec les données récentes "
+        ]
+      },
+      {
+        id: "mettre-a-jour",
+        title: "Mettre à jour",
+        description: "des que le bouton Mettre a jour est cliquer , vous aurez la possiblité de choisir le nombre de lignes a Mettre a jour",
+        image: "/images/Mettreajour.png",
+        features: [
+          "EXEMPLE : si je choisi 70  ,je vais récupérer les 70 données les plus récentes",
+          
+        ]
+      },
+      
     ]
   },
-  // other categories...
   {
-    category: "Fichiers",
+    category: "Suivi de production",
     sections: [
       {
-        title: "Téléchargement de fichiers , sélection",
-        description: "Arrivé sur la page de téléchargement, vous devrez sélectionner des options afin d'afficher les fichiers que vous souhaitez télécharger.",
-        image: "/images/téléchargement.PNG",
+        id: "suivi-production",
+        title: "Suivi de production (tipi/tipi-client/Payfip)",
+        description: "Cette page permet de faire un suivi de production de la IIA (tipi/tipi-client/Payfip).",
+        image: "/images/suivideproduction.PNG",
         features: [
-          "Le type de données : Données/Log",
-          "Environnement : Tipi/tipi-client",
-          "Zone : ZA/ZU"
+          "Gestion des traitements : choisir un ou plusieurs cas, par exemple, 'À venir' et 'Terminé' affichera dans le tableau tous les traitements 'À venir' et les traitements terminés."
+        ]
+      },
+    ]
+  },
+  {
+    category: "Paiement",
+    sections: [
+      {
+        id: "paiement",
+        title: "Paiement (tipi/tipi-client)",
+        description: "La page de paiement vous permettra de faciliter tous vos tests de paiement.",
+        image: "/images/Paiement.PNG",
+        features: [
+          "Tous les champs du formulaire doivent être verts pour pouvoir créer un paiement",
+          "Possibilité de réaliser des paiements Web service, URL et via le portail PAYFIP",
         ]
       },
       {
-        title: "Récupérer de fichiers",
-        description: "Cette section permet de récupérer des fichiers spécifiques.",
-        image: "/images/récupération.PNG",
+        id: "exer",
+        title: "Paiement, EXER",
+        description: "Le Champ Exercice correspond a la Date ",
+        image: "/images/Exercice.PNG",
         features: [
-          "Génère un fichier ZIP contenant la liste des fichiers que vous avez sélectionnés dans le tableau",
+          "Vous ne pouvez mettre que des chiffres ",
+          "Maximum de caractére est de 4",
+          "Champ obligatoire"
         ]
       },
-      // other sections...
-    ]
-  },
+      {
+        id: "saisie",
+        title: "Paiement, Saisie",
+        description: "Le Champ Saisie correspond au Mode de Saisie  ",
+        image: "/images/Saisie.png",
+        features: [
+          "T pour des paiement de Test",
+          "X pour des paiement d'activation",
+          "W pour des paiements réels"
+        ]
+      },
+      {
+        id: "numero-client",
+        title: "Paiement, Numéro de client",
+        description: "Le Numéro Client attribue a la collectivite par l'administrateur TIPI ",
+        image: "/images/nmc.PNG",
+        features: [
+          "vous ne pouvez mettre que des chiffres",
+          "Maximum de caractére est de 6",
+          "Champ obligatoire"
+        ]
+      },
+      {
+        id: "reference-dette",
+        title: "Paiement, Référence de la dette",
+        description: "cette référence est indispensable pour que les usagers puissent effectuer leurs paiements",
+        image: "/images/refdet.PNG",
+        features: [
+          "Minimum de caractére est de 6",
+          "Maximum de caractére est de 30",
+          "Champ obligatoire"
+        ]
+      },
+      {
+        id: "montant",
+        title: "Paiement, Montant",
+        description: "Il s'agit du montant de la facture ",
+        image: "/images/Montant.PNG",
+        features: [
+          "Vous ne pouvez mettre que des chiffres",
+          "Maximum de caractére est de 11",
+          "Champ obligatoire"
+        ]
+      },
+      {
+        id: "objet",
+        title: "Paiement, objet",
+        description: "Il s'agit de l'objet de l'operation ",
+        image: "/images/objet.PNG",
+        features: [
+          "Maximum de caractére est de 100",
+          "Champ facultative"
+        ]
+      },
+      {
+        id: "mail",
+        title: "Paiement, Mail",
+        description: "Il s'agit de l'adresse mail de l'usager ",
+        image: "/images/Mail.PNG",
+       features: [
+“Maximum de caractére est de 100”,
+“Champ obligatoire”
+]
+},
+{
+id: “type-paiement”,
+title: “Paiement, Type de Paiement”,
+description: “Il s’agit du type de paiement soit Webservice, soit url, soit payfip “,
+image: “/images/Typepaiement.PNG”,
+features: [
+“selection obligatoire”
+]
+},
+{
+id: “dsp”,
+title: “Paiement, DSP”,
+description: “le champ DSP (Date de Service Payeur )”,
+image: “/images/Dsp.PNG”,
+features: [
+“Vous ne pouvez mettre que des chiffres”,
+“Maximum de caractére est de 3”,
+“Champ obligatoire”
+]
+},
+{
+id: “duree”,
+title: “Paiement, Durée”,
+description: “Il s’agit de la durée de la page url ou webservice de paiement “,
+image: “/images/Duree.PNG”,
+features: [
+“Vous ne pouvez mettre que des chiffres”,
+“Maximum de caractére est de 4”,
+“Champ obligatoire”
+]
+},
+{
+id: “code-service”,
+title: “Paiement, Code Service”,
+description: “Il s’agit du code service “,
+image: “/images/Codeservice.PNG”,
+features: [
+“Vous ne pouvez mettre que des chiffres”,
+“Maximum de caractére est de 10”,
+“Champ obligatoire”
+]
+},
+{
+id: “transaction”,
+title: “Paiement, Transaction”,
+description: “Il s’agit de la Transaction avec le Webservice “,
+image: “/images/transaction.PNG”,
+features: [
+“Ce champ génère une page contenant les informations entrées”,
+“Avec un bouton permettant de simuler une transaction”
+]
+},]
+},
+{
+category: “Fichiers”,
+sections: [
+{
+id: “telechargement”,
+title: “Téléchargement de fichiers , sélection”,
+description: “Arrivé sur la page de téléchargement, vous devrez sélectionner des options afin d’afficher les fichiers que vous souhaitez télécharger.”,
+image: “/images/téléchargement.PNG”,
+features: [
+“Le type de données : Données/Log”,
+“Environnement : Tipi/tipi-client”,
+“Zone : ZA/ZU”
+]
+},
+{
+id: “recuperation”,
+title: “Récupérer de fichiers”,
+description: “Cette section permet de récupérer des fichiers spécifiques.”,
+image: “/images/récupération.PNG”,
+features: [
+“Génère un fichier ZIP contenant la liste des fichiers que vous avez sélectionnés dans le tableau”,
+]
+},
+// autres sections…
+]
+},
 ];
 
 const categories = [
-  { name: "Navigation", pages: pages.find(page => page.category === "Navigation")?.sections },
-  { name: "Jeux de données", pages: pages.find(page => page.category === "Jeux de données")?.sections },
-  { name: "Suivi de production", pages: pages.find(page => page.category === "Suivi de production")?.sections },
-  { name: "Paiement", pages: pages.find(page => page.category === "Paiement")?.sections },
-  { name: "Fichiers", pages: pages.find(page => page.category === "Fichiers")?.sections },
+{ name: “Navigation”, pages: pages.find(page => page.category === “Navigation”)?.sections },
+{ name: “Jeux de données”, pages: pages.find(page => page.category === “Jeux de données”)?.sections },
+{ name: “Suivi de production”, pages: pages.find(page => page.category === “Suivi de production”)?.sections },
+{ name: “Paiement”, pages: pages.find(page => page.category === “Paiement”)?.sections },
+{ name: “Fichiers”, pages: pages.find(page => page.category === “Fichiers”)?.sections },
 ];
 
 const activeCategoryIndex = ref(0);
 const activeCategory = computed(() => categories[activeCategoryIndex.value]);
 
 const setActiveCategory = (index: number) => {
-  activeCategoryIndex.value = index;
+activeCategoryIndex.value = index;
 };
-
-const scrollToSection = (section: string) => {
-  const sectionId = section.replace(/[^a-zA-Z]/g, '');
-  const element = document.getElementById(sectionId);
-  if (element) {
-    element.scrollIntoView({ behavior: 'smooth' });
-  }
-};
-</script>
-
-<style scoped>
-.container {
-  margin: auto;
-  padding: 20px;
-  background-color: #f8f9fa;
-}
-
-.header {
-  background-color: #007bff;
-  color: white;
-  border-radius: 5px;
-}
-
-.menu-buttons .btn {
-  padding: 10px 20px;
-  margin: 5px;
-  transition: background-color 0.3s;
-}
-
-.menu-buttons .btn:hover {
-  background-color: #0056b3;
-}
-
-.sub-menu .btn {
-  padding: 10px 20px;
-  margin: 5px;
-  transition: background-color 0.3s;
-}
-
-.sub-menu .btn:hover {
-  background-color: #0056b3;
-}
-
-.page-section {
-  margin-top: 20px;
-}
-
-.card {
-  border: none;
-}
-
-.card-title {
-  margin-bottom: 20px;
-}
-
-.card-text {
-  margin-bottom: 20px;
-}
-
-ul {
-  padding-left: 20px;
-}
-
-li {
-  margin-bottom: 10px;
-}
-
-img {
-  max-width: 100%;
-  height: auto;
-}
-</style>

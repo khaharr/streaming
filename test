@@ -1,3 +1,36 @@
+<template>
+  <div class="container my-5">
+    <div class="header text-center py-5 rounded shadow animate__animated animate__fadeIn">
+      <h1>Documentation Utilisateur</h1>
+    </div>
+    <div class="buttons my-4 text-center">
+      <button v-for="(category, index) in categories" :key="index" @click="setActiveCategory(index)" class="btn btn-primary mx-2 animate__animated animate__fadeInUp">
+        {{ category.name }}
+      </button>
+    </div>
+    <div v-if="activeCategory.name === 'Fichiers'" class="fichiers-menu text-right my-4">
+      <a href="#telechargement" class="btn btn-secondary mx-2 animate__animated animate__fadeInUp">Téléchargement</a>
+      <a href="#recuperation" class="btn btn-secondary mx-2 animate__animated animate__fadeInUp">Récupération</a>
+    </div>
+    <section v-for="(page, index) in activeCategory.pages" :key="index" :id="page.id" class="page-section animate__animated animate__fadeIn">
+      <div class="card mb-4 shadow-sm">
+        <div class="card-body">
+          <h4 class="card-title text-center text-primary">{{ page.title }}</h4>
+          <p class="card-text">{{ page.description }}</p>
+          <div v-if="page.image" class="text-center my-3">
+            <img :src="page.image" :alt="page.title" class="img-fluid rounded shadow-sm">
+          </div>
+          <p><strong>Fonctionnalités:</strong></p>
+          <ul>
+            <li v-for="(feature, featureIndex) in page.features" :key="featureIndex">{{ feature }}</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </div>
+</template>
+
+
 <script setup lang="ts">
 import 'animate.css';
 

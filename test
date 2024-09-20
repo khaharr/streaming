@@ -1,318 +1,158 @@
-
 <template>
+  <div>
+    <h2>SATELIT VXX</h2>
+  </div>
 
-    <div>
-        <h2>SATELIT VXX</h2>
-    </div>
-
-    
-    <div class="lots-container">
-        <div class="fr-grid-row">
-            <div class="fr-m-4w">
-                <fr-tabs title="titleData" :tabs="tabsData">
-                  <!-- onglet 1 -->
-                    <template #panel-0>
-                      <div class="tableau">
-                        <clir-auto-table
-                          caption="Lot 1 blablabla"
-                          captionTag="h4"
-                          :records="[
-                            {'libelle':'IHM : Adhesion PAE TFNG DGE','affectation':'LLE','realisation':'100','testJunit':'50','resultat':'OK'},
-                            {'libelle':'Mail pro DGE','affectation':'JCA','realisation':'50','testJunit':'0'}, 
-                            {'libelle':'Batch au hasard','affectation':'ILR','realisation':'100','testJunit':'0','resultat':'KO'}
-                            ]"
-                          :recordsCount="undefined"
-                          :filteredRecordsCount="undefined"
-                          :fields="[
-                          {'key':'libelle','label':'Libellé','alignment':'right','tdClass':'libelleTache'},{'key':'affectation','alignment':'left'},{'key':'realisation','label':'Réalisation','alignment':'left','tdClass':'real'},{'key':'testJunit','alignment':'right','tdClass':'tdJunit'},{'key':'majDoc','label':'MAJ Doc','alignment':'left'},{'key':'sft','label':'SFT','alignment':'left'},
-                          {'key':'livraisonIA','label':'Livraison IA','alignment':'center'},{'key':'livraisonMoa','label':'Livraison MOA','alignment':'center'},
-                          {'key':'affectationTest','label':'Affectation tests','alignment':'center'},{'key':'cuTests','label':'CU Tests','alignment':'center'},{'key':'realisationTests','label':'Réalisation Test','alignment':'center'},{'key':'resultat','label':'Résultats','alignment':'center','tdClass':'resulTd'}
-                          ]"
-                          :initialStatus="{'currentPage':1,'rowsByPage':5,'sortBy':'nom','sortOrder':'','searchField':'','searchText':''}"
-                          color="info"
-                          :rowsByPageSelectable="true"
-                          :rowsByPageSelectableList="[5,10,20,50,100]"
-                          :readable="true"
-                          lastModalEmitter="undefined"
-                          :editable="true"
-                          :deletable="true"
-                          :insertable="true"
-                          :searchable ="true"
-                          :downloadable="true"
-                          :sortable="false"
-                          :filtrable="true"
-                          :customRenderers="['cuTests']"
-                        >
-
-                        <template #cuTests="{data}">
-                          <div>
-                            <span>
-                                <fr-icon v-if="data < 5" size="sm" name="trophy-line" />
-                                <fr-icon v-if="data >= 5 && data < 10" size="sm" name="bug-line" />
-                                <fr-icon v-if="data >= 10" name="bug-fill" />
-                            </span>
-                            <span class="fr-px-1w">{{ data }}</span>
-                          </div>
-                        </template>
-                      </clir-auto-table>                      
-                      
-                      </div>
-                      
-                      <div class="tableau tabBug">
-                        <clir-auto-table
-                          caption="Bogues du lot 1"
-                          captionTag="h4"
-                          :records="[
-                              {'numBogue':'101010','composant':'IA Batch','nomRapporteur':'Olivier DAVIOT','version':'IA V56R09','resolution':'CORRIGÉ','resume':'[IA]V56R08][IA Batch][Lot 1][CONTROLE_DOUBLON] Bilan - Tableau DGE'}
-                            ]"
-                          :recordsCount="undefined"
-                          :filteredRecordsCount="undefined"
-                          :fields="[
-                          {'key':'numBogue','label':'Numéro du bogue','alignment':'right','tdClass':'pe-2'},{'key':'composant','alignment':'left'},{'key':'nomRapporteur','label':'Nom réel du rapporteur','alignment':'left'},{'key':'version','alignment':'right','tdClass':'pe-2'},{'key':'resolution','label':'Résolution','alignment':'left'},{'key':'resume','label':'Résumé','alignment':'left'},
-                          ]"
-                          :initialStatus="{'currentPage':1,'rowsByPage':5,'sortBy':'nom','sortOrder':'','searchField':'','searchText':''}"
-                          color="info"
-                          :rowsByPageSelectable="true"
-                          :rowsByPageSelectableList="[5,10,20,50,100]"
-                          :readable="true"
-                          lastModalEmitter="undefined"
-                          :editable="true"
-                          :deletable="true"
-                          :insertable="true"
-                          :downloadable="true"
-                          :searchable ="true"
-                          :sortable="false"
-                          :filtrable="true"
-                          :customRenderers="[]"
-                        />
-                      </div>
-                      <div class="BtnSupprimer">   
-                        <FrButton @click="submitForm()">Supprimer lot</FrButton>
-                      </div>
-
-                      <fr-modal
-                        v-model="modalForm"
-                        title="ATTENTION">
-                        <p>Vous tentez de supprimer un lot cette action est irréversible</p>
-                        <FrButton @click="supprimerLot(),submitForm()">Supprimer</FrButton>
-                      </fr-modal>
-                    </template>
-                  <!-- onglet 2 -->
-                    <template #panel-1>
-                      <div class="tableau">
-                      <table>
-                      <tr>
-                        <th></th>
-                        <th>IHM : accès super cool |</th>
-                        <th>Mail CFE |</th>
-                        <th>PDF: Contrats part</th>
-                      </tr>
-                      <tr>
-                        <td class="libelle">affectation</td>
-                        <td>MCR</td>
-                        <td>FPI</td>
-                        <td>ILR</td>
-                      </tr>
-                      <tr>
-                        <td class="libelle">realisation</td>
-                        <td>100%</td>
-                        <td>100%</td>
-                        <td>5%</td>
-                      </tr>
-                      </table>
-                    </div>
-                      
-                      <div class="tableau">
-                        <table class="bugs">
-                        <tr>
-                          <th>Num bug |</th>
-                          <th>composant |</th>
-                          <th>ect.</th>
-                        </tr>
-                        <tr>
-                          <td>101010</td>
-                          <td>101011</td>
-                          <td>101012</td>
-                        </tr>
-                        <tr>
-                          <td>blabla</td>
-                          <td>blell</td>
-                          <td>fuhsdfu</td>
-                        </tr>
-                        </table>
-                      </div>
-                      <div class="BtnSupprimer">   
-                        <FrButton @click="submitForm()">Supprimer lot</FrButton>
-                      </div>
-
-                      <fr-modal
-                        v-model="modalForm"
-                        title="ATTENTION">
-                        <p>Vous tentez de supprimer un lot cette action est irréversible</p>
-                        <FrButton @click="supprimerLot(),submitForm()">Supprimer</FrButton>
-                      </fr-modal>
-                    
-                    </template>
-
-                   
-
-                    <template #panel-2>
-                      <FrButton @click="submitForm()">Créer un nouveau lot</FrButton>
-                      <fr-modal
-                        v-model="modalForm"
-                        title="Créer un nouveau lot">
-                        <form class="needs-validation" novalidate @submit.prevent>
-             
-                          <fr-fieldset
-                              :label="labelData"
-                              class="fr-col-12">
-                              <div class="fr-grid-row">
-                                  <div class="fr-col-5 fr-mr-5w">
-                                      <div class="fr-fieldset__element">
-                                          <fr-input
-                                              id="nom"
-                                              v-model="nom"
-                                              :maxlength="maxLengthData"
-                                              :label="nomLabel"></fr-input>
-                                      </div>
-                                  </div>
-                                  <div class="fr-col-5 fr-mr-5w">
-                                      <div class="fr-fieldset__element">
-                                          <fr-input
-                                          id="prenom"
-                                          v-model="prenom"
-                                          :maxlength="maxLengthData"
-                                          :label="prenomLabel"></fr-input>
-                                      </div>
-                                  </div>
-                              </div>
-                          </fr-fieldset>
-                          <div class="fr-grid-row">
-                              <fr-input id="telephone" v-model="telephone" type="tel" :maxlength="15" :label="telLabel"></fr-input>
-                          </div>
-
-                          <div>
-                              <div><button class="fr-btn" type="submit">Bouton d'envoi</button></div>
-                          </div>
-                      </form>
-                      </fr-modal>
-                    </template>
-
-                    
-                </fr-tabs>
-            </div>
-        </div>
-    </div>
-<!--
+  <div class="lots-container">
     <div class="fr-grid-row">
-     <ClirDropdown
-        v-model="metier"
-        :label="metierLabel"
-        :options="listeMetierFiltered"
-        isAutocomplete
-    /> 
-</div> -->
-    
+      <div class="fr-m-4w">
+        <fr-tabs title="titleData" :tabs="tabsData">
+          <!-- onglet 1 -->
+          <template #panel-0>
+            <div class="tableau">
+              <clir-auto-table
+                caption="Lot 1 blablabla"
+                captionTag="h4"
+                :records="recordsLot1"
+                :fields="fieldsLot1"
+                :rowsByPageSelectable="true"
+                :rowsByPageSelectableList="[5,10,20,50,100]"
+                :readable="true"
+                :editable="true"
+                :deletable="true"
+                :insertable="true"
+                :searchable="true"
+                :downloadable="true"
+                :sortable="false"
+                :filtrable="true"
+              >
+                <template #cell-realisation="{ row }">
+                  <td :class="getRealisationClass(row.realisation)">
+                    {{ row.realisation }}
+                  </td>
+                </template>
+
+                <template #cell-testJunit="{ row }">
+                  <td :class="getJunitClass(row.testJunit)">
+                    {{ row.testJunit }}
+                  </td>
+                </template>
+
+                <template #cell-resultat="{ row }">
+                  <td :class="getResultatClass(row.resultat)">
+                    {{ row.resultat }}
+                  </td>
+                </template>
+              </clir-auto-table>
+            </div>
+
+            <div class="tableau tabBug">
+              <clir-auto-table
+                caption="Bogues du lot 1"
+                captionTag="h4"
+                :records="recordsBugLot1"
+                :fields="fieldsBugLot1"
+                :rowsByPageSelectable="true"
+                :rowsByPageSelectableList="[5,10,20,50,100]"
+                :readable="true"
+                :editable="true"
+                :deletable="true"
+                :insertable="true"
+                :downloadable="true"
+                :searchable="true"
+                :sortable="false"
+                :filtrable="true"
+              />
+            </div>
+            <div class="BtnSupprimer">
+              <FrButton @click="submitForm">Supprimer lot</FrButton>
+            </div>
+
+            <fr-modal v-model="modalForm" title="ATTENTION">
+              <p>Vous tentez de supprimer un lot, cette action est irréversible</p>
+              <FrButton @click="supprimerLot">Supprimer</FrButton>
+            </fr-modal>
+          </template>
+        </fr-tabs>
+      </div>
+    </div>
+  </div>
 </template>
 
-
-
-
 <script>
-
-import jQuery from 'jQuery';
-
 export default {
   name: 'PageLots',
-
   data() {
-    return {            
-      titleData: "Lots",
-      tabsData: [{ label: 'Lot 1' }, { label: 'Lot 2' },{label: '+'}],
+    return {
+      titleData: 'Lots',
+      tabsData: [{ label: 'Lot 1' }, { label: 'Lot 2' }, { label: '+' }],
       modalForm: false,
-
-      labelData: "Lot X",
-                nomLabel: "Titre : ",
-                nom: "",
-                prenomLabel: "autre info : ",
-                prenom: "",
-                maxLengthData: 25,
-                telephone: "",
-                telLabel: "etc : ",
-
-
-      submitForm() {
-        this.modalForm = !this.modalForm;
-      },
-
-      supprimerLot() { console.log("lot supprimé");}
+      recordsLot1: [
+        { libelle: 'IHM : Adhesion PAE TFNG DGE', affectation: 'LLE', realisation: '100', testJunit: '50', resultat: 'OK' },
+        { libelle: 'Mail pro DGE', affectation: 'JCA', realisation: '50', testJunit: '0', resultat: '' },
+        { libelle: 'Batch au hasard', affectation: 'ILR', realisation: '100', testJunit: '0', resultat: 'KO' }
+      ],
+      fieldsLot1: [
+        { key: 'libelle', label: 'Libellé', alignment: 'right' },
+        { key: 'affectation', alignment: 'left' },
+        { key: 'realisation', label: 'Réalisation', alignment: 'left' },
+        { key: 'testJunit', alignment: 'right' },
+        { key: 'resultat', label: 'Résultat', alignment: 'center' }
+      ],
+      recordsBugLot1: [
+        { numBogue: '101010', composant: 'IA Batch', nomRapporteur: 'Olivier DAVIOT', version: 'IA V56R09', resolution: 'CORRIGÉ', resume: 'Bilan - Tableau DGE' }
+      ],
+      fieldsBugLot1: [
+        { key: 'numBogue', label: 'Numéro du bogue', alignment: 'right' },
+        { key: 'composant', alignment: 'left' },
+        { key: 'nomRapporteur', label: 'Nom réel du rapporteur', alignment: 'left' },
+        { key: 'version', alignment: 'right' },
+        { key: 'resolution', label: 'Résolution', alignment: 'left' },
+        { key: 'resume', label: 'Résumé', alignment: 'left' }
+      ]
     };
   },
   methods: {
-    appliquerCouleurs :  function() {
-      const tdReals = document.querySelectorAll('.real');
-      const tdJunit = document.querySelectorAll('.tdJunit');
-      const tdResul = document.querySelectorAll('.resulTd');
-
-      tdReals.forEach(function(tdReals) {
-        const value = parseInt(tdReals.textContent);
-        console.log(value);
-        if(value == 100) { tdReals.classList.add('complete');}
-        else if(value < 100 && value > 0) { tdReals.classList.add('incomplete');}
-      });
- 
-      tdJunit.forEach(function(tdJunit) {
-        const value = parseInt(tdJunit.textContent);
-        console.log(value);
-        if(value == 100) { tdJunit.classList.add('complete');}
-        else if(value < 100 && value > 0) { tdJunit.classList.add('incomplete');}
-      });
-
-      tdResul.forEach(function(tdResul) {
-        const value = tdResul.textContent;
-        console.log(value);
-        if(value == 'OK') { tdResul.classList.add('complete');}
-        else if(value == 'KO') { tdResul.classList.add('error');}
-      });
+    submitForm() {
+      this.modalForm = !this.modalForm;
+    },
+    supprimerLot() {
+      console.log('lot supprimé');
+    },
+    getRealisationClass(realisation) {
+      const value = parseInt(realisation);
+      if (value === 100) return 'complete';
+      if (value > 0 && value < 100) return 'incomplete';
+      return '';
+    },
+    getJunitClass(junit) {
+      const value = parseInt(junit);
+      if (value === 100) return 'complete';
+      if (value > 0 && value < 100) return 'incomplete';
+      return '';
+    },
+    getResultatClass(resultat) {
+      if (resultat === 'OK') return 'complete';
+      if (resultat === 'KO') return 'error';
+      return '';
     }
-  }, 
-  before() { 
-    this.appliquerCouleurs()
+  },
+  mounted() {
+    // Placez ici les actions à effectuer une fois que le composant est monté
   }
-}
-
-
-
+};
 </script>
 
 <style>
-
-/** cette couleur quand c'est 100% */
 .complete {
-  background-color:limegreen !important;
+  background-color: limegreen !important;
 }
-/** cette couleur quand c'est n% tq  0 < n < 100 */
 .incomplete {
   background-color: darkorange !important;
 }
-/** cette couleur quand c'est un pb */
 .error {
   background-color: crimson !important;
 }
-
-
-/* .resulTd {
-  background-color: crimson;
-}
-
-.tdJunit {
-  background-color: darkorange;
-} */
-
-.tabBug th {
-  background-color: aquamarine;
-}
-
 .lots-container {
   margin-left: auto;
   margin-right: auto;
@@ -320,25 +160,11 @@ export default {
   padding-right: 1rem;
   width: 100%;
 }
-.lots-container::after {
-  box-sizing: inherit;
-}
-
-.lots-container::before {
-  box-sizing: inherit;
-}
-
 .BtnSupprimer {
   display: flex;
   justify-content: right;
 }
-
 .tableau {
   margin-bottom: 10vh;
 }
-
-.bugs th {
-  background-color: lightseagreen;
-}
-
 </style>

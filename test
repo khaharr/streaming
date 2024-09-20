@@ -1,158 +1,19 @@
-<template>
-  <div>
-    <h2>SATELIT VXX</h2>
-  </div>
-
-  <div class="lots-container">
-    <div class="fr-grid-row">
-      <div class="fr-m-4w">
-        <fr-tabs title="titleData" :tabs="tabsData">
-          <!-- onglet 1 -->
-          <template #panel-0>
-            <div class="tableau">
-              <clir-auto-table
-                caption="Lot 1 blablabla"
-                captionTag="h4"
-                :records="recordsLot1"
-                :fields="fieldsLot1"
-                :rowsByPageSelectable="true"
-                :rowsByPageSelectableList="[5,10,20,50,100]"
-                :readable="true"
-                :editable="true"
-                :deletable="true"
-                :insertable="true"
-                :searchable="true"
-                :downloadable="true"
-                :sortable="false"
-                :filtrable="true"
-              >
-                <template #cell-realisation="{ row }">
-                  <td :class="getRealisationClass(row.realisation)">
-                    {{ row.realisation }}
-                  </td>
-                </template>
-
-                <template #cell-testJunit="{ row }">
-                  <td :class="getJunitClass(row.testJunit)">
-                    {{ row.testJunit }}
-                  </td>
-                </template>
-
-                <template #cell-resultat="{ row }">
-                  <td :class="getResultatClass(row.resultat)">
-                    {{ row.resultat }}
-                  </td>
-                </template>
-              </clir-auto-table>
-            </div>
-
-            <div class="tableau tabBug">
-              <clir-auto-table
-                caption="Bogues du lot 1"
-                captionTag="h4"
-                :records="recordsBugLot1"
-                :fields="fieldsBugLot1"
-                :rowsByPageSelectable="true"
-                :rowsByPageSelectableList="[5,10,20,50,100]"
-                :readable="true"
-                :editable="true"
-                :deletable="true"
-                :insertable="true"
-                :downloadable="true"
-                :searchable="true"
-                :sortable="false"
-                :filtrable="true"
-              />
-            </div>
-            <div class="BtnSupprimer">
-              <FrButton @click="submitForm">Supprimer lot</FrButton>
-            </div>
-
-            <fr-modal v-model="modalForm" title="ATTENTION">
-              <p>Vous tentez de supprimer un lot, cette action est irréversible</p>
-              <FrButton @click="supprimerLot">Supprimer</FrButton>
-            </fr-modal>
-          </template>
-        </fr-tabs>
-      </div>
-    </div>
-  </div>
-</template>
-
-<script>
-export default {
-  name: 'PageLots',
-  data() {
-    return {
-      titleData: 'Lots',
-      tabsData: [{ label: 'Lot 1' }, { label: 'Lot 2' }, { label: '+' }],
-      modalForm: false,
-      recordsLot1: [
-        { libelle: 'IHM : Adhesion PAE TFNG DGE', affectation: 'LLE', realisation: '100', testJunit: '50', resultat: 'OK' },
-        { libelle: 'Mail pro DGE', affectation: 'JCA', realisation: '50', testJunit: '0', resultat: '' },
-        { libelle: 'Batch au hasard', affectation: 'ILR', realisation: '100', testJunit: '0', resultat: 'KO' }
-      ],
-      fieldsLot1: [
-        { key: 'libelle', label: 'Libellé', alignment: 'right' },
-        { key: 'affectation', alignment: 'left' },
-        { key: 'realisation', label: 'Réalisation', alignment: 'left' },
-        { key: 'testJunit', alignment: 'right' },
-        { key: 'resultat', label: 'Résultat', alignment: 'center' }
-      ],
-      recordsBugLot1: [
-        { numBogue: '101010', composant: 'IA Batch', nomRapporteur: 'Olivier DAVIOT', version: 'IA V56R09', resolution: 'CORRIGÉ', resume: 'Bilan - Tableau DGE' }
-      ],
-      fieldsBugLot1: [
-        { key: 'numBogue', label: 'Numéro du bogue', alignment: 'right' },
-        { key: 'composant', alignment: 'left' },
-        { key: 'nomRapporteur', label: 'Nom réel du rapporteur', alignment: 'left' },
-        { key: 'version', alignment: 'right' },
-        { key: 'resolution', label: 'Résolution', alignment: 'left' },
-        { key: 'resume', label: 'Résumé', alignment: 'left' }
-      ]
-    };
-  },
-  methods: {
-    submitForm() {
-      this.modalForm = !this.modalForm;
-    },
-    supprimerLot() {
-      console.log('lot supprimé');
-    },
-    getRealisationClass(realisation) {
-      const value = parseInt(realisation);
-      if (value === 100) return 'complete';
-      if (value > 0 && value < 100) return 'incomplete';
-      return '';
-    },
-    getJunitClass(junit) {
-      const value = parseInt(junit);
-      if (value === 100) return 'complete';
-      if (value > 0 && value < 100) return 'incomplete';
-      return '';
-    },
-    getResultatClass(resultat) {
-      if (resultat === 'OK') return 'complete';
-      if (resultat === 'KO') return 'error';
-      return '';
-    }
-  },
-  mounted() {
-    // Placez ici les actions à effectuer une fois que le composant est monté
-  }
-};
-</script>
-
-<style>
 .complete {
   background-color: limegreen !important;
 }
+
 .incomplete {
   background-color: darkorange !important;
 }
+
 .error {
   background-color: crimson !important;
 }
+
+.tabBug th {
+  background-color: aquamarine;
+}
+
 .lots-container {
   margin-left: auto;
   margin-right: auto;
@@ -160,11 +21,16 @@ export default {
   padding-right: 1rem;
   width: 100%;
 }
+
 .BtnSupprimer {
   display: flex;
   justify-content: right;
 }
+
 .tableau {
   margin-bottom: 10vh;
 }
-</style>
+
+.bugs th {
+  background-color: lightseagreen;
+}

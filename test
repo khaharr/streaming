@@ -1,309 +1,344 @@
+
 <template>
-  <div class="container my-5">
-    <div class="header text-center py-5 rounded shadow animate__animated animate__fadeIn">
-      <h1>Documentation Utilisateur</h1>
+
+    <div>
+        <h2>SATELIT VXX</h2>
     </div>
-    <div class="buttons my-4 text-center">
-      <button v-for="(category, index) in categories" :key="index" @click="setActiveCategory(index)" class="btn btn-primary mx-2 animate__animated animate__fadeInUp">
-        {{ category.name }}
-      </button>
-    </div>
-    <div v-if="activeCategory.name === 'Fichiers'" class="fichiers-menu text-right my-4">
-      <a href="#telechargement" class="btn btn-secondary mx-2 animate__animated animate__fadeInUp">Téléchargement</a>
-      <a href="#recuperation" class="btn btn-secondary mx-2 animate__animated animate__fadeInUp">Récupération</a>
-    </div>
-    <section v-for="(page, index) in activeCategory.pages" :key="index" :id="page.id" class="page-section animate__animated animate__fadeIn">
-      <div class="card mb-4 shadow-sm">
-        <div class="card-body">
-          <h4 class="card-title text-center text-primary">{{ page.title }}</h4>
-          <p class="card-text">{{ page.description }}</p>
-          <div v-if="page.image" class="text-center my-3">
-            <img :src="page.image" :alt="page.title" class="img-fluid rounded shadow-sm">
-          </div>
-          <p><strong>Fonctionnalités:</strong></p>
-          <ul>
-            <li v-for="(feature, featureIndex) in page.features" :key="featureIndex">{{ feature }}</li>
-          </ul>
+
+    
+    <div class="lots-container">
+        <div class="fr-grid-row">
+            <div class="fr-m-4w">
+                <fr-tabs title="titleData" :tabs="tabsData">
+                  <!-- onglet 1 -->
+                    <template #panel-0>
+                      <div class="tableau">
+                        <clir-auto-table
+                          caption="Lot 1 blablabla"
+                          captionTag="h4"
+                          :records="[
+                            {'libelle':'IHM : Adhesion PAE TFNG DGE','affectation':'LLE','realisation':'100','testJunit':'50','resultat':'OK'},
+                            {'libelle':'Mail pro DGE','affectation':'JCA','realisation':'50','testJunit':'0'}, 
+                            {'libelle':'Batch au hasard','affectation':'ILR','realisation':'100','testJunit':'0','resultat':'KO'}
+                            ]"
+                          :recordsCount="undefined"
+                          :filteredRecordsCount="undefined"
+                          :fields="[
+                          {'key':'libelle','label':'Libellé','alignment':'right','tdClass':'libelleTache'},{'key':'affectation','alignment':'left'},{'key':'realisation','label':'Réalisation','alignment':'left','tdClass':'real'},{'key':'testJunit','alignment':'right','tdClass':'tdJunit'},{'key':'majDoc','label':'MAJ Doc','alignment':'left'},{'key':'sft','label':'SFT','alignment':'left'},
+                          {'key':'livraisonIA','label':'Livraison IA','alignment':'center'},{'key':'livraisonMoa','label':'Livraison MOA','alignment':'center'},
+                          {'key':'affectationTest','label':'Affectation tests','alignment':'center'},{'key':'cuTests','label':'CU Tests','alignment':'center'},{'key':'realisationTests','label':'Réalisation Test','alignment':'center'},{'key':'resultat','label':'Résultats','alignment':'center','tdClass':'resulTd'}
+                          ]"
+                          :initialStatus="{'currentPage':1,'rowsByPage':5,'sortBy':'nom','sortOrder':'','searchField':'','searchText':''}"
+                          color="info"
+                          :rowsByPageSelectable="true"
+                          :rowsByPageSelectableList="[5,10,20,50,100]"
+                          :readable="true"
+                          lastModalEmitter="undefined"
+                          :editable="true"
+                          :deletable="true"
+                          :insertable="true"
+                          :searchable ="true"
+                          :downloadable="true"
+                          :sortable="false"
+                          :filtrable="true"
+                          :customRenderers="['cuTests']"
+                        >
+
+                        <template #cuTests="{data}">
+                          <div>
+                            <span>
+                                <fr-icon v-if="data < 5" size="sm" name="trophy-line" />
+                                <fr-icon v-if="data >= 5 && data < 10" size="sm" name="bug-line" />
+                                <fr-icon v-if="data >= 10" name="bug-fill" />
+                            </span>
+                            <span class="fr-px-1w">{{ data }}</span>
+                          </div>
+                        </template>
+                      </clir-auto-table>                      
+                      
+                      </div>
+                      
+                      <div class="tableau tabBug">
+                        <clir-auto-table
+                          caption="Bogues du lot 1"
+                          captionTag="h4"
+                          :records="[
+                              {'numBogue':'101010','composant':'IA Batch','nomRapporteur':'Olivier DAVIOT','version':'IA V56R09','resolution':'CORRIGÉ','resume':'[IA]V56R08][IA Batch][Lot 1][CONTROLE_DOUBLON] Bilan - Tableau DGE'}
+                            ]"
+                          :recordsCount="undefined"
+                          :filteredRecordsCount="undefined"
+                          :fields="[
+                          {'key':'numBogue','label':'Numéro du bogue','alignment':'right','tdClass':'pe-2'},{'key':'composant','alignment':'left'},{'key':'nomRapporteur','label':'Nom réel du rapporteur','alignment':'left'},{'key':'version','alignment':'right','tdClass':'pe-2'},{'key':'resolution','label':'Résolution','alignment':'left'},{'key':'resume','label':'Résumé','alignment':'left'},
+                          ]"
+                          :initialStatus="{'currentPage':1,'rowsByPage':5,'sortBy':'nom','sortOrder':'','searchField':'','searchText':''}"
+                          color="info"
+                          :rowsByPageSelectable="true"
+                          :rowsByPageSelectableList="[5,10,20,50,100]"
+                          :readable="true"
+                          lastModalEmitter="undefined"
+                          :editable="true"
+                          :deletable="true"
+                          :insertable="true"
+                          :downloadable="true"
+                          :searchable ="true"
+                          :sortable="false"
+                          :filtrable="true"
+                          :customRenderers="[]"
+                        />
+                      </div>
+                      <div class="BtnSupprimer">   
+                        <FrButton @click="submitForm()">Supprimer lot</FrButton>
+                      </div>
+
+                      <fr-modal
+                        v-model="modalForm"
+                        title="ATTENTION">
+                        <p>Vous tentez de supprimer un lot cette action est irréversible</p>
+                        <FrButton @click="supprimerLot(),submitForm()">Supprimer</FrButton>
+                      </fr-modal>
+                    </template>
+                  <!-- onglet 2 -->
+                    <template #panel-1>
+                      <div class="tableau">
+                      <table>
+                      <tr>
+                        <th></th>
+                        <th>IHM : accès super cool |</th>
+                        <th>Mail CFE |</th>
+                        <th>PDF: Contrats part</th>
+                      </tr>
+                      <tr>
+                        <td class="libelle">affectation</td>
+                        <td>MCR</td>
+                        <td>FPI</td>
+                        <td>ILR</td>
+                      </tr>
+                      <tr>
+                        <td class="libelle">realisation</td>
+                        <td>100%</td>
+                        <td>100%</td>
+                        <td>5%</td>
+                      </tr>
+                      </table>
+                    </div>
+                      
+                      <div class="tableau">
+                        <table class="bugs">
+                        <tr>
+                          <th>Num bug |</th>
+                          <th>composant |</th>
+                          <th>ect.</th>
+                        </tr>
+                        <tr>
+                          <td>101010</td>
+                          <td>101011</td>
+                          <td>101012</td>
+                        </tr>
+                        <tr>
+                          <td>blabla</td>
+                          <td>blell</td>
+                          <td>fuhsdfu</td>
+                        </tr>
+                        </table>
+                      </div>
+                      <div class="BtnSupprimer">   
+                        <FrButton @click="submitForm()">Supprimer lot</FrButton>
+                      </div>
+
+                      <fr-modal
+                        v-model="modalForm"
+                        title="ATTENTION">
+                        <p>Vous tentez de supprimer un lot cette action est irréversible</p>
+                        <FrButton @click="supprimerLot(),submitForm()">Supprimer</FrButton>
+                      </fr-modal>
+                    
+                    </template>
+
+                   
+
+                    <template #panel-2>
+                      <FrButton @click="submitForm()">Créer un nouveau lot</FrButton>
+                      <fr-modal
+                        v-model="modalForm"
+                        title="Créer un nouveau lot">
+                        <form class="needs-validation" novalidate @submit.prevent>
+             
+                          <fr-fieldset
+                              :label="labelData"
+                              class="fr-col-12">
+                              <div class="fr-grid-row">
+                                  <div class="fr-col-5 fr-mr-5w">
+                                      <div class="fr-fieldset__element">
+                                          <fr-input
+                                              id="nom"
+                                              v-model="nom"
+                                              :maxlength="maxLengthData"
+                                              :label="nomLabel"></fr-input>
+                                      </div>
+                                  </div>
+                                  <div class="fr-col-5 fr-mr-5w">
+                                      <div class="fr-fieldset__element">
+                                          <fr-input
+                                          id="prenom"
+                                          v-model="prenom"
+                                          :maxlength="maxLengthData"
+                                          :label="prenomLabel"></fr-input>
+                                      </div>
+                                  </div>
+                              </div>
+                          </fr-fieldset>
+                          <div class="fr-grid-row">
+                              <fr-input id="telephone" v-model="telephone" type="tel" :maxlength="15" :label="telLabel"></fr-input>
+                          </div>
+
+                          <div>
+                              <div><button class="fr-btn" type="submit">Bouton d'envoi</button></div>
+                          </div>
+                      </form>
+                      </fr-modal>
+                    </template>
+
+                    
+                </fr-tabs>
+            </div>
         </div>
-      </div>
-    </section>
-  </div>
+    </div>
+<!--
+    <div class="fr-grid-row">
+     <ClirDropdown
+        v-model="metier"
+        :label="metierLabel"
+        :options="listeMetierFiltered"
+        isAutocomplete
+    /> 
+</div> -->
+    
 </template>
 
 
-<script setup lang="ts">
-import 'animate.css';
 
-const pages = [
-  {
-    category: "Navigation",
-    sections: [
-      {
-        id: "navigation-bar",
-        title: "Barre de navigation",
-        description: "La barre de navigation permet d'accéder facilement aux différentes sections du site.",
-        image: "/images/navbar.jpg",
-        features: [
-          "Menu déroulant pour les sections principales",
-          "Liens vers les pages",
-          "Possibilité de changer de thème (sombre/clair) avec l'icône en haut à droite de votre page"
-        ]
+
+<script>
+
+import jQuery from 'jQuery';
+
+export default {
+  name: 'PageLots',
+
+  data() {
+    return {            
+      titleData: "Lots",
+      tabsData: [{ label: 'Lot 1' }, { label: 'Lot 2' },{label: '+'}],
+      modalForm: false,
+
+      labelData: "Lot X",
+                nomLabel: "Titre : ",
+                nom: "",
+                prenomLabel: "autre info : ",
+                prenom: "",
+                maxLengthData: 25,
+                telephone: "",
+                telLabel: "etc : ",
+
+
+      submitForm() {
+        this.modalForm = !this.modalForm;
       },
-    ]
+
+      supprimerLot() { console.log("lot supprimé");}
+    };
   },
-  {
-    category: "Jeux de données",
-    sections: [
-      {
-        id: "jeux-de-donnees",
-        title: "Jeux de données",
-        description: "La page des jeux de données vous permet de générer des jeux de données.",
-        image: "/images/jeuxdedonnées.PNG",
-        features: [
-          "Possibilité de changer d'environnement (tipi/tipi-client)",
-          "Accès rapide aux sections (RNF, Titre, Rôle, EPS)",
-          "Mettre à jour les dernières données (20, 50, 70, 100 lignes)",
-          "Afficher les données sous forme de tableau",
-          "Il est possible de trier chaque colonne par ordre croissant ou décroissant en cliquant sur l'en-tête en noir",
-          "Rechercher les références présentes dans le tableau avec la barre de recherche placée en haut à droite du tableau",
-          "Afficher plus de lignes par page (10, 25)"
-        ]
-      },
-      {
-        id: "changer-environnement",
-        title: "Jeux de données, changer d'environnement",
-        description: "cocher la case afin de changer d'environnement et récupérer les jeux de données de l'environnement choisi ",
-        image: "/images/env.PNG",
-        features: [
-          "changement d'application tipi/tipi-client",
-        ]
-      },
-      {
-        id: "sections",
-        title: "Jeux de données, sections ",
-        description: "Accéder au differentes séction en cliquant sur les différents radios ",
-        image: "/images/sections.PNG",
-        features: [
-          "EXEMPLE : si je clique sur Titre je vais par la suite générer tous les Jeux de données liée au Titre",
-        ]
-      },
-      {
-        id: "afficher-mettre-a-jour",
-        title: "Jeux de données,afficher/Mettre à jour",
-        description: "permet d'afficher les données et de mettre ajour les données afin de récperer les données les plus récentes ",
-        image: "/images/afficher.PNG",
-        features: [
-          "cliquer sur afficher afin de générer le tableau de donnée",
-          "cliquer sur Mettre à jour afin de générer le tableau avec les données récentes "
-        ]
-      },
-      {
-        id: "mettre-a-jour",
-        title: "Mettre à jour",
-        description: "des que le bouton Mettre a jour est cliquer , vous aurez la possiblité de choisir le nombre de lignes a Mettre a jour",
-        image: "/images/Mettreajour.png",
-        features: [
-          "EXEMPLE : si je choisi 70  ,je vais récupérer les 70 données les plus récentes",
-          
-        ]
-      },
-      
-    ]
-  },
-  {
-    category: "Suivi de production",
-    sections: [
-      {
-        id: "suivi-production",
-        title: "Suivi de production (tipi/tipi-client/Payfip)",
-        description: "Cette page permet de faire un suivi de production de la IIA (tipi/tipi-client/Payfip).",
-        image: "/images/suivideproduction.PNG",
-        features: [
-          "Gestion des traitements : choisir un ou plusieurs cas, par exemple, 'À venir' et 'Terminé' affichera dans le tableau tous les traitements 'À venir' et les traitements terminés."
-        ]
-      },
-    ]
-  },
-  {
-    category: "Paiement",
-    sections: [
-      {
-        id: "paiement",
-        title: "Paiement (tipi/tipi-client)",
-        description: "La page de paiement vous permettra de faciliter tous vos tests de paiement.",
-        image: "/images/Paiement.PNG",
-        features: [
-          "Tous les champs du formulaire doivent être verts pour pouvoir créer un paiement",
-          "Possibilité de réaliser des paiements Web service, URL et via le portail PAYFIP",
-        ]
-      },
-      {
-        id: "exer",
-        title: "Paiement, EXER",
-        description: "Le Champ Exercice correspond a la Date ",
-        image: "/images/Exercice.PNG",
-        features: [
-          "Vous ne pouvez mettre que des chiffres ",
-          "Maximum de caractére est de 4",
-          "Champ obligatoire"
-        ]
-      },
-      {
-        id: "saisie",
-        title: "Paiement, Saisie",
-        description: "Le Champ Saisie correspond au Mode de Saisie  ",
-        image: "/images/Saisie.png",
-        features: [
-          "T pour des paiement de Test",
-          "X pour des paiement d'activation",
-          "W pour des paiements réels"
-        ]
-      },
-      {
-        id: "numero-client",
-        title: "Paiement, Numéro de client",
-        description: "Le Numéro Client attribue a la collectivite par l'administrateur TIPI ",
-        image: "/images/nmc.PNG",
-        features: [
-          "vous ne pouvez mettre que des chiffres",
-          "Maximum de caractére est de 6",
-          "Champ obligatoire"
-        ]
-      },
-      {
-        id: "reference-dette",
-        title: "Paiement, Référence de la dette",
-        description: "cette référence est indispensable pour que les usagers puissent effectuer leurs paiements",
-        image: "/images/refdet.PNG",
-        features: [
-          "Minimum de caractére est de 6",
-          "Maximum de caractére est de 30",
-          "Champ obligatoire"
-        ]
-      },
-      {
-        id: "montant",
-        title: "Paiement, Montant",
-        description: "Il s'agit du montant de la facture ",
-        image: "/images/Montant.PNG",
-        features: [
-          "Vous ne pouvez mettre que des chiffres",
-          "Maximum de caractére est de 11",
-          "Champ obligatoire"
-        ]
-      },
-      {
-        id: "objet",
-        title: "Paiement, objet",
-        description: "Il s'agit de l'objet de l'operation ",
-        image: "/images/objet.PNG",
-        features: [
-          "Maximum de caractére est de 100",
-          "Champ facultative"
-        ]
-      },
-      {
-        id: "mail",
-        title: "Paiement, Mail",
-        description: "Il s'agit de l'adresse mail de l'usager ",
-        image: "/images/Mail.PNG",
-       features: [
-“Maximum de caractére est de 100”,
-“Champ obligatoire”
-]
-},
-{
-id: “type-paiement”,
-title: “Paiement, Type de Paiement”,
-description: “Il s’agit du type de paiement soit Webservice, soit url, soit payfip “,
-image: “/images/Typepaiement.PNG”,
-features: [
-“selection obligatoire”
-]
-},
-{
-id: “dsp”,
-title: “Paiement, DSP”,
-description: “le champ DSP (Date de Service Payeur )”,
-image: “/images/Dsp.PNG”,
-features: [
-“Vous ne pouvez mettre que des chiffres”,
-“Maximum de caractére est de 3”,
-“Champ obligatoire”
-]
-},
-{
-id: “duree”,
-title: “Paiement, Durée”,
-description: “Il s’agit de la durée de la page url ou webservice de paiement “,
-image: “/images/Duree.PNG”,
-features: [
-“Vous ne pouvez mettre que des chiffres”,
-“Maximum de caractére est de 4”,
-“Champ obligatoire”
-]
-},
-{
-id: “code-service”,
-title: “Paiement, Code Service”,
-description: “Il s’agit du code service “,
-image: “/images/Codeservice.PNG”,
-features: [
-“Vous ne pouvez mettre que des chiffres”,
-“Maximum de caractére est de 10”,
-“Champ obligatoire”
-]
-},
-{
-id: “transaction”,
-title: “Paiement, Transaction”,
-description: “Il s’agit de la Transaction avec le Webservice “,
-image: “/images/transaction.PNG”,
-features: [
-“Ce champ génère une page contenant les informations entrées”,
-“Avec un bouton permettant de simuler une transaction”
-]
-},]
-},
-{
-category: “Fichiers”,
-sections: [
-{
-id: “telechargement”,
-title: “Téléchargement de fichiers , sélection”,
-description: “Arrivé sur la page de téléchargement, vous devrez sélectionner des options afin d’afficher les fichiers que vous souhaitez télécharger.”,
-image: “/images/téléchargement.PNG”,
-features: [
-“Le type de données : Données/Log”,
-“Environnement : Tipi/tipi-client”,
-“Zone : ZA/ZU”
-]
-},
-{
-id: “recuperation”,
-title: “Récupérer de fichiers”,
-description: “Cette section permet de récupérer des fichiers spécifiques.”,
-image: “/images/récupération.PNG”,
-features: [
-“Génère un fichier ZIP contenant la liste des fichiers que vous avez sélectionnés dans le tableau”,
-]
-},
-// autres sections…
-]
-},
-];
+  methods: {
+    appliquerCouleurs :  function() {
+      const tdReals = document.querySelectorAll('.real');
+      const tdJunit = document.querySelectorAll('.tdJunit');
+      const tdResul = document.querySelectorAll('.resulTd');
 
-const categories = [
-{ name: “Navigation”, pages: pages.find(page => page.category === “Navigation”)?.sections },
-{ name: “Jeux de données”, pages: pages.find(page => page.category === “Jeux de données”)?.sections },
-{ name: “Suivi de production”, pages: pages.find(page => page.category === “Suivi de production”)?.sections },
-{ name: “Paiement”, pages: pages.find(page => page.category === “Paiement”)?.sections },
-{ name: “Fichiers”, pages: pages.find(page => page.category === “Fichiers”)?.sections },
-];
+      tdReals.forEach(function(tdReals) {
+        const value = parseInt(tdReals.textContent);
+        console.log(value);
+        if(value == 100) { tdReals.classList.add('complete');}
+        else if(value < 100 && value > 0) { tdReals.classList.add('incomplete');}
+      });
+ 
+      tdJunit.forEach(function(tdJunit) {
+        const value = parseInt(tdJunit.textContent);
+        console.log(value);
+        if(value == 100) { tdJunit.classList.add('complete');}
+        else if(value < 100 && value > 0) { tdJunit.classList.add('incomplete');}
+      });
 
-const activeCategoryIndex = ref(0);
-const activeCategory = computed(() => categories[activeCategoryIndex.value]);
+      tdResul.forEach(function(tdResul) {
+        const value = tdResul.textContent;
+        console.log(value);
+        if(value == 'OK') { tdResul.classList.add('complete');}
+        else if(value == 'KO') { tdResul.classList.add('error');}
+      });
+    }
+  }, 
+  before() { 
+    this.appliquerCouleurs()
+  }
+}
 
-const setActiveCategory = (index: number) => {
-activeCategoryIndex.value = index;
-};
+
+
+</script>
+
+<style>
+
+/** cette couleur quand c'est 100% */
+.complete {
+  background-color:limegreen !important;
+}
+/** cette couleur quand c'est n% tq  0 < n < 100 */
+.incomplete {
+  background-color: darkorange !important;
+}
+/** cette couleur quand c'est un pb */
+.error {
+  background-color: crimson !important;
+}
+
+
+/* .resulTd {
+  background-color: crimson;
+}
+
+.tdJunit {
+  background-color: darkorange;
+} */
+
+.tabBug th {
+  background-color: aquamarine;
+}
+
+.lots-container {
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  width: 100%;
+}
+.lots-container::after {
+  box-sizing: inherit;
+}
+
+.lots-container::before {
+  box-sizing: inherit;
+}
+
+.BtnSupprimer {
+  display: flex;
+  justify-content: right;
+}
+
+.tableau {
+  margin-bottom: 10vh;
+}
+
+.bugs th {
+  background-color: lightseagreen;
+}
+
+</style>

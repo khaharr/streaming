@@ -1,3 +1,69 @@
+<template>
+  <div>
+    <h2>SATELIT VXX</h2>
+  </div>
+
+  <div class="lots-container">
+    <div class="fr-grid-row">
+      <div class="fr-m-4w">
+        <fr-tabs title="titleData" :tabs="tabsData">
+          <!-- onglet 1 -->
+          <template #panel-0>
+            <div class="tableau">
+              <clir-auto-table
+                caption="Lot 1 blablabla"
+                captionTag="h4"
+                :records="records"
+                :recordsCount="undefined"
+                :filteredRecordsCount="undefined"
+                :fields="fields"
+                :initialStatus="{
+                  'currentPage': 1,
+                  'rowsByPage': 5,
+                  'sortBy': 'nom',
+                  'sortOrder': '',
+                  'searchField': '',
+                  'searchText': ''
+                }"
+                color="info"
+                :rowsByPageSelectable="true"
+                :rowsByPageSelectableList="[5, 10, 20, 50, 100]"
+                :readable="true"
+                lastModalEmitter="undefined"
+                :editable="true"
+                :deletable="true"
+                :insertable="true"
+                :searchable="true"
+                :downloadable="true"
+                :sortable="false"
+                :filtrable="true"
+                :customRenderers="['cuTests']"
+              >
+                <template #realisation="{ data }">
+                  <td :class="getRealisationClass(data)">
+                    {{ data }}
+                  </td>
+                </template>
+
+                <template #testJunit="{ data }">
+                  <td :class="getJunitClass(data)">
+                    {{ data }}
+                  </td>
+                </template>
+
+                <template #resultat="{ data }">
+                  <td :class="getResultClass(data)">
+                    {{ data }}
+                  </td>
+                </template>
+              </clir-auto-table>
+            </div>
+          </template>
+        </fr-tabs>
+      </div>
+    </div>
+  </div>
+</template>
 <script>
 export default {
   name: 'PageLots',
@@ -7,15 +73,60 @@ export default {
       titleData: 'Lots',
       tabsData: [{ label: 'Lot 1' }, { label: 'Lot 2' }, { label: '+' }],
       modalForm: false,
+      records: [
+        {
+          libelle: 'IHM : Adhesion PAE TFNG DGE',
+          affectation: 'LLE',
+          realisation: '100',
+          testJunit: '50',
+          resultat: 'OK',
+        },
+        {
+          libelle: 'Mail pro DGE',
+          affectation: 'JCA',
+          realisation: '50',
+          testJunit: '0',
+          resultat: 'KO',
+        },
+        {
+          libelle: 'Batch au hasard',
+          affectation: 'ILR',
+          realisation: '100',
+          testJunit: '0',
+          resultat: 'KO',
+        },
+      ],
+      fields: [
+        { key: 'libelle', label: 'Libellé', alignment: 'right', tdClass: 'libelleTache' },
+        { key: 'affectation', alignment: 'left' },
+        {
+          key: 'realisation',
+          label: 'Réalisation',
+          alignment: 'left',
+          tdClass: 'real',
+        },
+        {
+          key: 'testJunit',
+          alignment: 'right',
+          tdClass: 'tdJunit',
+        },
+        {
+          key: 'resultat',
+          label: 'Résultats',
+          alignment: 'center',
+          tdClass: 'resulTd',
+        },
+      ],
     };
   },
 
   methods: {
     // Méthode pour déterminer la classe à appliquer à la colonne "realisation"
     getRealisationClass(value) {
-      if (value === 100) {
+      const real = parseInt(value);
+      if (real === 100) {
         return 'complete';
-      } else if (value > 0 && value < 100) {
+      } else if (real > 0 && real < 100) {
         return 'incomplete';
       }
       return '';
@@ -23,9 +134,10 @@ export default {
 
     // Méthode pour déterminer la classe à appliquer à la colonne "testJunit"
     getJunitClass(value) {
-      if (value === 100) {
+      const junit = parseInt(value);
+      if (junit === 100) {
         return 'complete';
-      } else if (value > 0 && value < 100) {
+      } else if (junit > 0 && junit < 100) {
         return 'incomplete';
       }
       return '';

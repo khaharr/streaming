@@ -1,125 +1,51 @@
-<template>
-  <div>
-    <h2>SATELIT VXX</h2>
-  </div>
-
-  <div class="lots-container">
-    <div class="fr-grid-row">
-      <div class="fr-m-4w">
-        <fr-tabs title="titleData" :tabs="tabsData">
-          <!-- onglet 1 -->
-          <template #panel-0>
-            <div class="tableau">
-              <clir-auto-table
-                caption="Lot 1 blablabla"
-                captionTag="h4"
-                :records="[
-                  {'libelle':'IHM : Adhesion PAE TFNG DGE','affectation':'LLE','realisation':'100','testJunit':'50','resultat':'OK'},
-                  {'libelle':'Mail pro DGE','affectation':'JCA','realisation':'50','testJunit':'0'}, 
-                  {'libelle':'Batch au hasard','affectation':'ILR','realisation':'100','testJunit':'0','resultat':'KO'}
-                ]"
-                :fields="[
-                  {'key':'libelle','label':'Libellé','alignment':'right','tdClass':'libelleTache'},
-                  {'key':'affectation','alignment':'left'},
-                  {'key':'realisation','label':'Réalisation','alignment':'left','tdClass':'real', 'class': (record) => applyRealisationClass(record.realisation)},
-                  {'key':'testJunit','alignment':'right','tdClass':'tdJunit', 'class': (record) => applyTestJunitClass(record.testJunit)},
-                  {'key':'resultat','label':'Résultats','alignment':'center','tdClass':'resulTd', 'class': (record) => applyResultatClass(record.resultat)}
-                ]"
-                :initialStatus="{'currentPage':1,'rowsByPage':5,'sortBy':'nom'}"
-                color="info"
-                :rowsByPageSelectable="true"
-                :rowsByPageSelectableList="[5,10,20,50,100]"
-                :readable="true"
-                :editable="true"
-                :deletable="true"
-                :insertable="true"
-                :searchable="true"
-                :sortable="false"
-                :filtrable="true"
-              />
-            </div>
-
-            <div class="tableau tabBug">
-              <clir-auto-table
-                caption="Bogues du lot 1"
-                captionTag="h4"
-                :records="[
-                  {'numBogue':'101010','composant':'IA Batch','nomRapporteur':'Olivier DAVIOT','version':'IA V56R09','resolution':'CORRIGÉ','resume':'[IA]V56R08][IA Batch][Lot 1][CONTROLE_DOUBLON] Bilan - Tableau DGE'}
-                ]"
-                :fields="[
-                  {'key':'numBogue','label':'Numéro du bogue','alignment':'right','tdClass':'pe-2'},
-                  {'key':'composant','alignment':'left'},
-                  {'key':'nomRapporteur','label':'Nom réel du rapporteur','alignment':'left'},
-                  {'key':'version','alignment':'right','tdClass':'pe-2'},
-                  {'key':'resolution','label':'Résolution','alignment':'left'},
-                  {'key':'resume','label':'Résumé','alignment':'left'}
-                ]"
-                :initialStatus="{'currentPage':1,'rowsByPage':5,'sortBy':'nom'}"
-                color="info"
-                :rowsByPageSelectable="true"
-                :rowsByPageSelectableList="[5,10,20,50,100]"
-                :readable="true"
-                :editable="true"
-                :deletable="true"
-              />
-            </div>
-
-            <div class="BtnSupprimer">   
-              <FrButton @click="submitForm()">Supprimer lot</FrButton>
-            </div>
-
-            <fr-modal v-model="modalForm" title="ATTENTION">
-              <p>Vous tentez de supprimer un lot cette action est irréversible</p>
-              <FrButton @click="supprimerLot()">Supprimer</FrButton>
-            </fr-modal>
-          </template>
-        </fr-tabs>
-      </div>
-    </div>
-  </div>
-</template>
-
 <script>
 export default {
   name: 'PageLots',
-  
+
   data() {
     return {
       titleData: "Lots",
       tabsData: [{ label: 'Lot 1' }, { label: 'Lot 2' }, { label: '+' }],
-      modalForm: false
+      modalForm: false,
     };
   },
 
   methods: {
-    // Méthode pour appliquer les classes pour la colonne 'Réalisation'
-    applyRealisationClass(realisation) {
-      if (realisation === 100) {
-        return 'complete';
-      } else if (realisation < 100 && realisation > 0) {
-        return 'incomplete';
-      }
-      return '';
-    },
-    
-    // Méthode pour appliquer les classes pour la colonne 'Test Junit'
-    applyTestJunitClass(testJunit) {
-      if (testJunit === 100) {
-        return 'complete';
-      } else if (testJunit < 100 && testJunit > 0) {
-        return 'incomplete';
-      }
-      return '';
-    },
+    appliquerCouleurs() {
+      // Sélection des éléments des colonnes "réalisation", "testJunit", et "resultat"
+      const tdReals = document.querySelectorAll('.real');
+      const tdJunit = document.querySelectorAll('.tdJunit');
+      const tdResul = document.querySelectorAll('.resulTd');
 
-    // Méthode pour appliquer les classes pour la colonne 'Résultat'
-    applyResultatClass(resultat) {
-      if (resultat === 'OK') {
-        return 'complete';
-      } else if (resultat === 'KO') {
-        return 'error';
-      }
-      return '';
+      // Appliquer les couleurs pour les colonnes "realisation"
+      tdReals.forEach(function(td) {
+        const value = parseInt(td.textContent);
+        if (value === 100) {
+          td.classList.add('complete');
+        } else if (value < 100 && value > 0) {
+          td.classList.add('incomplete');
+        }
+      });
+
+      // Appliquer les couleurs pour les colonnes "testJunit"
+      tdJunit.forEach(function(td) {
+        const value = parseInt(td.textContent);
+        if (value === 100) {
+          td.classList.add('complete');
+        } else if (value < 100 && value > 0) {
+          td.classList.add('incomplete');
+        }
+      });
+
+      // Appliquer les couleurs pour la colonne "resultat"
+      tdResul.forEach(function(td) {
+        const value = td.textContent.trim();
+        if (value === 'OK') {
+          td.classList.add('complete');
+        } else if (value === 'KO') {
+          td.classList.add('error');
+        }
+      });
     },
 
     submitForm() {
@@ -128,46 +54,12 @@ export default {
 
     supprimerLot() {
       console.log("lot supprimé");
-    }
-  }
+    },
+  },
+
+  mounted() {
+    // Appeler la méthode pour appliquer les couleurs une fois que le composant est monté
+    this.appliquerCouleurs();
+  },
 };
 </script>
-
-
-
-.complete {
-  background-color: limegreen !important;
-}
-
-.incomplete {
-  background-color: darkorange !important;
-}
-
-.error {
-  background-color: crimson !important;
-}
-
-.tabBug th {
-  background-color: aquamarine;
-}
-
-.lots-container {
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: 1rem;
-  padding-right: 1rem;
-  width: 100%;
-}
-
-.BtnSupprimer {
-  display: flex;
-  justify-content: right;
-}
-
-.tableau {
-  margin-bottom: 10vh;
-}
-
-.bugs th {
-  background-color: lightseagreen;
-}

@@ -7,39 +7,26 @@
           <fr-tabs title="titleData" :tabs="tabsData">
             <template #panel-0>
               <div class="tableau">
-                <clir-auto-table
-                  caption="Lot 1 blablabla"
-                  captionTag="h4"
-                  :records="records"
-                  :fields="fields"
-                  :initialStatus="{
-                    currentPage: 1,
-                    rowsByPage: 5,
-                    sortBy: 'nom',
-                    sortOrder: '',
-                    searchField: '',
-                    searchText: ''
-                  }"
-                  color="info"
-                >
-                  <template #realisation="{ data }">
-                    <td :class="getRealisationClass(data)">
-                      {{ data }}
-                    </td>
-                  </template>
-
-                  <template #testJunit="{ data }">
-                    <td :class="getJunitClass(data)">
-                      {{ data }}
-                    </td>
-                  </template>
-
-                  <template #resultat="{ data }">
-                    <td :class="getResultClass(data)">
-                      {{ data }}
-                    </td>
-                  </template>
-                </clir-auto-table>
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Libellé</th>
+                      <th>Affectation</th>
+                      <th :class="getHeaderClass('realisation')">Réalisation</th>
+                      <th :class="getHeaderClass('testJunit')">Test JUnit</th>
+                      <th :class="getHeaderClass('resultat')">Résultats</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="record in records" :key="record.libelle">
+                      <td>{{ record.libelle }}</td>
+                      <td>{{ record.affectation }}</td>
+                      <td :class="getRealisationClass(record.realisation)">{{ record.realisation }}</td>
+                      <td :class="getJunitClass(record.testJunit)">{{ record.testJunit }}</td>
+                      <td :class="getResultClass(record.resultat)">{{ record.resultat }}</td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </template>
           </fr-tabs>
@@ -48,68 +35,3 @@
     </div>
   </div>
 </template>
-
-<script>
-export default {
-  name: 'PageLots',
-
-  data() {
-    return {
-      titleData: 'Lots',
-      tabsData: [{ label: 'Lot 1' }, { label: 'Lot 2' }, { label: '+' }],
-      records: [
-        {
-          libelle: 'IHM : Adhesion PAE TFNG DGE',
-          affectation: 'LLE',
-          realisation: '100',
-          testJunit: '50',
-          resultat: 'OK',
-        },
-        {
-          libelle: 'Mail pro DGE',
-          affectation: 'JCA',
-          realisation: '50',
-          testJunit: '0',
-          resultat: 'KO',
-        },
-        {
-          libelle: 'Batch au hasard',
-          affectation: 'ILR',
-          realisation: '100',
-          testJunit: '0',
-          resultat: 'KO',
-        },
-      ],
-      fields: [
-        { key: 'libelle', label: 'Libellé', alignment: 'right' },
-        { key: 'affectation', alignment: 'left' },
-        { key: 'realisation', label: 'Réalisation', alignment: 'left' },
-        { key: 'testJunit', alignment: 'right' },
-        { key: 'resultat', label: 'Résultats', alignment: 'center' },
-      ],
-    };
-  },
-
-  methods: {
-    getRealisationClass(value) {
-      const real = parseInt(value);
-      if (real === 100) return 'complete';
-      if (real > 0) return 'incomplete';
-      return '';
-    },
-
-    getJunitClass(value) {
-      const junit = parseInt(value);
-      if (junit === 100) return 'complete';
-      if (junit > 0) return 'incomplete';
-      return '';
-    },
-
-    getResultClass(value) {
-      if (value === 'OK') return 'complete';
-      if (value === 'KO') return 'error';
-      return '';
-    },
-  },
-};
-</script>

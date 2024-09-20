@@ -1,65 +1,83 @@
-<script>
-export default {
-  name: 'PageLots',
+<template>
+  <div>
+    <h2>SATELIT VXX</h2>
+  </div>
 
-  data() {
-    return {
-      titleData: "Lots",
-      tabsData: [{ label: 'Lot 1' }, { label: 'Lot 2' }, { label: '+' }],
-      modalForm: false,
-    };
-  },
+  <div class="lots-container">
+    <div class="fr-grid-row">
+      <div class="fr-m-4w">
+        <fr-tabs title="titleData" :tabs="tabsData">
+          <!-- onglet 1 -->
+          <template #panel-0>
+            <div class="tableau">
+              <clir-auto-table
+                caption="Lot 1 blablabla"
+                captionTag="h4"
+                :records="[
+                  {'libelle':'IHM : Adhesion PAE TFNG DGE','affectation':'LLE','realisation':'100','testJunit':'50','resultat':'OK'},
+                  {'libelle':'Mail pro DGE','affectation':'JCA','realisation':'50','testJunit':'0'}, 
+                  {'libelle':'Batch au hasard','affectation':'ILR','realisation':'100','testJunit':'0','resultat':'KO'}
+                ]"
+                :recordsCount="undefined"
+                :filteredRecordsCount="undefined"
+                :fields="[
+                  {'key':'libelle','label':'Libellé','alignment':'right','tdClass':'libelleTache'},
+                  {'key':'affectation','alignment':'left'},
+                  {'key':'realisation','label':'Réalisation','alignment':'left','tdClass':'real'},
+                  {'key':'testJunit','alignment':'right','tdClass':'tdJunit'},
+                  {'key':'majDoc','label':'MAJ Doc','alignment':'left'},
+                  {'key':'sft','label':'SFT','alignment':'left'},
+                  {'key':'livraisonIA','label':'Livraison IA','alignment':'center'},
+                  {'key':'livraisonMoa','label':'Livraison MOA','alignment':'center'},
+                  {'key':'affectationTest','label':'Affectation tests','alignment':'center'},
+                  {'key':'cuTests','label':'CU Tests','alignment':'center'},
+                  {'key':'realisationTests','label':'Réalisation Test','alignment':'center'},
+                  {'key':'resultat','label':'Résultats','alignment':'center','tdClass':'resulTd'}
+                ]"
+                :initialStatus="{
+                  'currentPage': 1,
+                  'rowsByPage': 5,
+                  'sortBy': 'nom',
+                  'sortOrder': '',
+                  'searchField': '',
+                  'searchText': ''
+                }"
+                color="info"
+                :rowsByPageSelectable="true"
+                :rowsByPageSelectableList="[5, 10, 20, 50, 100]"
+                :readable="true"
+                lastModalEmitter="undefined"
+                :editable="true"
+                :deletable="true"
+                :insertable="true"
+                :searchable="true"
+                :downloadable="true"
+                :sortable="false"
+                :filtrable="true"
+                :customRenderers="['cuTests']"
+              >
+                <template #real="{ data }">
+                  <td :class="getRealisationClass(data)">
+                    {{ data }}
+                  </td>
+                </template>
 
-  methods: {
-    appliquerCouleurs() {
-      // Sélection des éléments des colonnes "réalisation", "testJunit", et "resultat"
-      const tdReals = document.querySelectorAll('.real');
-      const tdJunit = document.querySelectorAll('.tdJunit');
-      const tdResul = document.querySelectorAll('.resulTd');
+                <template #testJunit="{ data }">
+                  <td :class="getJunitClass(data)">
+                    {{ data }}
+                  </td>
+                </template>
 
-      // Appliquer les couleurs pour les colonnes "realisation"
-      tdReals.forEach(function(td) {
-        const value = parseInt(td.textContent);
-        if (value === 100) {
-          td.classList.add('complete');
-        } else if (value < 100 && value > 0) {
-          td.classList.add('incomplete');
-        }
-      });
-
-      // Appliquer les couleurs pour les colonnes "testJunit"
-      tdJunit.forEach(function(td) {
-        const value = parseInt(td.textContent);
-        if (value === 100) {
-          td.classList.add('complete');
-        } else if (value < 100 && value > 0) {
-          td.classList.add('incomplete');
-        }
-      });
-
-      // Appliquer les couleurs pour la colonne "resultat"
-      tdResul.forEach(function(td) {
-        const value = td.textContent.trim();
-        if (value === 'OK') {
-          td.classList.add('complete');
-        } else if (value === 'KO') {
-          td.classList.add('error');
-        }
-      });
-    },
-
-    submitForm() {
-      this.modalForm = !this.modalForm;
-    },
-
-    supprimerLot() {
-      console.log("lot supprimé");
-    },
-  },
-
-  mounted() {
-    // Appeler la méthode pour appliquer les couleurs une fois que le composant est monté
-    this.appliquerCouleurs();
-  },
-};
-</script>
+                <template #resultat="{ data }">
+                  <td :class="getResultClass(data)">
+                    {{ data }}
+                  </td>
+                </template>
+              </clir-auto-table>
+            </div>
+          </template>
+        </fr-tabs>
+      </div>
+    </div>
+  </div>
+</template>

@@ -1,69 +1,54 @@
 <template>
   <div>
     <h2>SATELIT VXX</h2>
-  </div>
+    <div class="lots-container">
+      <div class="fr-grid-row">
+        <div class="fr-m-4w">
+          <fr-tabs title="titleData" :tabs="tabsData">
+            <template #panel-0>
+              <div class="tableau">
+                <clir-auto-table
+                  caption="Lot 1 blablabla"
+                  captionTag="h4"
+                  :records="records"
+                  :fields="fields"
+                  :initialStatus="{
+                    currentPage: 1,
+                    rowsByPage: 5,
+                    sortBy: 'nom',
+                    sortOrder: '',
+                    searchField: '',
+                    searchText: ''
+                  }"
+                  color="info"
+                >
+                  <template #realisation="{ data }">
+                    <td :class="getRealisationClass(data)">
+                      {{ data }}
+                    </td>
+                  </template>
 
-  <div class="lots-container">
-    <div class="fr-grid-row">
-      <div class="fr-m-4w">
-        <fr-tabs title="titleData" :tabs="tabsData">
-          <!-- onglet 1 -->
-          <template #panel-0>
-            <div class="tableau">
-              <clir-auto-table
-                caption="Lot 1 blablabla"
-                captionTag="h4"
-                :records="records"
-                :recordsCount="undefined"
-                :filteredRecordsCount="undefined"
-                :fields="fields"
-                :initialStatus="{
-                  'currentPage': 1,
-                  'rowsByPage': 5,
-                  'sortBy': 'nom',
-                  'sortOrder': '',
-                  'searchField': '',
-                  'searchText': ''
-                }"
-                color="info"
-                :rowsByPageSelectable="true"
-                :rowsByPageSelectableList="[5, 10, 20, 50, 100]"
-                :readable="true"
-                lastModalEmitter="undefined"
-                :editable="true"
-                :deletable="true"
-                :insertable="true"
-                :searchable="true"
-                :downloadable="true"
-                :sortable="false"
-                :filtrable="true"
-                :customRenderers="['cuTests']"
-              >
-                <template #realisation="{ data }">
-                  <td :class="getRealisationClass(data)">
-                    {{ data }}
-                  </td>
-                </template>
+                  <template #testJunit="{ data }">
+                    <td :class="getJunitClass(data)">
+                      {{ data }}
+                    </td>
+                  </template>
 
-                <template #testJunit="{ data }">
-                  <td :class="getJunitClass(data)">
-                    {{ data }}
-                  </td>
-                </template>
-
-                <template #resultat="{ data }">
-                  <td :class="getResultClass(data)">
-                    {{ data }}
-                  </td>
-                </template>
-              </clir-auto-table>
-            </div>
-          </template>
-        </fr-tabs>
+                  <template #resultat="{ data }">
+                    <td :class="getResultClass(data)">
+                      {{ data }}
+                    </td>
+                  </template>
+                </clir-auto-table>
+              </div>
+            </template>
+          </fr-tabs>
+        </div>
       </div>
     </div>
   </div>
 </template>
+
 <script>
 export default {
   name: 'PageLots',
@@ -72,7 +57,6 @@ export default {
     return {
       titleData: 'Lots',
       tabsData: [{ label: 'Lot 1' }, { label: 'Lot 2' }, { label: '+' }],
-      modalForm: false,
       records: [
         {
           libelle: 'IHM : Adhesion PAE TFNG DGE',
@@ -97,68 +81,34 @@ export default {
         },
       ],
       fields: [
-        { key: 'libelle', label: 'Libellé', alignment: 'right', tdClass: 'libelleTache' },
+        { key: 'libelle', label: 'Libellé', alignment: 'right' },
         { key: 'affectation', alignment: 'left' },
-        {
-          key: 'realisation',
-          label: 'Réalisation',
-          alignment: 'left',
-          tdClass: 'real',
-        },
-        {
-          key: 'testJunit',
-          alignment: 'right',
-          tdClass: 'tdJunit',
-        },
-        {
-          key: 'resultat',
-          label: 'Résultats',
-          alignment: 'center',
-          tdClass: 'resulTd',
-        },
+        { key: 'realisation', label: 'Réalisation', alignment: 'left' },
+        { key: 'testJunit', alignment: 'right' },
+        { key: 'resultat', label: 'Résultats', alignment: 'center' },
       ],
     };
   },
 
   methods: {
-    // Méthode pour déterminer la classe à appliquer à la colonne "realisation"
     getRealisationClass(value) {
       const real = parseInt(value);
-      if (real === 100) {
-        return 'complete';
-      } else if (real > 0 && real < 100) {
-        return 'incomplete';
-      }
+      if (real === 100) return 'complete';
+      if (real > 0) return 'incomplete';
       return '';
     },
 
-    // Méthode pour déterminer la classe à appliquer à la colonne "testJunit"
     getJunitClass(value) {
       const junit = parseInt(value);
-      if (junit === 100) {
-        return 'complete';
-      } else if (junit > 0 && junit < 100) {
-        return 'incomplete';
-      }
+      if (junit === 100) return 'complete';
+      if (junit > 0) return 'incomplete';
       return '';
     },
 
-    // Méthode pour déterminer la classe à appliquer à la colonne "resultat"
     getResultClass(value) {
-      if (value === 'OK') {
-        return 'complete';
-      } else if (value === 'KO') {
-        return 'error';
-      }
+      if (value === 'OK') return 'complete';
+      if (value === 'KO') return 'error';
       return '';
-    },
-
-    submitForm() {
-      this.modalForm = !this.modalForm;
-    },
-
-    supprimerLot() {
-      console.log('lot supprimé');
     },
   },
 };

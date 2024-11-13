@@ -1,1 +1,44 @@
+<template>
+    <div class="container">
+        <div
+            class="fr-grid-row fr-grid-row--center fr-grid-row--middle"
+            style="flex-direction: column"
+        >
+            <h1>
+                <img class :src="handleImage('clir-dsfr.svg')" style="height: 15rem" />
+            </h1>
+            <Hello msg="Bienvenue sur votre projet blanc" />
+        <div>
+            <fr-button onclick="clicked()" 
+                                    id="loginButton"
+                                    class="fr-mt-2w"
+                                    title="Connexion"
+                                    label="appuyer"
+                                    type="submit"
+                                >
+                                </fr-button>
+        </div>
+        <div class="result">
+
+        </div>
+
+        </div>
+    </div>
+</template>
+
+<script>
+import Hello from '@/components/Hello/Hello.vue';
+
+export default {
+    const getData = function() {
+        fetch('http://localhost:8084/monappli-api/api/centreimpot/findAll')
+            .then(res => res.json())
+            .then(data => {
+            })
+            .catch(error => console.log(error))
+}
+
+    
+}
+</script>
 

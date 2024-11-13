@@ -8,20 +8,29 @@
                 <img class :src="handleImage('clir-dsfr.svg')" style="height: 15rem" />
             </h1>
             <Hello msg="Bienvenue sur votre projet blanc" />
-        <div>
-            <fr-button onclick="clicked()" 
-                                    id="loginButton"
-                                    class="fr-mt-2w"
-                                    title="Connexion"
-                                    label="appuyer"
-                                    type="submit"
-                                >
-                                </fr-button>
-        </div>
-        <div class="result">
 
-        </div>
+            <div>
+                <fr-button 
+                    @click="getData" 
+                    id="loginButton"
+                    class="fr-mt-2w"
+                    title="Connexion"
+                    label="appuyer"
+                    type="submit"
+                >
+                    Appuyer
+                </fr-button>
+            </div>
 
+            <div class="result">
+                <!-- Utilisez v-for pour afficher les données récupérées dans des cartes -->
+                <div v-for="(item, index) in data" :key="index" class="card">
+                    <h2>{{ item.nom }}</h2>
+                    <p>{{ item.adresse }}</p>
+                    <p>{{ item.ville }}</p>
+                    <!-- Ajoutez plus de champs en fonction de la structure de vos données -->
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -30,15 +39,34 @@
 import Hello from '@/components/Hello/Hello.vue';
 
 export default {
-    const getData = function() {
-        fetch('http://localhost:8084/monappli-api/api/centreimpot/findAll')
-            .then(res => res.json())
-            .then(data => {
-            })
-            .catch(error => console.log(error))
-}
-
-    
+    components: {
+        Hello
+    },
+    data() {
+        return {
+            data: [] // Stockage des données de l'API
+        };
+    },
+    methods: {
+        getData() {
+            fetch('http://localhost:8084/monappli-api/api/centreimpot/findAll')
+                .then(res => res.json())
+                .then(data => {
+                    this.data = data; // Mettre à jour les données récupérées dans data
+                })
+                .catch(error => console.log(error));
+        }
+    }
 }
 </script>
 
+<style scoped>
+/* Style pour les cartes */
+.card {
+    border: 1px solid #ddd;
+    padding: 1rem;
+    margin: 1rem 0;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+</style>

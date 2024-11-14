@@ -1,69 +1,83 @@
-<template>
-    <div class="container">
-        <div
-            class="fr-grid-row fr-grid-row--center fr-grid-row--middle"
-            style="flex-direction: column"
-        >
-            <h1>
-                <img :src="handleImage('clir-dsfr.svg')" style="height: 15rem" />
-            </h1>
-            <Hello msg="Bienvenue sur votre projet blanc" />
+Pour créer un cas d’utilisation complet pour la modification d’un profil utilisateur, avec les aspects front-end et back-end, nous allons détailler les étapes et les interactions nécessaires pour permettre la modification de données telles que l’email ou le mot de passe, et assurer que ces modifications soient bien enregistrées dans la base de données.
 
-            <div>
-                <fr-button 
-                    @click="getData" 
-                    id="loginButton"
-                    class="fr-mt-2w"
-                    title="Connexion"
-                    label="appuyer"
-                    type="submit"
-                >
-                    Appuyer
-                </fr-button>
-            </div>
+Cas d’utilisation : Modification d’un profil utilisateur
 
-            <div class="result">
-                <div v-for="(item, index) in data" :key="index" class="card">
-                    <h2>{{ item.nom }}</h2>
-                    <p>{{ item.adresse }}</p>
-                    <p>{{ item.ville }}</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</template>
+1. Contexte et Objectif
 
-<script>
-import Hello from '@/components/Hello/Hello.vue';
+L’utilisateur doit pouvoir modifier ses informations de profil (comme l’email, le mot de passe, le nom, etc.) depuis l’interface front-end, et ces changements doivent être reflétés et enregistrés dans la base de données sur le back-end.
 
-export default {
-    components: {
-        Hello
-    },
-    data() {
-        return {
-            data: [] // Propriété réactive pour stocker les données de l'API
-        };
-    },
-    methods: {
-        getData() {
-            fetch('http://localhost:8084/monappli-api/api/centreimpot/findAll')
-                .then(res => res.json())
-                .then(data => {
-                    this.data = data;
-                })
-                .catch(error => console.log(error));
-        }
-    }
-}
-</script>
+2. Acteurs
 
-<style scoped>
-.card {
-    border: 1px solid #ddd;
-    padding: 1rem;
-    margin: 1rem 0;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-</style>
+	•	Utilisateur : initie la modification des informations de son profil.
+	•	Système : assure le traitement et la validation des informations, ainsi que leur enregistrement dans la base de données.
+
+3. Pré-conditions
+
+	•	L’utilisateur est authentifié et connecté à son compte.
+	•	L’utilisateur accède à la page de modification du profil.
+
+4. Description des Scénarios
+
+4.1 Front-End : Page de Modification de Profil
+
+	1.	Affichage du Formulaire
+Le formulaire de modification de profil s’affiche avec les champs pré-remplis par les informations actuelles de l’utilisateur :
+	•	Champs pour les informations de base : nom, prénom, email, etc.
+	•	Champ pour le mot de passe (avec une confirmation de mot de passe).
+	2.	Interaction avec les Champs
+L’utilisateur peut modifier un ou plusieurs champs (par exemple, il peut changer son adresse email et son mot de passe).
+	3.	Validation Front-End
+Avant l’envoi du formulaire, une validation front-end est effectuée :
+	•	Vérifier que l’adresse email est bien formée.
+	•	Vérifier que le mot de passe est conforme aux règles de sécurité (longueur minimale, caractères spéciaux, etc.).
+	•	S’assurer que la confirmation du mot de passe correspond au nouveau mot de passe.
+	4.	Soumission du Formulaire
+Une fois le formulaire rempli et validé, l’utilisateur clique sur le bouton de sauvegarde. Une requête HTTP (généralement une requête PUT ou PATCH) est envoyée au serveur avec les nouvelles données.
+
+4.2 Back-End : Traitement des Données
+
+	1.	Réception de la Requête
+Le serveur reçoit la requête contenant les données modifiées de l’utilisateur.
+	2.	Validation Back-End
+Des validations supplémentaires sont effectuées côté back-end pour garantir la sécurité et l’intégrité des données :
+	•	Vérifier que l’adresse email n’existe pas déjà dans le système.
+	•	Vérifier les règles de sécurité du mot de passe.
+	•	Authentifier l’utilisateur qui fait la requête pour s’assurer de son identité.
+	3.	Traitement des Modifications
+	•	Email : Si l’email a été modifié, le système doit mettre à jour l’email dans la base de données.
+	•	Mot de passe : Si le mot de passe a été modifié, le système doit le hacher (utilisation d’une fonction de hachage sécurisé, par exemple bcrypt) avant de le stocker dans la base de données.
+	4.	Mise à Jour dans la Base de Données
+Le système effectue les opérations de mise à jour dans la base de données pour enregistrer les nouvelles informations.
+	5.	Réponse au Front-End
+Le serveur envoie une réponse au front-end :
+	•	Si la mise à jour a réussi, renvoyer un message de succès.
+	•	Si une erreur survient (par exemple, l’email est déjà pris), renvoyer un message d’erreur approprié.
+
+5. Scénarios d’Erreur
+
+	•	Email déjà existant : Le système retourne une erreur si l’adresse email saisie est déjà utilisée par un autre compte.
+	•	Mot de passe non conforme : Si le nouveau mot de passe ne respecte pas les règles de sécurité, le serveur envoie un message d’erreur précisant les critères.
+	•	Échec de la Mise à Jour en Base de Données : Si, pour une raison quelconque, la mise à jour échoue (par exemple, problème de connexion à la base de données), un message d’erreur général est renvoyé.
+
+6. Cas de Succès et Post-conditions
+
+	•	L’utilisateur reçoit une confirmation que son profil a été mis à jour.
+	•	Les nouvelles informations sont bien enregistrées dans la base de données.
+	•	Si l’email a été modifié, un email de confirmation peut être envoyé pour vérifier la nouvelle adresse.
+
+7. Détails Techniques
+
+Front-End
+
+	•	Technologies : HTML, CSS, JavaScript (et éventuellement un framework comme React ou Vue.js).
+	•	Validation : Utiliser JavaScript pour vérifier la structure des champs (regex pour email, règles pour mot de passe).
+	•	API Call : Effectuer un appel HTTP vers le serveur (ex. : fetch() en JavaScript).
+
+Back-End
+
+	•	Technologies : Node.js, Express (ou tout autre framework back-end).
+	•	Validation : Double vérification de la sécurité des données, y compris validation des entrées et contrôle d’authentification.
+	•	Hachage du Mot de Passe : Utiliser un algorithme de hachage comme bcrypt pour sécuriser le stockage du mot de passe.
+	•	Base de Données : Exécuter des requêtes SQL (ou via un ORM) pour mettre à jour les informations de l’utilisateur.
+
+Cela assure une gestion complète de la modification de profil avec une validation front-end et back-end, en tenant compte des aspects de sécurité, de persistance des données, et de l’expérience utilisateur.

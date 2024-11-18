@@ -1,83 +1,113 @@
-Pour créer un cas d’utilisation complet pour la modification d’un profil utilisateur, avec les aspects front-end et back-end, nous allons détailler les étapes et les interactions nécessaires pour permettre la modification de données telles que l’email ou le mot de passe, et assurer que ces modifications soient bien enregistrées dans la base de données.
+Cas d’utilisation : Mot de passe oublié
 
-Cas d’utilisation : Modification d’un profil utilisateur
+Description générale
 
-1. Contexte et Objectif
+Le cas d’utilisation “Mot de passe oublié” permet à un utilisateur qui a perdu ou oublié son mot de passe de réinitialiser ce dernier de manière sécurisée. Cela implique des étapes à la fois côté Front-end et Back-end, incluant des validations, des envois de courriel sécurisés, et la mise à jour du mot de passe.
 
-L’utilisateur doit pouvoir modifier ses informations de profil (comme l’email, le mot de passe, le nom, etc.) depuis l’interface front-end, et ces changements doivent être reflétés et enregistrés dans la base de données sur le back-end.
+Cas d’utilisation complet et complexe
 
-2. Acteurs
+Acteurs
 
-	•	Utilisateur : initie la modification des informations de son profil.
-	•	Système : assure le traitement et la validation des informations, ainsi que leur enregistrement dans la base de données.
+	•	Utilisateur : Personne qui a oublié son mot de passe et souhaite le réinitialiser.
+	•	Système : L’application gérant la réinitialisation du mot de passe.
+	•	Serveur SMTP (ou service tiers) : Service pour l’envoi des e-mails de réinitialisation.
 
-3. Pré-conditions
+Préconditions
 
-	•	L’utilisateur est authentifié et connecté à son compte.
-	•	L’utilisateur accède à la page de modification du profil.
+	•	L’utilisateur doit avoir un compte dans le système.
+	•	Une adresse e-mail valide doit être associée au compte de l’utilisateur.
 
-4. Description des Scénarios
+Postconditions
 
-4.1 Front-End : Page de Modification de Profil
+	•	Si toutes les étapes réussissent, l’utilisateur peut se connecter avec son nouveau mot de passe.
+	•	Les anciens jetons ou sessions doivent être invalidés pour renforcer la sécurité.
 
-	1.	Affichage du Formulaire
-Le formulaire de modification de profil s’affiche avec les champs pré-remplis par les informations actuelles de l’utilisateur :
-	•	Champs pour les informations de base : nom, prénom, email, etc.
-	•	Champ pour le mot de passe (avec une confirmation de mot de passe).
-	2.	Interaction avec les Champs
-L’utilisateur peut modifier un ou plusieurs champs (par exemple, il peut changer son adresse email et son mot de passe).
-	3.	Validation Front-End
-Avant l’envoi du formulaire, une validation front-end est effectuée :
-	•	Vérifier que l’adresse email est bien formée.
-	•	Vérifier que le mot de passe est conforme aux règles de sécurité (longueur minimale, caractères spéciaux, etc.).
-	•	S’assurer que la confirmation du mot de passe correspond au nouveau mot de passe.
-	4.	Soumission du Formulaire
-Une fois le formulaire rempli et validé, l’utilisateur clique sur le bouton de sauvegarde. Une requête HTTP (généralement une requête PUT ou PATCH) est envoyée au serveur avec les nouvelles données.
+Scénario principal (Front-end et Back-end)
 
-4.2 Back-End : Traitement des Données
+	1.	Accès à la page de réinitialisation :
+	•	L’utilisateur clique sur le lien “Mot de passe oublié” depuis la page de connexion.
+	•	Route front-end : GET /password-reset affiche un formulaire pour entrer l’adresse e-mail.
+	2.	Soumission de l’adresse e-mail :
+	•	L’utilisateur saisit son adresse e-mail et clique sur “Envoyer”.
+	•	Le front-end effectue une validation basique sur l’adresse (format correct, champ non vide).
+	•	Route API : POST /api/auth/password-reset-request avec { email: "user@example.com" }.
+	3.	Vérification de l’adresse e-mail (Back-end) :
+	•	Le back-end vérifie si l’adresse e-mail existe dans la base de données.
+	•	Si l’adresse est valide :
+	•	Génère un jeton sécurisé (UUID ou JWT) avec une expiration (ex. 15 minutes).
+	•	Stocke ce jeton (et son hash pour sécurité) dans la base de données lié à l’utilisateur.
+	•	Envoie un e-mail contenant un lien de réinitialisation avec ce jeton.
+	•	Si l’adresse est invalide : renvoie un message générique (“Si cet e-mail existe, un lien a été envoyé”).
+	•	Route API : POST /api/auth/password-reset-request renvoie { success: true }.
+	4.	Envoi du lien de réinitialisation :
+	•	Le back-end utilise un serveur SMTP ou un service d’envoi d’e-mails (ex. SendGrid, AWS SES) pour envoyer un e-mail contenant le lien de réinitialisation.
+	•	Le lien ressemble à : https://example.com/password-reset?token=securetoken123.
+	5.	Clique sur le lien de réinitialisation (Front-end) :
+	•	L’utilisateur reçoit l’e-mail, clique sur le lien, et est redirigé vers une page pour définir un nouveau mot de passe.
+	•	Route front-end : GET /password-reset?token=securetoken123 charge un formulaire pour saisir un nouveau mot de passe.
+	6.	Soumission du nouveau mot de passe :
+	•	L’utilisateur entre son nouveau mot de passe et le confirme.
+	•	Le front-end valide :
+	•	Les deux champs doivent correspondre.
+	•	Le mot de passe doit respecter les critères de sécurité (longueur, caractères spéciaux, etc.).
+	•	Route API : POST /api/auth/password-reset avec { token: "securetoken123", password: "NewStrongPassword123" }.
+	7.	Validation et mise à jour du mot de passe (Back-end) :
+	•	Le serveur :
+	•	Vérifie la validité du jeton (existence, non expiré).
+	•	Vérifie que le jeton correspond à l’utilisateur.
+	•	Hache le nouveau mot de passe (ex. bcrypt).
+	•	Met à jour le mot de passe dans la base de données.
+	•	Invalide le jeton utilisé (le supprime ou le marque comme expiré).
+	•	Route API : POST /api/auth/password-reset renvoie { success: true }.
+	8.	Confirmation de la réinitialisation :
+	•	Le back-end renvoie un succès, et l’utilisateur est redirigé vers la page de connexion avec un message de confirmation.
+	•	Le front-end affiche un message : “Votre mot de passe a été réinitialisé avec succès. Veuillez vous connecter.”
 
-	1.	Réception de la Requête
-Le serveur reçoit la requête contenant les données modifiées de l’utilisateur.
-	2.	Validation Back-End
-Des validations supplémentaires sont effectuées côté back-end pour garantir la sécurité et l’intégrité des données :
-	•	Vérifier que l’adresse email n’existe pas déjà dans le système.
-	•	Vérifier les règles de sécurité du mot de passe.
-	•	Authentifier l’utilisateur qui fait la requête pour s’assurer de son identité.
-	3.	Traitement des Modifications
-	•	Email : Si l’email a été modifié, le système doit mettre à jour l’email dans la base de données.
-	•	Mot de passe : Si le mot de passe a été modifié, le système doit le hacher (utilisation d’une fonction de hachage sécurisé, par exemple bcrypt) avant de le stocker dans la base de données.
-	4.	Mise à Jour dans la Base de Données
-Le système effectue les opérations de mise à jour dans la base de données pour enregistrer les nouvelles informations.
-	5.	Réponse au Front-End
-Le serveur envoie une réponse au front-end :
-	•	Si la mise à jour a réussi, renvoyer un message de succès.
-	•	Si une erreur survient (par exemple, l’email est déjà pris), renvoyer un message d’erreur approprié.
+Scénarios alternatifs (Erreurs)
 
-5. Scénarios d’Erreur
+	1.	Adresse e-mail invalide lors de la demande :
+	•	Si l’adresse e-mail n’existe pas en base de données, le serveur ne révèle pas cette information.
+	•	Réponse API : { success: true } pour éviter les fuites d’informations.
+	2.	Jeton expiré ou invalide :
+	•	Si le jeton est expiré ou invalide lors de la soumission du nouveau mot de passe :
+	•	Réponse API : { success: false, error: "Invalid or expired token" }.
+	•	Le front-end invite l’utilisateur à recommencer le processus.
+	3.	Erreur d’envoi de l’e-mail :
+	•	Si l’e-mail ne peut pas être envoyé (problème SMTP), le serveur renvoie une erreur.
+	•	Réponse API : { success: false, error: "Unable to send email. Please try again later." }.
+	4.	Mot de passe non conforme :
+	•	Si le mot de passe ne respecte pas les critères de sécurité (longueur, complexité) :
+	•	Réponse API : { success: false, error: "Password does not meet security requirements." }.
+	•	Le front-end affiche un message expliquant les critères.
 
-	•	Email déjà existant : Le système retourne une erreur si l’adresse email saisie est déjà utilisée par un autre compte.
-	•	Mot de passe non conforme : Si le nouveau mot de passe ne respecte pas les règles de sécurité, le serveur envoie un message d’erreur précisant les critères.
-	•	Échec de la Mise à Jour en Base de Données : Si, pour une raison quelconque, la mise à jour échoue (par exemple, problème de connexion à la base de données), un message d’erreur général est renvoyé.
+Routes API détaillées
 
-6. Cas de Succès et Post-conditions
+1. Demander un lien de réinitialisation
 
-	•	L’utilisateur reçoit une confirmation que son profil a été mis à jour.
-	•	Les nouvelles informations sont bien enregistrées dans la base de données.
-	•	Si l’email a été modifié, un email de confirmation peut être envoyé pour vérifier la nouvelle adresse.
+	•	Route : POST /api/auth/password-reset-request
+	•	Entrée : { email: "user@example.com" }
+	•	Sortie (Succès) : { success: true }
+	•	Sortie (Erreur) : { success: false, error: "Internal server error" }
 
-7. Détails Techniques
+2. Soumettre le nouveau mot de passe
 
-Front-End
+	•	Route : POST /api/auth/password-reset
+	•	Entrée : { token: "securetoken123", password: "NewStrongPassword123" }
+	•	Sortie (Succès) : { success: true }
+	•	Sortie (Erreur) : { success: false, error: "Invalid or expired token" }
 
-	•	Technologies : HTML, CSS, JavaScript (et éventuellement un framework comme React ou Vue.js).
-	•	Validation : Utiliser JavaScript pour vérifier la structure des champs (regex pour email, règles pour mot de passe).
-	•	API Call : Effectuer un appel HTTP vers le serveur (ex. : fetch() en JavaScript).
+Sécurité et meilleures pratiques
 
-Back-End
+	1.	Jeton sécurisé :
+	•	Utiliser un jeton unique (UUID ou JWT avec signature) qui expire rapidement.
+	•	Stocker un hash du jeton en base de données, jamais le jeton brut.
+	2.	Hachage des mots de passe :
+	•	Utiliser un algorithme comme bcrypt ou Argon2 pour hacher les mots de passe.
+	3.	Limiter les tentatives :
+	•	Implémenter un système de throttling pour limiter les requêtes abusives (ex. max 5 tentatives par heure).
+	4.	Ne pas divulguer les erreurs :
+	•	Toujours répondre de manière générique pour éviter de révéler si une adresse e-mail est enregistrée.
+	5.	HTTPS obligatoire :
+	•	Les liens de réinitialisation doivent être servis exclusivement via HTTPS.
 
-	•	Technologies : Node.js, Express (ou tout autre framework back-end).
-	•	Validation : Double vérification de la sécurité des données, y compris validation des entrées et contrôle d’authentification.
-	•	Hachage du Mot de Passe : Utiliser un algorithme de hachage comme bcrypt pour sécuriser le stockage du mot de passe.
-	•	Base de Données : Exécuter des requêtes SQL (ou via un ORM) pour mettre à jour les informations de l’utilisateur.
-
-Cela assure une gestion complète de la modification de profil avec une validation front-end et back-end, en tenant compte des aspects de sécurité, de persistance des données, et de l’expérience utilisateur.
+Avec ces étapes, le processus est sécurisé, robuste, et minimise les risques d’abus ou de failles de sécurité. N’hésitez pas à demander une visualisation UML ou plus de détails sur une étape spécifique !

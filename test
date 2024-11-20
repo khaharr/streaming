@@ -1,93 +1,108 @@
-Cas d’utilisation : Modification de la langue dans le profil utilisateur
+Cas d’utilisation : Système de récupération de fichiers selon l’application, avec téléchargement en ZIP
 
 Description générale
 
-Ce cas d’utilisation permet à un utilisateur connecté de modifier la langue d’affichage de l’interface utilisateur de l’application. Ce changement est persistant et se reflète immédiatement après la mise à jour. La langue choisie est stockée dans la base de données et peut être utilisée pour personnaliser l’expérience utilisateur.
+Ce cas d’utilisation permet à un utilisateur de sélectionner une application spécifique, récupérer les fichiers associés à cette application, puis télécharger un ou plusieurs fichiers dans une archive compressée (ZIP). Le processus est divisé en deux parties :
+	1.	Pré-sélection : L’utilisateur choisit une application et les options nécessaires pour filtrer les fichiers.
+	2.	Téléchargement : L’utilisateur sélectionne les fichiers qu’il souhaite télécharger, et le système génère une archive ZIP contenant les fichiers sélectionnés.
 
 Cas d’utilisation complet et complexe
 
 Acteurs
 
-	•	Utilisateur : Personne connectée à son compte souhaitant modifier la langue de l’application.
-	•	Système : L’application gérant la modification des paramètres utilisateur, incluant la langue.
+	•	Utilisateur : Personne connectée souhaitant récupérer des fichiers liés à une application.
+	•	Système : L’application permettant la récupération et le téléchargement des fichiers.
+	•	Serveur de fichiers : Stocke les fichiers liés aux applications.
 
 Préconditions
 
 	•	L’utilisateur doit être connecté à son compte.
-	•	Le système doit supporter plusieurs langues (par exemple : Anglais, Français, Espagnol).
-	•	La liste des langues disponibles doit être accessible dans l’application.
+	•	Le système doit avoir accès aux fichiers des applications via une base de données ou un stockage distant.
+	•	Les options disponibles pour chaque application doivent être pré-configurées.
 
 Postconditions
 
-	•	La langue d’affichage de l’application est mise à jour immédiatement.
-	•	La préférence linguistique de l’utilisateur est enregistrée dans la base de données pour être persistante.
+	•	Les fichiers sélectionnés sont téléchargés dans une archive ZIP.
+	•	Les fichiers restent accessibles pour d’autres requêtes.
 
 Scénario principal (Front-end et Back-end)
 
-	1.	Accès à la section de modification du profil :
-	•	L’utilisateur accède à son profil et clique sur “Modifier le profil”.
-	•	Route front-end : GET /profile/edit pour afficher le formulaire de modification.
-	2.	Affichage des options de langue :
-	•	Le formulaire affiche une liste déroulante (ou un menu) des langues disponibles (ex. Anglais, Français).
-	•	L’utilisateur sélectionne une nouvelle langue, par exemple Anglais.
-	3.	Soumission de la modification :
-	•	L’utilisateur clique sur “Enregistrer” pour valider le changement.
-	•	Le front-end envoie une requête au back-end pour mettre à jour la langue.
-	•	Route API : PUT /api/profile/language avec { language: "en" }.
-	4.	Validation côté serveur :
+1. Partie 1 : Pré-sélection des fichiers
+
+	1.	Accès à la page de récupération de fichiers :
+	•	L’utilisateur accède à la page de récupération de fichiers.
+	•	Route front-end : GET /file-recovery pour afficher les applications disponibles.
+	2.	Affichage des applications disponibles :
+	•	Le système affiche une liste des applications disponibles (ex. Application A, Application B).
+	•	L’utilisateur sélectionne une application et des options spécifiques (par exemple, période, type de fichier).
+	3.	Soumission des options :
+	•	L’utilisateur clique sur “Rechercher les fichiers”.
+	•	Le front-end envoie une requête au back-end avec les paramètres sélectionnés.
+	•	Route API : POST /api/files/search avec { application: "AppA", options: { dateRange: "2024-11-01 to 2024-11-14" } }.
+	4.	Récupération des fichiers côté serveur :
+	•	Le back-end interroge la base de données ou le système de stockage pour récupérer les fichiers correspondant aux critères.
+	•	Les résultats sont renvoyés au front-end sous forme de liste paginée :
+
+{
+  "success": true,
+  "files": [
+    { "id": 1, "name": "file1.txt", "size": "2 MB" },
+    { "id": 2, "name": "file2.pdf", "size": "5 MB" }
+  ]
+}
+
+
+	5.	Affichage des résultats :
+	•	Le front-end affiche les fichiers récupérés sous forme de tableau avec des cases à cocher pour permettre la sélection multiple.
+
+2. Partie 2 : Téléchargement des fichiers
+
+	6.	Sélection des fichiers :
+	•	L’utilisateur sélectionne un ou plusieurs fichiers à partir des résultats affichés.
+	•	L’utilisateur clique sur “Télécharger”.
+	7.	Génération de l’archive ZIP côté serveur :
+	•	Le front-end envoie une requête au back-end avec les IDs des fichiers sélectionnés.
+	•	Route API : POST /api/files/download-zip avec { fileIds: [1, 2] }.
 	•	Le back-end :
-	•	Vérifie que la langue demandée est valide (parmi les langues supportées).
-	•	Met à jour le champ language de l’utilisateur dans la base de données.
-	•	Route API : PUT /api/profile/language renvoie une réponse de succès : { success: true, language: "en" }.
-	5.	Mise à jour locale immédiate (Front-end) :
-	•	Une fois le succès confirmé, le front-end met à jour l’affichage dans la langue choisie sans nécessiter de rechargement complet.
-	•	Exemple : Charger les fichiers de traduction pour la langue sélectionnée (ex. JSON, i18n).
-	6.	Confirmation à l’utilisateur :
-	•	Le système affiche un message : “Votre langue a été mise à jour avec succès.”
-	•	La modification est immédiatement visible.
+	•	Récupère les fichiers correspondants dans le système de stockage.
+	•	Crée une archive ZIP contenant ces fichiers.
+	•	Génère un lien temporaire pour le téléchargement.
+	•	Réponse API :
+
+{
+  "success": true,
+  "zipUrl": "https://example.com/temp/zips/files-2024-11-14.zip"
+}
+
+
+	8.	Téléchargement de l’archive ZIP :
+	•	Le front-end utilise le lien fourni pour télécharger l’archive.
 
 Scénarios alternatifs (Erreurs)
 
-	1.	Langue non valide :
-	•	Si la langue sélectionnée n’est pas supportée (ex. une valeur non prévue dans la liste des langues disponibles) :
-	•	Le serveur renvoie une erreur : { success: false, error: "Invalid language" }.
-	•	Le front-end affiche un message : “Langue sélectionnée non valide, veuillez réessayer.”
-	2.	Problème de connexion ou serveur :
-	•	Si le serveur rencontre une erreur lors de la mise à jour (ex. base de données indisponible) :
-	•	Réponse API : { success: false, error: "Unable to update language. Please try again later." }.
-	•	Le front-end affiche un message : “Une erreur est survenue. Veuillez réessayer.”
-	3.	Échec du chargement des traductions :
-	•	Si les fichiers de traduction pour la langue choisie ne peuvent pas être chargés :
-	•	Le front-end bascule sur une langue par défaut (par exemple : Anglais).
-	•	Message affiché : “Impossible de charger la langue sélectionnée. La langue par défaut a été appliquée.”
+	1.	Aucune correspondance dans la recherche de fichiers :
+	•	Si aucune correspondance n’est trouvée pour les critères sélectionnés :
+	•	Réponse API : { success: false, error: "No files found." }.
+	•	Le front-end affiche un message : “Aucun fichier trouvé pour ces critères.”
+	2.	Erreur lors de la génération du ZIP :
+	•	Si le serveur ne parvient pas à générer l’archive ZIP :
+	•	Réponse API : { success: false, error: "Failed to generate ZIP." }.
+	•	Le front-end affiche un message : “Impossible de générer l’archive ZIP. Veuillez réessayer.”
+	3.	Fichiers manquants ou supprimés :
+	•	Si certains fichiers sélectionnés ne sont plus disponibles :
+	•	Réponse API : { success: false, error: "Some files are missing." }.
+	•	Le front-end invite l’utilisateur à re-sélectionner les fichiers.
 
 Routes API détaillées
 
-1. Récupérer les informations de profil, y compris la langue actuelle
+1. Recherche de fichiers
 
-	•	Route : GET /api/profile
-	•	Description : Permet de charger les données actuelles du profil, incluant la langue.
-	•	Sortie (Succès) :
-
-{
-  "success": true,
-  "user": {
-    "id": 123,
-    "name": "John Doe",
-    "language": "fr"
-  }
-}
-
-
-
-2. Modifier la langue
-
-	•	Route : PUT /api/profile/language
-	•	Description : Permet de mettre à jour la langue préférée de l’utilisateur.
+	•	Route : POST /api/files/search
 	•	Entrée :
 
 {
-  "language": "en"
+  "application": "AppA",
+  "options": { "dateRange": "2024-11-01 to 2024-11-14" }
 }
 
 
@@ -95,43 +110,62 @@ Routes API détaillées
 
 {
   "success": true,
-  "language": "en"
+  "files": [
+    { "id": 1, "name": "file1.txt", "size": "2 MB" },
+    { "id": 2, "name": "file2.pdf", "size": "5 MB" }
+  ]
 }
 
 
 	•	Sortie (Erreur) :
 
+{ "success": false, "error": "No files found." }
+
+
+
+2. Génération et téléchargement d’un ZIP
+
+	•	Route : POST /api/files/download-zip
+	•	Entrée :
+
 {
-  "success": false,
-  "error": "Invalid language"
+  "fileIds": [1, 2]
 }
 
-Front-end : Étapes de gestion de la langue
 
-	1.	Affichage du formulaire
-	•	Récupérer la langue actuelle via l’API GET /api/profile.
-	•	Pré-remplir la liste déroulante avec la langue actuelle.
-	2.	Soumission des modifications
-	•	Envoyer une requête PUT /api/profile/language lorsque l’utilisateur valide.
-	•	Gérer la réponse :
-	•	Succès : Recharger les traductions pour la nouvelle langue.
-	•	Erreur : Afficher un message d’erreur approprié.
-	3.	Charger les traductions (i18n)
-	•	Exemple avec une bibliothèque comme i18next :
+	•	Sortie (Succès) :
 
-i18next.changeLanguage('en').then(() => {
-  console.log('Langue mise à jour');
-});
+{
+  "success": true,
+  "zipUrl": "https://example.com/temp/zips/files-2024-11-14.zip"
+}
 
-Sécurité et meilleures pratiques
 
-	1.	Validation des données :
-	•	Vérifier que la langue envoyée par le client correspond aux langues supportées par le système (ex. via un tableau [ "en", "fr", "es" ]).
-	2.	Persistance :
-	•	Stocker la langue dans la base de données pour que l’utilisateur retrouve ses préférences à chaque connexion.
-	3.	Performances :
-	•	Pré-charger les fichiers de traduction pour les langues les plus utilisées afin d’améliorer la vitesse.
-	4.	Messages génériques :
-	•	En cas d’erreur, éviter de révéler trop de détails techniques et afficher des messages clairs à l’utilisateur.
+	•	Sortie (Erreur) :
 
-Avec cette architecture front et back, le changement de langue est rapide, sécurisé, et persistant. Besoin d’un diagramme UML pour visualiser ?
+{ "success": false, "error": "Failed to generate ZIP." }
+
+Front-end : Étapes de gestion
+
+	1.	Affichage de la liste des applications :
+	•	Charger les options disponibles via une API (si dynamique) ou afficher une liste statique.
+	2.	Recherche de fichiers :
+	•	Collecter les critères de l’utilisateur (application, options).
+	•	Appeler l’API POST /api/files/search et afficher les résultats sous forme de tableau.
+	3.	Sélection des fichiers et téléchargement :
+	•	Envoyer les IDs sélectionnés à l’API POST /api/files/download-zip.
+	•	Gérer les erreurs et lancer le téléchargement si succès.
+
+Back-end : Processus techniques
+
+	1.	Recherche de fichiers :
+	•	Interroger la base de données ou un service de stockage distant en fonction des critères.
+	2.	Génération d’un ZIP :
+	•	Utiliser une bibliothèque comme zipfile (Python), JSZip (Node.js), ou un outil similaire.
+	•	Générer un fichier ZIP temporaire avec un identifiant unique (par ex. UUID).
+	3.	Stockage temporaire :
+	•	Enregistrer le fichier ZIP dans un stockage temporaire, avec une politique d’expiration automatique (ex. suppression après 24 heures).
+	4.	Gestion des erreurs :
+	•	Vérifier la disponibilité des fichiers avant la création du ZIP.
+
+Ce système offre une expérience utilisateur fluide et sécurisée, avec des options flexibles pour la gestion des fichiers. N’hésitez pas à demander un diagramme UML ou un flux détaillé !

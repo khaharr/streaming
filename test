@@ -1,67 +1,25 @@
-Suivi de production : Intégration avec VTOM
+// Vérifier si une chaîne est une adresse e-mail valide
+function isValidEmail(email: string): boolean {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+}
 
-Cette section détaille la gestion d’une page de suivi de production qui interagit avec l’application VTOM. L’administrateur ou l’utilisateur accède à une interface permettant de sélectionner des options, interroger VTOM, récupérer des données spécifiques depuis une base de données locale et afficher les résultats. Une alimentation automatique de cette base se fait à partir de VTOM une fois par jour.
+// Vérifier si un mot de passe est valide
+function isValidPassword(password: string): boolean {
+  const minLength = 8;
+  const specialCharRegex = /[!@#$%^&*(),.?":{}|<>]/;
+  const uppercaseRegex = /[A-Z]/;
 
-Objectif
+  return (
+    password.length >= minLength &&
+    specialCharRegex.test(password) &&
+    uppercaseRegex.test(password)
+  );
+}
 
-	•	Permettre à l’utilisateur de suivre la production en interrogeant des données provenant de VTOM.
-	•	Centraliser les données dans une base de données locale mise à jour automatiquement une fois par jour à partir de VTOM.
-	•	Fournir une interface dynamique pour consulter ces données.
+// Exemples d'utilisation
+const email = "example@test.com";
+console.log(`L'email "${email}" est valide :`, isValidEmail(email));
 
-Partie Front-End
-
-Étapes principales côté Front-End
-
-1. Affichage de la page de suivi
-
-	•	Formulaire de sélection d’options :
-	•	Champs dynamiques permettant de sélectionner les critères pour interroger la base.
-	•	Exemple d’options :
-	•	Application.
-	•	Type de tâche (par exemple : “Planifiée”, “En attente”, “En cours”, etc.).
-	•	Plage de dates (calendrier).
-	•	Bouton de recherche :
-	•	Lorsque les options sont remplies, l’utilisateur clique sur ce bouton pour envoyer une requête.
-
-2. Affichage des résultats
-
-	•	Résultats affichés sous forme de tableau dynamique :
-	•	Colonnes affichées (exemple) :
-	•	ID tâche.
-	•	Nom de la tâche.
-	•	Statut.
-	•	Heure de début.
-	•	Heure de fin.
-	•	Pagination si nécessaire.
-	•	Message spécifique si aucun résultat n’est trouvé : “Aucune donnée trouvée pour les critères sélectionnés.”
-
-3. Rafraîchissement des données
-
-	•	Ajouter un bouton “Rafraîchir” pour recharger manuellement les données depuis la base de données locale (si la synchronisation quotidienne n’a pas encore eu lieu).
-
-Entrée API côté Front-End
-
-Requête API pour interroger les données
-
-	•	Méthode HTTP : GET
-	•	URL : /api/production?app=VTOM&type=tache&startDate=2024-11-01&endDate=2024-11-25
-
-Réponse API
-
-	1.	En cas de succès :
-
-{
-  "success": true,
-  "data": [
-    {
-      "id": 1,
-      "task_name": "Tâche A",
-      "status": "En cours",
-      "start_time": "2024-11-24T08:00:00",
-      "end_time": "2024-11-24T12:00:00"
-    },
-    {
-      "id": 2,
-      "task_name": "Tâche B",
-      "status": "Planifiée",
-      "start_time":
+const password = "Abc@1234";
+console.log(`Le mot de passe "${password}" est valide :`, isValidPassword(password));

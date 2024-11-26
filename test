@@ -1,171 +1,67 @@
-Cas d’utilisation : Système de récupération de fichiers selon l’application, avec téléchargement en ZIP
+Suivi de production : Intégration avec VTOM
 
-Description générale
+Cette section détaille la gestion d’une page de suivi de production qui interagit avec l’application VTOM. L’administrateur ou l’utilisateur accède à une interface permettant de sélectionner des options, interroger VTOM, récupérer des données spécifiques depuis une base de données locale et afficher les résultats. Une alimentation automatique de cette base se fait à partir de VTOM une fois par jour.
 
-Ce cas d’utilisation permet à un utilisateur de sélectionner une application spécifique, récupérer les fichiers associés à cette application, puis télécharger un ou plusieurs fichiers dans une archive compressée (ZIP). Le processus est divisé en deux parties :
-	1.	Pré-sélection : L’utilisateur choisit une application et les options nécessaires pour filtrer les fichiers.
-	2.	Téléchargement : L’utilisateur sélectionne les fichiers qu’il souhaite télécharger, et le système génère une archive ZIP contenant les fichiers sélectionnés.
+Objectif
 
-Cas d’utilisation complet et complexe
+	•	Permettre à l’utilisateur de suivre la production en interrogeant des données provenant de VTOM.
+	•	Centraliser les données dans une base de données locale mise à jour automatiquement une fois par jour à partir de VTOM.
+	•	Fournir une interface dynamique pour consulter ces données.
 
-Acteurs
+Partie Front-End
 
-	•	Utilisateur : Personne connectée souhaitant récupérer des fichiers liés à une application.
-	•	Système : L’application permettant la récupération et le téléchargement des fichiers.
-	•	Serveur de fichiers : Stocke les fichiers liés aux applications.
+Étapes principales côté Front-End
 
-Préconditions
+1. Affichage de la page de suivi
 
-	•	L’utilisateur doit être connecté à son compte.
-	•	Le système doit avoir accès aux fichiers des applications via une base de données ou un stockage distant.
-	•	Les options disponibles pour chaque application doivent être pré-configurées.
+	•	Formulaire de sélection d’options :
+	•	Champs dynamiques permettant de sélectionner les critères pour interroger la base.
+	•	Exemple d’options :
+	•	Application.
+	•	Type de tâche (par exemple : “Planifiée”, “En attente”, “En cours”, etc.).
+	•	Plage de dates (calendrier).
+	•	Bouton de recherche :
+	•	Lorsque les options sont remplies, l’utilisateur clique sur ce bouton pour envoyer une requête.
 
-Postconditions
+2. Affichage des résultats
 
-	•	Les fichiers sélectionnés sont téléchargés dans une archive ZIP.
-	•	Les fichiers restent accessibles pour d’autres requêtes.
+	•	Résultats affichés sous forme de tableau dynamique :
+	•	Colonnes affichées (exemple) :
+	•	ID tâche.
+	•	Nom de la tâche.
+	•	Statut.
+	•	Heure de début.
+	•	Heure de fin.
+	•	Pagination si nécessaire.
+	•	Message spécifique si aucun résultat n’est trouvé : “Aucune donnée trouvée pour les critères sélectionnés.”
 
-Scénario principal (Front-end et Back-end)
+3. Rafraîchissement des données
 
-1. Partie 1 : Pré-sélection des fichiers
+	•	Ajouter un bouton “Rafraîchir” pour recharger manuellement les données depuis la base de données locale (si la synchronisation quotidienne n’a pas encore eu lieu).
 
-	1.	Accès à la page de récupération de fichiers :
-	•	L’utilisateur accède à la page de récupération de fichiers.
-	•	Route front-end : GET /file-recovery pour afficher les applications disponibles.
-	2.	Affichage des applications disponibles :
-	•	Le système affiche une liste des applications disponibles (ex. Application A, Application B).
-	•	L’utilisateur sélectionne une application et des options spécifiques (par exemple, période, type de fichier).
-	3.	Soumission des options :
-	•	L’utilisateur clique sur “Rechercher les fichiers”.
-	•	Le front-end envoie une requête au back-end avec les paramètres sélectionnés.
-	•	Route API : POST /api/files/search avec { application: "AppA", options: { dateRange: "2024-11-01 to 2024-11-14" } }.
-	4.	Récupération des fichiers côté serveur :
-	•	Le back-end interroge la base de données ou le système de stockage pour récupérer les fichiers correspondant aux critères.
-	•	Les résultats sont renvoyés au front-end sous forme de liste paginée :
+Entrée API côté Front-End
 
-{
-  "success": true,
-  "files": [
-    { "id": 1, "name": "file1.txt", "size": "2 MB" },
-    { "id": 2, "name": "file2.pdf", "size": "5 MB" }
-  ]
-}
+Requête API pour interroger les données
 
+	•	Méthode HTTP : GET
+	•	URL : /api/production?app=VTOM&type=tache&startDate=2024-11-01&endDate=2024-11-25
 
-	5.	Affichage des résultats :
-	•	Le front-end affiche les fichiers récupérés sous forme de tableau avec des cases à cocher pour permettre la sélection multiple.
+Réponse API
 
-2. Partie 2 : Téléchargement des fichiers
-
-	6.	Sélection des fichiers :
-	•	L’utilisateur sélectionne un ou plusieurs fichiers à partir des résultats affichés.
-	•	L’utilisateur clique sur “Télécharger”.
-	7.	Génération de l’archive ZIP côté serveur :
-	•	Le front-end envoie une requête au back-end avec les IDs des fichiers sélectionnés.
-	•	Route API : POST /api/files/download-zip avec { fileIds: [1, 2] }.
-	•	Le back-end :
-	•	Récupère les fichiers correspondants dans le système de stockage.
-	•	Crée une archive ZIP contenant ces fichiers.
-	•	Génère un lien temporaire pour le téléchargement.
-	•	Réponse API :
+	1.	En cas de succès :
 
 {
   "success": true,
-  "zipUrl": "https://example.com/temp/zips/files-2024-11-14.zip"
-}
-
-
-	8.	Téléchargement de l’archive ZIP :
-	•	Le front-end utilise le lien fourni pour télécharger l’archive.
-
-Scénarios alternatifs (Erreurs)
-
-	1.	Aucune correspondance dans la recherche de fichiers :
-	•	Si aucune correspondance n’est trouvée pour les critères sélectionnés :
-	•	Réponse API : { success: false, error: "No files found." }.
-	•	Le front-end affiche un message : “Aucun fichier trouvé pour ces critères.”
-	2.	Erreur lors de la génération du ZIP :
-	•	Si le serveur ne parvient pas à générer l’archive ZIP :
-	•	Réponse API : { success: false, error: "Failed to generate ZIP." }.
-	•	Le front-end affiche un message : “Impossible de générer l’archive ZIP. Veuillez réessayer.”
-	3.	Fichiers manquants ou supprimés :
-	•	Si certains fichiers sélectionnés ne sont plus disponibles :
-	•	Réponse API : { success: false, error: "Some files are missing." }.
-	•	Le front-end invite l’utilisateur à re-sélectionner les fichiers.
-
-Routes API détaillées
-
-1. Recherche de fichiers
-
-	•	Route : POST /api/files/search
-	•	Entrée :
-
-{
-  "application": "AppA",
-  "options": { "dateRange": "2024-11-01 to 2024-11-14" }
-}
-
-
-	•	Sortie (Succès) :
-
-{
-  "success": true,
-  "files": [
-    { "id": 1, "name": "file1.txt", "size": "2 MB" },
-    { "id": 2, "name": "file2.pdf", "size": "5 MB" }
-  ]
-}
-
-
-	•	Sortie (Erreur) :
-
-{ "success": false, "error": "No files found." }
-
-
-
-2. Génération et téléchargement d’un ZIP
-
-	•	Route : POST /api/files/download-zip
-	•	Entrée :
-
-{
-  "fileIds": [1, 2]
-}
-
-
-	•	Sortie (Succès) :
-
-{
-  "success": true,
-  "zipUrl": "https://example.com/temp/zips/files-2024-11-14.zip"
-}
-
-
-	•	Sortie (Erreur) :
-
-{ "success": false, "error": "Failed to generate ZIP." }
-
-Front-end : Étapes de gestion
-
-	1.	Affichage de la liste des applications :
-	•	Charger les options disponibles via une API (si dynamique) ou afficher une liste statique.
-	2.	Recherche de fichiers :
-	•	Collecter les critères de l’utilisateur (application, options).
-	•	Appeler l’API POST /api/files/search et afficher les résultats sous forme de tableau.
-	3.	Sélection des fichiers et téléchargement :
-	•	Envoyer les IDs sélectionnés à l’API POST /api/files/download-zip.
-	•	Gérer les erreurs et lancer le téléchargement si succès.
-
-Back-end : Processus techniques
-
-	1.	Recherche de fichiers :
-	•	Interroger la base de données ou un service de stockage distant en fonction des critères.
-	2.	Génération d’un ZIP :
-	•	Utiliser une bibliothèque comme zipfile (Python), JSZip (Node.js), ou un outil similaire.
-	•	Générer un fichier ZIP temporaire avec un identifiant unique (par ex. UUID).
-	3.	Stockage temporaire :
-	•	Enregistrer le fichier ZIP dans un stockage temporaire, avec une politique d’expiration automatique (ex. suppression après 24 heures).
-	4.	Gestion des erreurs :
-	•	Vérifier la disponibilité des fichiers avant la création du ZIP.
-
-Ce système offre une expérience utilisateur fluide et sécurisée, avec des options flexibles pour la gestion des fichiers. N’hésitez pas à demander un diagramme UML ou un flux détaillé !
+  "data": [
+    {
+      "id": 1,
+      "task_name": "Tâche A",
+      "status": "En cours",
+      "start_time": "2024-11-24T08:00:00",
+      "end_time": "2024-11-24T12:00:00"
+    },
+    {
+      "id": 2,
+      "task_name": "Tâche B",
+      "status": "Planifiée",
+      "start_time":

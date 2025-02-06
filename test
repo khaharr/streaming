@@ -1,25 +1,74 @@
-// Vérifier si une chaîne est une adresse e-mail valide
-function isValidEmail(email: string): boolean {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(email);
-}
+Compte rendu des tables et explication générale
 
-// Vérifier si un mot de passe est valide
-function isValidPassword(password: string): boolean {
-  const minLength = 8;
-  const specialCharRegex = /[!@#$%^&*(),.?":{}|<>]/;
-  const uppercaseRegex = /[A-Z]/;
+Dans ce projet, plusieurs tables ont été mises en place pour bien structurer la gestion des utilisateurs, des rôles, des notifications et des logs administratifs. L’objectif c’est d’avoir un système bien organisé qui permet d’assurer un bon suivi des actions des utilisateurs et admins. On va voir en détail chaque table, son rôle et comment elles interagissent entre elles.
 
-  return (
-    password.length >= minLength &&
-    specialCharRegex.test(password) &&
-    uppercaseRegex.test(password)
-  );
-}
+1. Table Users (Utilisateurs)
 
-// Exemples d'utilisation
-const email = "example@test.com";
-console.log(`L'email "${email}" est valide :`, isValidEmail(email));
+C’est la table principale qui stocke les informations de base des utilisateurs. Chaque utilisateur a un identifiant unique (id), un nom, un email et un mot de passe. Y’a aussi une date d’inscription et un champ statut qui permet de savoir si son compte est actif, en attente ou refusé par un admin.
 
-const password = "Abc@1234";
-console.log(`Le mot de passe "${password}" est valide :`, isValidPassword(password));
+📌 Pourquoi ce champ statut ?
+Parce qu’un utilisateur ne peut pas directement accéder à l’application une fois inscrit. Il doit d’abord être validé par un administrateur. Tant qu’il est en attente, il peut rien faire.
+
+2. Table Roles (Rôles des utilisateurs)
+
+Chaque utilisateur doit avoir un rôle, c’est pour ça que cette table est liée directement à Users. Un utilisateur ne peut avoir qu’un seul rôle à la fois (relation 1,1).
+
+Elle contient :
+	•	id → Identifiant du rôle
+	•	id_utilisateur → Lien vers l’utilisateur concerné
+	•	role → Nom du rôle (ex: “admin”, “utilisateur”, etc.)
+	•	description → Petite explication du rôle
+
+📌 Pourquoi une table à part et pas un simple champ dans Users ?
+Parce que si plus tard on veut ajouter des permissions différentes par rôle, ça sera plus simple de gérer ça via une table dédiée.
+
+3. Table Notification_Admin (Notifications pour les admins)
+
+Cette table sert à stocker toutes les notifications que reçoivent les administrateurs, en particulier quand un utilisateur s’inscrit.
+
+Elle contient :
+	•	id → Identifiant unique de la notification
+	•	id_admin → Admin qui reçoit la notif
+	•	user_id → L’utilisateur concerné par la notification
+	•	message → Contenu du message (ex: “Un nouvel utilisateur s’est inscrit”)
+	•	statut → Indique si la notif a été lue ou non
+	•	date_notification → Date et heure de la notification
+
+📌 Pourquoi elle est importante ?
+Parce que c’est grâce à ces notifications que les admins peuvent savoir en temps réel qu’un nouvel utilisateur attend d’être validé.
+
+4. Table Admin_Logs (Historique des actions des admins)
+
+Cette table sert à garder une trace de toutes les actions importantes faites par les admins. Par exemple, quand un admin valide ou refuse un utilisateur, ça sera enregistré ici.
+
+Elle contient :
+	•	id → Identifiant unique du log
+	•	id_role → Le rôle de l’admin qui a fait l’action
+	•	action → Description de l’action faite (ex: “Validation de l’utilisateur X”)
+	•	date_action → Date et heure de l’action
+
+📌 Pourquoi c’est utile ?
+Si jamais y’a une erreur ou un abus, on peut toujours revenir voir qui a fait quoi et quand.
+
+5. Table Facture (Facturation, non liée aux autres tables pour le moment)
+
+Même si on a mis en pause la gestion des paiements pour l’instant, on a quand même une table Facture. Elle n’est reliée à aucune autre table pour le moment, mais elle est prête pour une future intégration.
+
+Elle pourrait contenir des champs comme :
+	•	id → Identifiant de la facture
+	•	montant → Somme à payer
+	•	date_paiement → Date du paiement
+	•	statut_paiement → Payé ou en attente
+
+📌 Pourquoi on la garde même si on ne l’utilise pas encore ?
+Parce que ça évite de devoir tout refaire plus tard quand on voudra intégrer les paiements.
+
+Relations entre les tables
+
+Voici un petit résumé des liens entre ces tables :
+
+Table Source	Table Cible	Type de relation	Explication
+Users	Roles	1,1	Un utilisateur a un seul rôle
+Roles	Admin_Logs	1,N	Un rôle peut être lié à plusieurs actions admin
+Users	Notification_Admin	1,N	Un utilisateur peut générer plusieurs notifications pour les admins
+Roles	Admin_Logs	1,N	Un admin (via son

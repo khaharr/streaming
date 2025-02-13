@@ -1,75 +1,140 @@
-                           
-monappli-api :: Application mod�le :: Application mod�le - Projet blanc 
-Version 0.0.1-SNAPSHOT
-Running with Boot : 2.7.6
-Build with Lombok version : 25.1.4
-                                                                      
-2025-02-13 11:07:48.666  INFO M092-1879707 --- [kground-preinit] o.h.v.i.u.Version                        : HV000001: Hibernate Validator 6.2.5.Final
-2025-02-13 11:07:49.223  INFO M092-1879707 --- [on(2)-127.0.0.1] f.g.f.d.m.WebLauncher                    : Starting WebLauncher using Java 21.0.2 on M092-1879707 with PID 8816 (C:\soda\atelierjava\conteneurs\tomcat\apache-tomcat-9.0.97\webapps\monappli_api_war\WEB-INF\classes started by kharrari01 in C:\soda\atelierjava\conteneurs\tomcat\apache-tomcat-9.0.97\bin)
-2025-02-13 11:07:49.227  INFO M092-1879707 --- [on(2)-127.0.0.1] f.g.f.d.m.WebLauncher                    : The following 1 profile is active: "exemple"
-13-Feb-2025 11:07:49.313 INFOS [Catalina-utility-2] org.apache.jasper.servlet.TldScanner.scanJars Au moins un fichier JAR a été analysé pour trouver des TLDs mais il n'en contenait pas, le mode "debug" du journal peut être activé pour obtenir une liste complète de JAR scannés sans succès ; éviter d'analyser des JARs inutilement peut améliorer sensiblement le temps de démarrage et le temps de compilation des JSPs
-13-Feb-2025 11:07:49.365 INFOS [Catalina-utility-2] org.apache.catalina.startup.HostConfig.deployDirectory Le déploiement du répertoire [C:\soda\atelierjava\conteneurs\tomcat\apache-tomcat-9.0.97\webapps\host-manager] de l'application web s'est terminé en [1 149] ms
-13-Feb-2025 11:07:49.367 INFOS [Catalina-utility-2] org.apache.catalina.startup.HostConfig.deployDirectory Déploiement du répertoire d'application web [C:\soda\atelierjava\conteneurs\tomcat\apache-tomcat-9.0.97\webapps\manager]
-13-Feb-2025 11:07:50.259 INFOS [Catalina-utility-2] org.apache.jasper.servlet.TldScanner.scanJars Au moins un fichier JAR a été analysé pour trouver des TLDs mais il n'en contenait pas, le mode "debug" du journal peut être activé pour obtenir une liste complète de JAR scannés sans succès ; éviter d'analyser des JARs inutilement peut améliorer sensiblement le temps de démarrage et le temps de compilation des JSPs
-13-Feb-2025 11:07:50.279 INFOS [Catalina-utility-2] org.apache.catalina.startup.HostConfig.deployDirectory Le déploiement du répertoire [C:\soda\atelierjava\conteneurs\tomcat\apache-tomcat-9.0.97\webapps\manager] de l'application web s'est terminé en [911] ms
-13-Feb-2025 11:07:50.280 INFOS [Catalina-utility-2] org.apache.catalina.startup.HostConfig.deployDirectory Déploiement du répertoire d'application web [C:\soda\atelierjava\conteneurs\tomcat\apache-tomcat-9.0.97\webapps\ROOT]
-13-Feb-2025 11:07:50.655 INFOS [Catalina-utility-2] org.apache.jasper.servlet.TldScanner.scanJars Au moins un fichier JAR a été analysé pour trouver des TLDs mais il n'en contenait pas, le mode "debug" du journal peut être activé pour obtenir une liste complète de JAR scannés sans succès ; éviter d'analyser des JARs inutilement peut améliorer sensiblement le temps de démarrage et le temps de compilation des JSPs
-13-Feb-2025 11:07:50.731 INFOS [Catalina-utility-2] org.apache.catalina.startup.HostConfig.deployDirectory Le déploiement du répertoire [C:\soda\atelierjava\conteneurs\tomcat\apache-tomcat-9.0.97\webapps\ROOT] de l'application web s'est terminé en [448] ms
-2025-02-13 11:08:02.240  INFO M092-1879707 --- [on(2)-127.0.0.1] trationDelegate$BeanPostProcessorChecker : Bean 'fr.gouv.finances.lombok.core.config.LombokCommunServiceConfiguration' of type [fr.gouv.finances.lombok.core.config.LombokCommunServiceConfiguration$$EnhancerBySpringCGLIB$$570a6e90] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
-2025-02-13 11:08:02.340  INFO M092-1879707 --- [on(2)-127.0.0.1] trationDelegate$BeanPostProcessorChecker : Bean 'fr.gouv.finances.lombok.data.autoconfigure.PersistenceJPAConfig$InnerEmbeddedConfig' of type [fr.gouv.finances.lombok.data.autoconfigure.PersistenceJPAConfig$InnerEmbeddedConfig$$EnhancerBySpringCGLIB$$7648b740] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
-2025-02-13 11:08:03.632  INFO M092-1879707 --- [on(2)-127.0.0.1] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 14053 ms
-2025-02-13 11:08:05.297  INFO M092-1879707 --- [on(2)-127.0.0.1] o.s.j.d.e.EmbeddedDatabaseFactory        : Starting embedded database: url='jdbc:hsqldb:mem:testdb', username='sa'
-2025-02-13 11:08:09.616  INFO M092-1879707 --- [on(2)-127.0.0.1] s.AbstractAuthentificationSecurityLombok : mode d'authentification des utilisateurs : appli
-2025-02-13 11:08:09.619  INFO M092-1879707 --- [on(2)-127.0.0.1] .s.PortailAuthentificationSecurityLombok : Url  complete de connexion au portail pour les utilisateurs  : 
-2025-02-13 11:08:09.619  INFO M092-1879707 --- [on(2)-127.0.0.1] .s.PortailAuthentificationSecurityLombok : Url de connexion au portail pour les utilisateurs (partie prefixe) : 
-2025-02-13 11:08:09.619  INFO M092-1879707 --- [on(2)-127.0.0.1] .s.PortailAuthentificationSecurityLombok : Url de connexion au portail pour les utilisateurs (partie application) : dmoweb
-2025-02-13 11:08:10.013  INFO M092-1879707 --- [on(2)-127.0.0.1] o.h.j.i.u.LogHelper                      : HHH000204: Processing PersistenceUnitInfo [name: pu-principal]
-2025-02-13 11:08:10.689  INFO M092-1879707 --- [on(2)-127.0.0.1] o.h.Version                              : HHH000412: Hibernate ORM core version 5.6.15.Final
-2025-02-13 11:08:12.012  INFO M092-1879707 --- [on(2)-127.0.0.1] o.h.a.c.Version                          : HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
-2025-02-13 11:08:16.261  INFO M092-1879707 --- [on(2)-127.0.0.1] o.h.d.Dialect                            : HHH000400: Using dialect: org.hibernate.dialect.HSQLDialect
-2025-02-13 11:08:20.382  INFO M092-1879707 --- [on(2)-127.0.0.1] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
-2025-02-13 11:08:20.453  INFO M092-1879707 --- [on(2)-127.0.0.1] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'pu-principal'
-2025-02-13 11:08:20.479  INFO M092-1879707 --- [on(2)-127.0.0.1] o.h.j.i.u.LogHelper                      : HHH000204: Processing PersistenceUnitInfo [name: pu-principal]
-2025-02-13 11:08:20.775  INFO M092-1879707 --- [on(2)-127.0.0.1] o.h.d.Dialect                            : HHH000400: Using dialect: org.hibernate.dialect.HSQLDialect
-2025-02-13 11:08:20.910  INFO M092-1879707 --- [on(2)-127.0.0.1] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
-2025-02-13 11:08:20.910  INFO M092-1879707 --- [on(2)-127.0.0.1] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'pu-principal'
-2025-02-13 11:08:20.944  INFO M092-1879707 --- [on(2)-127.0.0.1] s.AbstractAuthentificationSecurityLombok : mode d'authentification des utilisateurs : appli
-2025-02-13 11:08:21.295  INFO M092-1879707 --- [on(2)-127.0.0.1] s.AbstractAuthentificationSecurityLombok : mode d'authentification des utilisateurs : appli
-2025-02-13 11:08:21.299  INFO M092-1879707 --- [on(2)-127.0.0.1] s.AbstractAuthentificationSecurityLombok : mode d'authentification des utilisateurs : appli
-2025-02-13 11:08:22.508  INFO M092-1879707 --- [on(2)-127.0.0.1] o.s.s.w.DefaultSecurityFilterChain       : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@3c160f80, org.springframework.security.web.session.ForceEagerSessionCreationFilter@32da2497, org.springframework.security.web.session.ForceEagerSessionCreationFilter@65794d7e, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@788602df, org.springframework.security.web.context.SecurityContextPersistenceFilter@2056eb26, org.springframework.security.web.csrf.CsrfFilter@40942fcf, org.springframework.security.web.authentication.logout.LogoutFilter@69a9b72a, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter@6043fc6e, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@641ddf25, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@69fcb228, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@67b84e33, org.springframework.security.web.session.SessionManagementFilter@768a52d5, org.springframework.security.web.access.ExceptionTranslationFilter@3bdab011, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@85685ef]
-2025-02-13 11:08:25.126  INFO M092-1879707 --- [on(2)-127.0.0.1] f.g.f.l.c.a.CoreApplicationConfig        : Valeurs des propriétés : fr.gouv.finances.lombok.core.autoconfig.LombokProperties@433b48f2  
-2025-02-13 11:08:25.252  INFO M092-1879707 --- [on(2)-127.0.0.1] f.g.f.l.s.a.LombokSecurityConfig         : Valeurs des propriétés : fr.gouv.finances.lombok.security.autoconfig.LombokAuthentificationProperties@3078d815  
-2025-02-13 11:08:26.375  INFO M092-1879707 --- [on(2)-127.0.0.1] o.s.l.c.s.AbstractContextSource          : Property 'userDn' not set - anonymous context will be used for read-write operations
-2025-02-13 11:08:26.640  INFO M092-1879707 --- [on(2)-127.0.0.1] o.s.b.a.e.w.EndpointLinksResolver        : Exposing 0 endpoint(s) beneath base path '/actuator'
-2025-02-13 11:08:26.794  INFO M092-1879707 --- [on(2)-127.0.0.1] f.g.f.d.m.WebLauncher                    : Started WebLauncher in 41.099 seconds (JVM running for 54.371)
-[2025-02-13 11:08:26,887] Artifact monappli-api:war: Artifact is deployed successfully
-[2025-02-13 11:08:26,887] Artifact monappli-api:war: Deploy took 50,566 milliseconds
-2025-02-13 11:08:29.918  INFO M092-1879707 --- [nio-8084-exec-2] AccessLog                                : 127.0.0.1 - - [13/Feb/2025:11:08:29 +0100] "GET / HTTP/1.1" 200 11227 "-" "IntelliJ IDEA/243.23654.189" - "-" "-" "-"
-2025-02-13 11:08:29.922  INFO M092-1879707 --- [nio-8084-exec-1] AccessLog                                : 127.0.0.1 - - [13/Feb/2025:11:08:29 +0100] "GET / HTTP/1.1" 200 11227 "-" "IntelliJ IDEA/243.23654.189" - "-" "-" "-"
-2025-02-13 11:08:30.639  INFO M092-1879707 --- [nio-8084-exec-3] AccessLog                                : 127.0.0.1 - - [13/Feb/2025:11:08:30 +0100] "GET / HTTP/1.1" 200 11227 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.5.0) Gecko/20100101 Firefox/128.5.0" - "-" "-" "-"
-2025-02-13 11:08:30.724  INFO M092-1879707 --- [nio-8084-exec-4] AccessLog                                : 127.0.0.1 - - [13/Feb/2025:11:08:30 +0100] "GET /tomcat.css HTTP/1.1" 200 5584 "http://localhost:8084/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.5.0) Gecko/20100101 Firefox/128.5.0" - "-" "-" "-"
-2025-02-13 11:08:30.739  INFO M092-1879707 --- [nio-8084-exec-4] AccessLog                                : 127.0.0.1 - - [13/Feb/2025:11:08:30 +0100] "GET /tomcat.svg HTTP/1.1" 200 67795 "http://localhost:8084/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.5.0) Gecko/20100101 Firefox/128.5.0" - "-" "-" "-"
-2025-02-13 11:08:30.805  INFO M092-1879707 --- [nio-8084-exec-5] AccessLog                                : 127.0.0.1 - - [13/Feb/2025:11:08:30 +0100] "GET /bg-nav.png HTTP/1.1" 200 1401 "http://localhost:8084/tomcat.css" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.5.0) Gecko/20100101 Firefox/128.5.0" - "-" "-" "-"
-2025-02-13 11:08:30.813  INFO M092-1879707 --- [nio-8084-exec-9] AccessLog                                : 127.0.0.1 - - [13/Feb/2025:11:08:30 +0100] "GET /bg-button.png HTTP/1.1" 200 713 "http://localhost:8084/tomcat.css" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.5.0) Gecko/20100101 Firefox/128.5.0" - "-" "-" "-"
-2025-02-13 11:08:30.816  INFO M092-1879707 --- [nio-8084-exec-8] AccessLog                                : 127.0.0.1 - - [13/Feb/2025:11:08:30 +0100] "GET /bg-middle.png HTTP/1.1" 200 1918 "http://localhost:8084/tomcat.css" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.5.0) Gecko/20100101 Firefox/128.5.0" - "-" "-" "-"
-2025-02-13 11:08:30.830  INFO M092-1879707 --- [nio-8084-exec-6] AccessLog                                : 127.0.0.1 - - [13/Feb/2025:11:08:30 +0100] "GET /asf-logo-wide.svg HTTP/1.1" 200 27235 "http://localhost:8084/tomcat.css" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.5.0) Gecko/20100101 Firefox/128.5.0" - "-" "-" "-"
-2025-02-13 11:08:30.846  INFO M092-1879707 --- [nio-8084-exec-7] AccessLog                                : 127.0.0.1 - - [13/Feb/2025:11:08:30 +0100] "GET /bg-upper.png HTTP/1.1" 200 3103 "http://localhost:8084/tomcat.css" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.5.0) Gecko/20100101 Firefox/128.5.0" - "-" "-" "-"
-2025-02-13 11:08:55.863  INFO M092-1879707 --- [nio-8084-exec-5] AccessLog                                : 127.0.0.1 - - [13/Feb/2025:11:08:55 +0100] "GET /manager/status HTTP/1.1" 401 2499 "http://localhost:8084/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.5.0) Gecko/20100101 Firefox/128.5.0" - "-" "-" "-"
-2025-02-13 11:09:03.485  INFO M092-1879707 --- [nio-8084-exec-9] AccessLog                                : 127.0.0.1 - - [13/Feb/2025:11:09:03 +0100] "GET /host-manager/html HTTP/1.1" 401 2044 "http://localhost:8084/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.5.0) Gecko/20100101 Firefox/128.5.0" - "-" "-" "-"
-2025-02-13 11:09:19.817  INFO M092-1879707 --- [nio-8084-exec-8] AccessLog                                : 127.0.0.1 - - [13/Feb/2025:11:09:19 +0100] "GET /manager/status HTTP/1.1" 401 2499 "http://localhost:8084/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.5.0) Gecko/20100101 Firefox/128.5.0" - "-" "-" "-"
-2025-02-13 11:09:23.313  INFO M092-1879707 --- [nio-8084-exec-6] AccessLog                                : 127.0.0.1 - - [13/Feb/2025:11:09:23 +0100] "GET /host-manager/html HTTP/1.1" 401 2044 "http://localhost:8084/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.5.0) Gecko/20100101 Firefox/128.5.0" - "-" "-" "-"
-2025-02-13 11:09:25.891  INFO M092-1879707 --- [nio-8084-exec-7] AccessLog                                : 127.0.0.1 - - [13/Feb/2025:11:09:25 +0100] "GET /host-manager/html HTTP/1.1" 401 2044 "http://localhost:8084/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.5.0) Gecko/20100101 Firefox/128.5.0" - "-" "-" "-"
-2025-02-13 11:09:31.646  INFO M092-1879707 --- [nio-8084-exec-2] AccessLog                                : 127.0.0.1 - - [13/Feb/2025:11:09:31 +0100] "GET /host-manager/html HTTP/1.1" 401 2044 "http://localhost:8084/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.5.0) Gecko/20100101 Firefox/128.5.0" - "Basic YWRtaW4tZ3VpOnMzY3JldA==" "-" "-"
-2025-02-13 11:09:37.824  INFO M092-1879707 --- [io-8084-exec-10] AccessLog                                : 127.0.0.1 - - [13/Feb/2025:11:09:37 +0100] "GET /host-manager/html HTTP/1.1" 401 2044 "http://localhost:8084/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.5.0) Gecko/20100101 Firefox/128.5.0" - "-" "-" "-"
-2025-02-13 11:10:04.187  INFO M092-1879707 --- [nio-8084-exec-3] AccessLog                                : 127.0.0.1 - - [13/Feb/2025:11:10:04 +0100] "GET /host-manager/html HTTP/1.1" 401 2044 "http://localhost:8084/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.5.0) Gecko/20100101 Firefox/128.5.0" - "Basic YWRtaW4tZ3VpOnMzY3JldA==" "-" "-"
-2025-02-13 11:10:13.240  INFO M092-1879707 --- [nio-8084-exec-4] AccessLog                                : 127.0.0.1 - - [13/Feb/2025:11:10:13 +0100] "GET /host-manager/html HTTP/1.1" 401 2044 "http://localhost:8084/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.5.0) Gecko/20100101 Firefox/128.5.0" - "Basic dG9tY2F0Og==" "-" "-"
-2025-02-13 11:10:20.830  INFO M092-1879707 --- [nio-8084-exec-5] AccessLog                                : 127.0.0.1 - - [13/Feb/2025:11:10:20 +0100] "GET /host-manager/html HTTP/1.1" 401 2044 "http://localhost:8084/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.5.0) Gecko/20100101 Firefox/128.5.0" - "Basic dG9tY2F0OnMzY3JldA==" "-" "-"
-2025-02-13 11:10:26.295  INFO M092-1879707 --- [nio-8084-exec-9] AccessLog                                : 127.0.0.1 - - [13/Feb/2025:11:10:26 +0100] "GET /monappli-api/api/tech/ping HTTP/1.1" 404 719 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.5.0) Gecko/20100101 Firefox/128.5.0" - "-" "-" "JSESSIONID=3C746A0D962AF70F27C15E8B0C3735D7"
-2025-02-13 11:10:26.948  INFO M092-1879707 --- [nio-8084-exec-8] AccessLog                                : 127.0.0.1 - - [13/Feb/2025:11:10:26 +0100] "GET /monappli-api/api/tech/ping HTTP/1.1" 404 719 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.5.0) Gecko/20100101 Firefox/128.5.0" - "-" "-" "JSESSIONID=3C746A0D962AF70F27C15E8B0C3735D7"
-2025-02-13 11:10:27.599  INFO M092-1879707 --- [nio-8084-exec-6] AccessLog                                : 127.0.0.1 - - [13/Feb/2025:11:10:27 +0100] "GET /monappli-api/api/tech/ping HTTP/1.1" 404 719 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.5.0) Gecko/20100101 Firefox/128.5.0" - "-" "-" "JSESSIONID=3C746A0D962AF70F27C15E8B0C3735D7"
-2025-02-13 11:10:28.169  INFO M092-1879707 --- [nio-8084-exec-7] AccessLog                                : 127.0.0.1 - - [13/Feb/2025:11:10:28 +0100] "GET /monappli-api/api/tech/ping HTTP/1.1" 404 719 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.5.0) Gecko/20100101 Firefox/128.5.0" - "-" "-" "JSESSIONID=3C746A0D962AF70F27C15E8B0C3735D7"
-2025-02-13 11:10:28.552  INFO M092-1879707 --- [nio-8084-exec-2] AccessLog                                : 127.0.0.1 - - [13/Feb/2025:11:10:28 +0100] "GET /monappli-api/api/tech/ping HTTP/1.1" 404 719 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.5.0) Gecko/20100101 Firefox/128.5.0" - "-" "-" "JSESSIONID=3C746A0D962AF70F27C15E8B0C3735D7"
-2025-02-13 11:10:28.943  INFO M092-1879707 --- [io-8084-exec-10] AccessLog                                : 127.0.0.1 - - [13/Feb/2025:11:10:28 +0100] "GET /monappli-api/api/tech/ping HTTP/1.1" 404 719 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.5.0) Gecko/20100101 Firefox/128.5.0" - "-" "-" "JSESSIONID=3C746A0D962AF70F27C15E8B0C3735D7"
-2025-02-13 11:10:29.346  INFO M092-1879707 --- [nio-8084-exec-1] AccessLog                                : 127.0.0.1 - - [13/Feb/2025:11:10:29 +0100] "GET /monappli-api/api/tech/ping HTTP/1.1" 404 719 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.5.0) Gecko/20100101 Firefox/128.5.0" - "-" "-" "JSESSIONID=3C746A0D962AF70F27C15E8B0C3735D7"
-2025-02-13 11:10:29.779  INFO M092-1879707 --- [nio-8084-exec-3] AccessLog                                : 127.0.0.1 - - [13/Feb/2025:11:10:29 +0100] "GET /monappli-api/api/tech/ping HTTP/1.1" 404 719 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.5.0) Gecko/20100101 Firefox/128.5.0" - "-" "-" "JSESSIONID=3C746A0D962AF70F27C15E8B0C3735D7"
- je n'ai pas de alive quand je fait http://localhost:8084/monappli-api/api/tech/ping
+
+Error starting ApplicationContext. To display the conditions report re-run your application with 'debug' enabled.
+2025-02-13 11:44:37.082 ERROR M092-1879707 --- [alina-utility-2] o.s.b.SpringApplication                  : Application run failed
+org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'directoryServer' defined in class path resource [org/springframework/boot/autoconfigure/ldap/embedded/EmbeddedLdapAutoConfiguration.class]: Bean instantiation via factory method failed; nested exception is org.springframework.beans.BeanInstantiationException: Failed to instantiate [com.unboundid.ldap.listener.InMemoryDirectoryServer]: Factory method 'directoryServer' threw exception; nested exception is LDAPException(resultCode=82 (local error), errorMessage='An error occurred while attempting to start listener 'ldap':  BindException(Address already in use: bind), ldapSDKVersion=6.0.6, revision=b8c6c463def55758ed8ec0d914c84268c944251c')
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:658)
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:638)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1352)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1195)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:582)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:542)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:335)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:333)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:208)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:322)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:208)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:955)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:918)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:583)
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:147)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:731)
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:408)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:307)
+	at org.springframework.boot.web.servlet.support.SpringBootServletInitializer.run(SpringBootServletInitializer.java:175)
+	at org.springframework.boot.web.servlet.support.SpringBootServletInitializer.createRootApplicationContext(SpringBootServletInitializer.java:155)
+	at org.springframework.boot.web.servlet.support.SpringBootServletInitializer.onStartup(SpringBootServletInitializer.java:97)
+	at org.springframework.web.SpringServletContainerInitializer.onStartup(SpringServletContainerInitializer.java:174)
+	at org.apache.catalina.core.StandardContext.startInternal(StandardContext.java:4450)
+	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:164)
+	at org.apache.catalina.core.ContainerBase.addChildInternal(ContainerBase.java:599)
+	at org.apache.catalina.core.ContainerBase.addChild(ContainerBase.java:571)
+	at org.apache.catalina.core.StandardHost.addChild(StandardHost.java:603)
+	at org.apache.catalina.startup.HostConfig.deployDirectory(HostConfig.java:1175)
+	at org.apache.catalina.startup.HostConfig$DeployDirectory.run(HostConfig.java:1888)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:572)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at org.apache.tomcat.util.threads.InlineExecutorService.execute(InlineExecutorService.java:75)
+	at java.base/java.util.concurrent.AbstractExecutorService.submit(AbstractExecutorService.java:123)
+	at org.apache.catalina.startup.HostConfig.deployDirectories(HostConfig.java:1086)
+	at org.apache.catalina.startup.HostConfig.deployApps(HostConfig.java:470)
+	at org.apache.catalina.startup.HostConfig.check(HostConfig.java:1633)
+	at org.apache.catalina.startup.HostConfig.lifecycleEvent(HostConfig.java:308)
+	at org.apache.catalina.util.LifecycleBase.fireLifecycleEvent(LifecycleBase.java:109)
+	at org.apache.catalina.core.ContainerBase.backgroundProcess(ContainerBase.java:973)
+	at org.apache.catalina.core.ContainerBase$ContainerBackgroundProcessor.processChildren(ContainerBase.java:1172)
+	at org.apache.catalina.core.ContainerBase$ContainerBackgroundProcessor.processChildren(ContainerBase.java:1176)
+	at org.apache.catalina.core.ContainerBase$ContainerBackgroundProcessor.run(ContainerBase.java:1154)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:572)
+	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:358)
+	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: org.springframework.beans.BeanInstantiationException: Failed to instantiate [com.unboundid.ldap.listener.InMemoryDirectoryServer]: Factory method 'directoryServer' threw exception; nested exception is LDAPException(resultCode=82 (local error), errorMessage='An error occurred while attempting to start listener 'ldap':  BindException(Address already in use: bind), ldapSDKVersion=6.0.6, revision=b8c6c463def55758ed8ec0d914c84268c944251c')
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:185)
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:653)
+	... 49 more
+Caused by: LDAPException(resultCode=82 (local error), errorMessage='An error occurred while attempting to start listener 'ldap':  BindException(Address already in use: bind), ldapSDKVersion=6.0.6, revision=b8c6c463def55758ed8ec0d914c84268c944251c')
+	at com.unboundid.ldap.listener.InMemoryDirectoryServer.startListening(InMemoryDirectoryServer.java:443)
+	at org.springframework.boot.autoconfigure.ldap.embedded.EmbeddedLdapAutoConfiguration.directoryServer(EmbeddedLdapAutoConfiguration.java:102)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:154)
+	... 50 more
+13-Feb-2025 11:44:37.090 GRAVE [Catalina-utility-2] org.apache.catalina.startup.HostConfig.deployDirectory Erreur lors du déploiement du répertoire [C:\soda\atelierjava\conteneurs\tomcat\apache-tomcat-9.0.97\webapps\monappli_api_war] de l'application web
+	java.lang.IllegalStateException: Erreur lors du démarrage du conteneur fils
+		at org.apache.catalina.core.ContainerBase.addChildInternal(ContainerBase.java:602)
+		at org.apache.catalina.core.ContainerBase.addChild(ContainerBase.java:571)
+		at org.apache.catalina.core.StandardHost.addChild(StandardHost.java:603)
+		at org.apache.catalina.startup.HostConfig.deployDirectory(HostConfig.java:1175)
+		at org.apache.catalina.startup.HostConfig$DeployDirectory.run(HostConfig.java:1888)
+		at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:572)
+		at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+		at org.apache.tomcat.util.threads.InlineExecutorService.execute(InlineExecutorService.java:75)
+		at java.base/java.util.concurrent.AbstractExecutorService.submit(AbstractExecutorService.java:123)
+		at org.apache.catalina.startup.HostConfig.deployDirectories(HostConfig.java:1086)
+		at org.apache.catalina.startup.HostConfig.deployApps(HostConfig.java:470)
+		at org.apache.catalina.startup.HostConfig.check(HostConfig.java:1633)
+		at org.apache.catalina.startup.HostConfig.lifecycleEvent(HostConfig.java:308)
+		at org.apache.catalina.util.LifecycleBase.fireLifecycleEvent(LifecycleBase.java:109)
+		at org.apache.catalina.core.ContainerBase.backgroundProcess(ContainerBase.java:973)
+		at org.apache.catalina.core.ContainerBase$ContainerBackgroundProcessor.processChildren(ContainerBase.java:1172)
+		at org.apache.catalina.core.ContainerBase$ContainerBackgroundProcessor.processChildren(ContainerBase.java:1176)
+		at org.apache.catalina.core.ContainerBase$ContainerBackgroundProcessor.run(ContainerBase.java:1154)
+		at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:572)
+		at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:358)
+		at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305)
+		at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+		at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+		at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+		at java.base/java.lang.Thread.run(Thread.java:1583)
+	Caused by: org.apache.catalina.LifecycleException: Echec de démarrage du composant [StandardEngine[Catalina].StandardHost[localhost].StandardContext[/monappli_api_war]]
+		at org.apache.catalina.util.LifecycleBase.handleSubClassException(LifecycleBase.java:406)
+		at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:179)
+		at org.apache.catalina.core.ContainerBase.addChildInternal(ContainerBase.java:599)
+		... 24 more
+	Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'directoryServer' defined in class path resource [org/springframework/boot/autoconfigure/ldap/embedded/EmbeddedLdapAutoConfiguration.class]: Bean instantiation via factory method failed; nested exception is org.springframework.beans.BeanInstantiationException: Failed to instantiate [com.unboundid.ldap.listener.InMemoryDirectoryServer]: Factory method 'directoryServer' threw exception; nested exception is LDAPException(resultCode=82 (local error), errorMessage='An error occurred while attempting to start listener 'ldap':  BindException(Address already in use: bind), ldapSDKVersion=6.0.6, revision=b8c6c463def55758ed8ec0d914c84268c944251c')
+		at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:658)
+		at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:638)
+		at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1352)
+		at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1195)
+		at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:582)
+		at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:542)
+		at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:335)
+		at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
+		at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:333)
+		at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:208)
+		at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:322)
+		at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:208)
+		at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:955)
+		at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:918)
+		at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:583)
+		at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:147)
+		at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:731)
+		at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:408)
+		at org.springframework.boot.SpringApplication.run(SpringApplication.java:307)
+		at org.springframework.boot.web.servlet.support.SpringBootServletInitializer.run(SpringBootServletInitializer.java:175)
+		at org.springframework.boot.web.servlet.support.SpringBootServletInitializer.createRootApplicationContext(SpringBootServletInitializer.java:155)
+		at org.springframework.boot.web.servlet.support.SpringBootServletInitializer.onStartup(SpringBootServletInitializer.java:97)
+		at org.springframework.web.SpringServletContainerInitializer.onStartup(SpringServletContainerInitializer.java:174)
+		at org.apache.catalina.core.StandardContext.startInternal(StandardContext.java:4450)
+		at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:164)
+		... 25 more
+	Caused by: org.springframework.beans.BeanInstantiationException: Failed to instantiate [com.unboundid.ldap.listener.InMemoryDirectoryServer]: Factory method 'directoryServer' threw exception; nested exception is LDAPException(resultCode=82 (local error), errorMessage='An error occurred while attempting to start listener 'ldap':  BindException(Address already in use: bind), ldapSDKVersion=6.0.6, revision=b8c6c463def55758ed8ec0d914c84268c944251c')
+		at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:185)
+		at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:653)
+		... 49 more
+	Caused by: LDAPException(resultCode=82 (local error), errorMessage='An error occurred while attempting to start listener 'ldap':  BindException(Address already in use: bind), ldapSDKVersion=6.0.6, revision=b8c6c463def55758ed8ec0d914c84268c944251c')
+		at com.unboundid.ldap.listener.InMemoryDirectoryServer.startListening(InMemoryDirectoryServer.java:443)
+		at org.springframework.boot.autoconfigure.ldap.embedded.EmbeddedLdapAutoConfiguration.directoryServer(EmbeddedLdapAutoConfiguration.java:102)
+		at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+		at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+		at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:154)
+		... 50 more
+13-Feb-2025 11:44:37.205 INFOS [Catalina-utility-2] org.apache.catalina.startup.HostConfig.deployDirectory Le déploiement du répertoire [C:\soda\atelierjava\conteneurs\tomcat\apache-tomcat-9.0.97\webapps\monappli_api_war] de l'application web s'est terminé en [45 246] ms
+13-Feb-2025 11:44:37.208 INFOS [Catalina-utility-2] org.apache.catalina.startup.HostConfig.deployDirectory Déploiement du répertoire d'application web [C:\soda\atelierjava\conteneurs\tomcat\apache-tomcat-9.0.97\webapps\ROOT]
+13-Feb-2025 11:44:37.739 INFOS [Catalina-utility-2] org.apache.jasper.servlet.TldScanner.scanJars Au moins un fichier JAR a été analysé pour trouver des TLDs mais il n'en contenait pas, le mode "debug" du journal peut être activé pour obtenir une liste complète de JAR scannés sans succès ; éviter d'analyser des JARs inutilement peut améliorer sensiblement le temps de démarrage et le temps de compilation des JSPs
+13-Feb-2025 11:44:37.750 INFOS [Catalina-utility-2] org.apache.catalina.startup.HostConfig.deployDirectory Le déploiement du répertoire [C:\soda\atelierjava\conteneurs\tomcat\apache-tomcat-9.0.97\webapps\ROOT] de l'application web s'est terminé en [541] ms
+2025-02-13 11:44:44.120  INFO M092-1879707 --- [nio-8084-exec-3] AccessLog                                : 127.0.0.1 - - [13/Feb/2025:11:44:44 +0100] "GET /monappli-api HTTP/1.1" 404 693 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.5.0) Gecko/20100101 Firefox/128.5.0" - "-" "-" "JSESSIONID=3C746A0D962AF70F27C15E8B0C3735D7"

@@ -1,1 +1,437 @@
-'parent.relativePath' of POM fr.gouv.finances.dgfip:monappli-api:0.0.1-SNAPSHOT (C:\soda\atelierjava\workspace\neofip\monappli-api\pom.xml) points at fr.gouv.finances.dgfip:monappli instead of fr.gouv.finances.lombok:lombok, please verify your project structure
+pom.xml de monappli-api <?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>lombok</artifactId>
+    <groupId>fr.gouv.finances.lombok</groupId>
+    <version>25.1.4</version>
+  </parent>
+  <groupId>fr.gouv.finances.dgfip</groupId>
+  <artifactId>monappli-api</artifactId>
+  <packaging>${packaging.type}</packaging>
+  <version>0.0.1-SNAPSHOT</version>
+  <name>monappli-api</name>
+  <description>Description du projet monappli-api en version 0.0.1-SNAPSHOT</description>
+  <scm>
+    <connection>svn+ssh://venezia.appli.dgfip:9222/svnroot//monappli-api/trunk</connection>
+    <developerConnection>svn+ssh://venezia.appli.dgfip:9222/svnroot//monappli-api/trunk</developerConnection>
+    <url>http://venezia.appli.dgfip/scm/browser.php?group_id=A_COMPLETER</url>
+  </scm>
+  <ciManagement>
+    <system>Jenkins</system>
+    <url>http://ice.appli.dgfip/jenkins/job/monappli-api/</url>
+    <notifiers>
+      <notifier>
+        <type>mail</type>
+        <sendOnError>true</sendOnError>
+        <sendOnFailure>true</sendOnFailure>
+        <sendOnSuccess>false</sendOnSuccess>
+        <sendOnWarning>false</sendOnWarning>
+      </notifier>
+    </notifiers>
+  </ciManagement>
+  <properties>
+    <package.appli>monappli-api</package.appli>
+    <start-class>fr.gouv.finances.dgfip.monappli_api.WebLauncher</start-class>
+    <batch-start-class>fr.gouv.finances.dgfip.monappli_api.batch.BatchLauncher</batch-start-class>
+    <venezia.group_id>A_COMPLETER</venezia.group_id>
+    <java.version>11</java.version>
+    <skipTests>false</skipTests>
+    <svn.tagspath>monappli-api/tags</svn.tagspath>
+    <!-- Exclusions Sonar ? -->
+    <sonar.exclusions></sonar.exclusions> 
+    <!-- plugin dont la version était connue du super-pom en version 3 -->
+    <swagger-ui.version>3.46.0</swagger-ui.version>
+    <webjars-locator.version>0.40</webjars-locator.version>
+    <replacer.version>1.5.3</replacer.version>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-tomcat</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.tomcat.embed</groupId>
+      <artifactId>tomcat-embed-jasper</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+        <dependency>
+      <groupId>fr.gouv.finances.lombok</groupId>
+      <artifactId>lombok-jpa</artifactId>
+    </dependency>
+            <dependency>
+      <groupId>fr.gouv.finances.lombok</groupId>
+      <artifactId>lombok-rest</artifactId>
+    </dependency>
+	            <dependency>
+      <groupId>fr.gouv.finances.lombok</groupId>
+      <artifactId>lombok-batch</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>fr.gouv.finances.lombok</groupId>
+      <artifactId>lombok-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>fr.gouv.finances.lombok</groupId>
+      <artifactId>lombok-data</artifactId>
+    </dependency>
+                                        <dependency>
+      <groupId>fr.gouv.finances.lombok</groupId>
+      <artifactId>lombok-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    
+    <!--ajout dépendance permettant de tester dans junit les System.exit -->
+    <dependency>
+      <groupId>com.github.stefanbirkner</groupId>
+      <artifactId>system-rules</artifactId>
+      <version>1.18.0</version>
+      <scope>test</scope>
+    </dependency>
+    <!-- ajout htmlunit (defini dans boot dependencies) -->
+    <dependency>
+      <groupId>net.sourceforge.htmlunit</groupId>
+      <artifactId>htmlunit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.seleniumhq.selenium</groupId>
+      <artifactId>htmlunit-driver</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <!-- utilisation du mockhttprequest donc spring test en scope compile.
+    si on prend spring-test, qui tire spring, il faut veiller à exclure commons-loggings de spring (voir pom du starter test)
+     A refactorer. -->
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-test</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-actuator</artifactId>
+    </dependency>
+    
+     <!-- ldap embedded : monte un serveur ldap en localhost à partir d'un fichier ldif
+        voir les properties spring.ldap.embedded.* pour la configuration -->
+    <dependency>
+      <groupId>com.unboundid</groupId>
+      <artifactId>unboundid-ldapsdk</artifactId>
+    </dependency>
+    
+  </dependencies>
+
+  <build>
+    <finalName>${package.appli}</finalName>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>dbunit-maven-plugin</artifactId>
+        <version>1.0-beta-3</version>
+        <dependencies>
+          <dependency>
+            <groupId>com.oracle</groupId>
+            <artifactId>ojdbc7</artifactId>
+            <version>${com.oracle.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>com.oracle</groupId>
+            <artifactId>orai18n</artifactId>
+            <version>${com.oracle.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${postgresql.version}</version>
+          </dependency>
+        </dependencies>
+        <configuration>
+          <driver>${appli.db.driver}</driver>
+          <url>${appli.db.url}</url>
+          <username>${appli.db.user}</username>
+          <password>${appli.db.pwd}</password>
+          <skipOracleRecycleBinTables>true</skipOracleRecycleBinTables>
+          <schema>${appli.db.schema}</schema>
+          <metadataHandlerName>org.dbunit.database.DefaultMetadataHandler</metadataHandlerName>
+          <format>${db.dataset.format}</format>
+          <dest>${db.export.target}</dest>
+          <type>${db.export.type}</type>
+          <src>${db.jeu.essai}</src>
+          <tables>
+            <table>
+              <!-- <name>MUTATION_MUTA</name> -->
+            </table>
+          </tables>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>sql-maven-plugin</artifactId>
+        <version>1.5</version>
+        <dependencies>
+          <dependency>
+            <groupId>com.oracle</groupId>
+            <artifactId>ojdbc7</artifactId>
+            <version>${com.oracle.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>com.oracle</groupId>
+            <artifactId>orai18n</artifactId>
+            <version>${com.oracle.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${postgresql.version}</version>
+          </dependency>
+        </dependencies>
+        <configuration>
+          <source>1.5</source>
+          <target>1.5</target>
+          <driver>${appli.db.driver}</driver>
+          <url>${appli.db.url}</url>
+          <username>${appli.db.user}</username>
+          <password>${appli.db.pwd}</password>
+          <autocommit>true</autocommit>
+          <delimiter>;</delimiter>
+          <delimiterType>normal</delimiterType>
+          <onError>continue</onError>
+          <keepFormat>false</keepFormat>
+          <fileset>
+            <basedir>${basedir}</basedir>
+            <includes>
+              <include>${db.init.sequence}</include>
+            </includes>
+          </fileset>
+        </configuration>
+      </plugin>
+            <plugin>
+        <!-- Changement de surefire lié à l'optimisation de tests. On enlève les cp aussi -->
+        <groupId>org.apache.maven.plugins </groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>3.0.0-M5</version>
+        <configuration>
+          <systemPropertyVariables>
+            <environment>integration</environment>
+            <log4j.configuration>file:${project.build.testOutputDirectory}/log4j-integration.properties</log4j.configuration>
+          </systemPropertyVariables>
+          <skip>false</skip>
+          <testFailureIgnore>true</testFailureIgnore>
+        </configuration>
+        <executions>
+          <!-- Exécution des tests unitaires, avant déploiement -->
+          <execution>
+            <id>default-test</id>
+            <configuration>
+              <includes>
+                <include>
+                  fr.gouv.finances.dgfip.monappli_api.test.dev.**.*.java
+                </include>
+              </includes>
+              <argLine>-Xmx1024m ${argLine}</argLine>
+            </configuration>
+          </execution>
+          <!-- Exécution des tests Selenium, après déploiement -->
+          <execution>
+            <phase>integration-test</phase>
+            <goals>
+              <goal>test</goal>
+            </goals>
+            <inherited>true</inherited>
+            <configuration>
+              <systemPropertyVariables>
+                <!-- <appli.data.root>${file.protocol.seperator}/app/jenkins-slave/workspace/Lombok/Lombok-Cadriciel-Dev-25.1/lombok-archetype-backend/target/test-classes/data</appli.data.root> <appli.batch.root>${file.protocol.seperator}/app/jenkins-slave/workspace/Lombok/Lombok-Cadriciel-Dev-25.1/lombok-archetype-backend/target/test-classes</appli.batch.root> -->
+              </systemPropertyVariables>
+              <skipTests>false</skipTests>
+              <includes>
+                <include>
+                  fr.gouv.finances.dgfip.monappli_api.test.integration.**.*.java
+                </include>
+              </includes>
+              <!-- ne pas réutiliser les forks (et donc détruire la base de données mémoire si utilisée pour les tests d'integration -->
+              <!-- <reuseForks>false</reuseForks> -->
+              <argLine>-Xmx1024m ${argLine}</argLine>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- <plugin> -->
+      <!-- <artifactId>maven-surefire-plugin</artifactId> -->
+      <!-- <configuration> -->
+      <!-- <argLine>-javaagent:/home/ice/.m2/repository/org/jacoco/org.jacoco.agent/0.8.6/org.jacoco.agent-0.8.6-runtime.jar=destfile=/app/jenkins-slave/workspace/Lombok/Lombok-Cadriciel-Dev-25.1/lombok-archetype-backend/target/jacoco.exec,excludes=**/lib/*</argLine> -->
+      <!-- </configuration> -->
+      <!-- </plugin> -->
+      
+      <!-- définition du plugin de génération web service -->
+      <plugin>
+        <groupId>org.jvnet.jax-ws-commons</groupId>
+        <artifactId>jaxws-maven-plugin</artifactId>
+        <version>2.3-DGFiP-2</version>
+        <configuration>
+          <vmArgs>
+            <vmArg>-Djavax.xml.accessExternalDTD=all</vmArg>
+            <vmArg>-Djavax.xml.accessExternalSchema=all</vmArg>
+          </vmArgs>
+          <verbose>true</verbose>
+        </configuration>
+      </plugin>
+      
+       <!-- CF : solution provisoire -->
+      <plugin>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>3.0.0-M3</version>
+        <executions>
+          <execution>
+            <id>enforce-plugin-versions</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <requirePluginVersions>
+                  <phases>NONE</phases>
+                </requirePluginVersions>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      
+    </plugins>
+  </build>
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-changes-plugin</artifactId>
+        <version>2.3</version>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>changes-report</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+    </plugins>
+  </reporting>
+  <profiles>
+<profile>
+      <!-- Profil utilisé par l'archetype fullstack -->
+      <id>prod</id>
+      <build>
+          <plugins>
+            <!-- CF : copie du répertoire dist du module UI pour créer un WAR exécutable qui contient tout. -->                
+            <!-- Commande :  java -jar xxx-api-exec.war -->
+            <plugin>
+              <artifactId>maven-resources-plugin</artifactId>
+              <version>3.2.0</version>
+              <executions>
+                <execution>
+                  <id>copy-resources</id>
+                  <phase>validate</phase>
+                  <goals>
+                    <goal>copy-resources</goal>
+                  </goals>
+                  <configuration>
+                    <outputDirectory>${project.build.directory}/classes/resources/</outputDirectory>
+                    <overwrite>true</overwrite>
+                    <resources>
+                      <resource>                      
+                        <directory>../monappli-ui/dist/</directory>
+                      </resource>
+                    </resources>                    
+                  </configuration>
+                </execution>
+              </executions>
+            </plugin>
+          </plugins>
+      </build>
+    </profile>
+    
+    
+   <!--  CF: redéfinition provisoire de ce plugin car le plugin enforcer exige une version.
+        Même avec une version mentionnée dans le pom parent (lombok) ... -->
+    <profile>
+      <id>ice-puppet</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <version>3.3.0</version>
+          </plugin>
+        </plugins>
+        </build>
+    </profile>
+    
+    <profile>
+      <id>release-puppet</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-release-plugin</artifactId>
+            <version>3.0.0-M1</version>
+            <configuration>
+              <goals>install</goals>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>swagger</id>
+        <dependencies>
+          <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>webjars-locator</artifactId>
+            <version>${webjars-locator.version}</version>
+          </dependency>              
+          <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>swagger-ui</artifactId>
+            <version>${swagger-ui.version}</version>
+          </dependency>
+        </dependencies>
+    </profile>
+  </profiles>
+</project> et pom.xml du dossier parent monappli <?xml version="1.0" encoding="UTF-8"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>monappli</artifactId>
+  <groupId>fr.gouv.finances.dgfip</groupId>
+  <version>0.0.1-SNAPSHOT</version>
+  <packaging>pom</packaging>
+  <modules>
+    <module>monappli-ui</module>
+    <module>monappli-api</module>
+  </modules>
+  <profiles>
+    <!--  CF : Modification du profil ice-puppet pour qu'il ne fasse rien à ce niveau là. 
+        En effet ce pom agrégateur n'hérite pas de lombok mais si on lance la construction depuis Jenkins ce profil 
+        s'appliquera également à ce pom agrégateur  -->
+    <profile>
+      <id>ice-puppet</id>
+    </profile>
+    <!--  Ajout de ce profil pour pouvoir l'appeler depuis ce pom agregateur -->
+    <profile>
+      <id>prod</id>
+    </profile>
+  </profiles>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-deploy-plugin</artifactId>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
+ 

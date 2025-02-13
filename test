@@ -1,437 +1,75 @@
-pom.xml de monappli-api <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <artifactId>lombok</artifactId>
-    <groupId>fr.gouv.finances.lombok</groupId>
-    <version>25.1.4</version>
-  </parent>
-  <groupId>fr.gouv.finances.dgfip</groupId>
-  <artifactId>monappli-api</artifactId>
-  <packaging>${packaging.type}</packaging>
-  <version>0.0.1-SNAPSHOT</version>
-  <name>monappli-api</name>
-  <description>Description du projet monappli-api en version 0.0.1-SNAPSHOT</description>
-  <scm>
-    <connection>svn+ssh://venezia.appli.dgfip:9222/svnroot//monappli-api/trunk</connection>
-    <developerConnection>svn+ssh://venezia.appli.dgfip:9222/svnroot//monappli-api/trunk</developerConnection>
-    <url>http://venezia.appli.dgfip/scm/browser.php?group_id=A_COMPLETER</url>
-  </scm>
-  <ciManagement>
-    <system>Jenkins</system>
-    <url>http://ice.appli.dgfip/jenkins/job/monappli-api/</url>
-    <notifiers>
-      <notifier>
-        <type>mail</type>
-        <sendOnError>true</sendOnError>
-        <sendOnFailure>true</sendOnFailure>
-        <sendOnSuccess>false</sendOnSuccess>
-        <sendOnWarning>false</sendOnWarning>
-      </notifier>
-    </notifiers>
-  </ciManagement>
-  <properties>
-    <package.appli>monappli-api</package.appli>
-    <start-class>fr.gouv.finances.dgfip.monappli_api.WebLauncher</start-class>
-    <batch-start-class>fr.gouv.finances.dgfip.monappli_api.batch.BatchLauncher</batch-start-class>
-    <venezia.group_id>A_COMPLETER</venezia.group_id>
-    <java.version>11</java.version>
-    <skipTests>false</skipTests>
-    <svn.tagspath>monappli-api/tags</svn.tagspath>
-    <!-- Exclusions Sonar ? -->
-    <sonar.exclusions></sonar.exclusions> 
-    <!-- plugin dont la version était connue du super-pom en version 3 -->
-    <swagger-ui.version>3.46.0</swagger-ui.version>
-    <webjars-locator.version>0.40</webjars-locator.version>
-    <replacer.version>1.5.3</replacer.version>
-  </properties>
-
-  <dependencies>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-tomcat</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.tomcat.embed</groupId>
-      <artifactId>tomcat-embed-jasper</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-        <dependency>
-      <groupId>fr.gouv.finances.lombok</groupId>
-      <artifactId>lombok-jpa</artifactId>
-    </dependency>
-            <dependency>
-      <groupId>fr.gouv.finances.lombok</groupId>
-      <artifactId>lombok-rest</artifactId>
-    </dependency>
-	            <dependency>
-      <groupId>fr.gouv.finances.lombok</groupId>
-      <artifactId>lombok-batch</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>fr.gouv.finances.lombok</groupId>
-      <artifactId>lombok-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>fr.gouv.finances.lombok</groupId>
-      <artifactId>lombok-data</artifactId>
-    </dependency>
-                                        <dependency>
-      <groupId>fr.gouv.finances.lombok</groupId>
-      <artifactId>lombok-test</artifactId>
-      <scope>test</scope>
-    </dependency>
-    
-    <!--ajout dépendance permettant de tester dans junit les System.exit -->
-    <dependency>
-      <groupId>com.github.stefanbirkner</groupId>
-      <artifactId>system-rules</artifactId>
-      <version>1.18.0</version>
-      <scope>test</scope>
-    </dependency>
-    <!-- ajout htmlunit (defini dans boot dependencies) -->
-    <dependency>
-      <groupId>net.sourceforge.htmlunit</groupId>
-      <artifactId>htmlunit</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.seleniumhq.selenium</groupId>
-      <artifactId>htmlunit-driver</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <!-- utilisation du mockhttprequest donc spring test en scope compile.
-    si on prend spring-test, qui tire spring, il faut veiller à exclure commons-loggings de spring (voir pom du starter test)
-     A refactorer. -->
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-test</artifactId>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-actuator</artifactId>
-    </dependency>
-    
-     <!-- ldap embedded : monte un serveur ldap en localhost à partir d'un fichier ldif
-        voir les properties spring.ldap.embedded.* pour la configuration -->
-    <dependency>
-      <groupId>com.unboundid</groupId>
-      <artifactId>unboundid-ldapsdk</artifactId>
-    </dependency>
-    
-  </dependencies>
-
-  <build>
-    <finalName>${package.appli}</finalName>
-    <plugins>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>dbunit-maven-plugin</artifactId>
-        <version>1.0-beta-3</version>
-        <dependencies>
-          <dependency>
-            <groupId>com.oracle</groupId>
-            <artifactId>ojdbc7</artifactId>
-            <version>${com.oracle.version}</version>
-          </dependency>
-          <dependency>
-            <groupId>com.oracle</groupId>
-            <artifactId>orai18n</artifactId>
-            <version>${com.oracle.version}</version>
-          </dependency>
-          <dependency>
-            <groupId>postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>${postgresql.version}</version>
-          </dependency>
-        </dependencies>
-        <configuration>
-          <driver>${appli.db.driver}</driver>
-          <url>${appli.db.url}</url>
-          <username>${appli.db.user}</username>
-          <password>${appli.db.pwd}</password>
-          <skipOracleRecycleBinTables>true</skipOracleRecycleBinTables>
-          <schema>${appli.db.schema}</schema>
-          <metadataHandlerName>org.dbunit.database.DefaultMetadataHandler</metadataHandlerName>
-          <format>${db.dataset.format}</format>
-          <dest>${db.export.target}</dest>
-          <type>${db.export.type}</type>
-          <src>${db.jeu.essai}</src>
-          <tables>
-            <table>
-              <!-- <name>MUTATION_MUTA</name> -->
-            </table>
-          </tables>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>sql-maven-plugin</artifactId>
-        <version>1.5</version>
-        <dependencies>
-          <dependency>
-            <groupId>com.oracle</groupId>
-            <artifactId>ojdbc7</artifactId>
-            <version>${com.oracle.version}</version>
-          </dependency>
-          <dependency>
-            <groupId>com.oracle</groupId>
-            <artifactId>orai18n</artifactId>
-            <version>${com.oracle.version}</version>
-          </dependency>
-          <dependency>
-            <groupId>postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>${postgresql.version}</version>
-          </dependency>
-        </dependencies>
-        <configuration>
-          <source>1.5</source>
-          <target>1.5</target>
-          <driver>${appli.db.driver}</driver>
-          <url>${appli.db.url}</url>
-          <username>${appli.db.user}</username>
-          <password>${appli.db.pwd}</password>
-          <autocommit>true</autocommit>
-          <delimiter>;</delimiter>
-          <delimiterType>normal</delimiterType>
-          <onError>continue</onError>
-          <keepFormat>false</keepFormat>
-          <fileset>
-            <basedir>${basedir}</basedir>
-            <includes>
-              <include>${db.init.sequence}</include>
-            </includes>
-          </fileset>
-        </configuration>
-      </plugin>
-            <plugin>
-        <!-- Changement de surefire lié à l'optimisation de tests. On enlève les cp aussi -->
-        <groupId>org.apache.maven.plugins </groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <version>3.0.0-M5</version>
-        <configuration>
-          <systemPropertyVariables>
-            <environment>integration</environment>
-            <log4j.configuration>file:${project.build.testOutputDirectory}/log4j-integration.properties</log4j.configuration>
-          </systemPropertyVariables>
-          <skip>false</skip>
-          <testFailureIgnore>true</testFailureIgnore>
-        </configuration>
-        <executions>
-          <!-- Exécution des tests unitaires, avant déploiement -->
-          <execution>
-            <id>default-test</id>
-            <configuration>
-              <includes>
-                <include>
-                  fr.gouv.finances.dgfip.monappli_api.test.dev.**.*.java
-                </include>
-              </includes>
-              <argLine>-Xmx1024m ${argLine}</argLine>
-            </configuration>
-          </execution>
-          <!-- Exécution des tests Selenium, après déploiement -->
-          <execution>
-            <phase>integration-test</phase>
-            <goals>
-              <goal>test</goal>
-            </goals>
-            <inherited>true</inherited>
-            <configuration>
-              <systemPropertyVariables>
-                <!-- <appli.data.root>${file.protocol.seperator}/app/jenkins-slave/workspace/Lombok/Lombok-Cadriciel-Dev-25.1/lombok-archetype-backend/target/test-classes/data</appli.data.root> <appli.batch.root>${file.protocol.seperator}/app/jenkins-slave/workspace/Lombok/Lombok-Cadriciel-Dev-25.1/lombok-archetype-backend/target/test-classes</appli.batch.root> -->
-              </systemPropertyVariables>
-              <skipTests>false</skipTests>
-              <includes>
-                <include>
-                  fr.gouv.finances.dgfip.monappli_api.test.integration.**.*.java
-                </include>
-              </includes>
-              <!-- ne pas réutiliser les forks (et donc détruire la base de données mémoire si utilisée pour les tests d'integration -->
-              <!-- <reuseForks>false</reuseForks> -->
-              <argLine>-Xmx1024m ${argLine}</argLine>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <!-- <plugin> -->
-      <!-- <artifactId>maven-surefire-plugin</artifactId> -->
-      <!-- <configuration> -->
-      <!-- <argLine>-javaagent:/home/ice/.m2/repository/org/jacoco/org.jacoco.agent/0.8.6/org.jacoco.agent-0.8.6-runtime.jar=destfile=/app/jenkins-slave/workspace/Lombok/Lombok-Cadriciel-Dev-25.1/lombok-archetype-backend/target/jacoco.exec,excludes=**/lib/*</argLine> -->
-      <!-- </configuration> -->
-      <!-- </plugin> -->
-      
-      <!-- définition du plugin de génération web service -->
-      <plugin>
-        <groupId>org.jvnet.jax-ws-commons</groupId>
-        <artifactId>jaxws-maven-plugin</artifactId>
-        <version>2.3-DGFiP-2</version>
-        <configuration>
-          <vmArgs>
-            <vmArg>-Djavax.xml.accessExternalDTD=all</vmArg>
-            <vmArg>-Djavax.xml.accessExternalSchema=all</vmArg>
-          </vmArgs>
-          <verbose>true</verbose>
-        </configuration>
-      </plugin>
-      
-       <!-- CF : solution provisoire -->
-      <plugin>
-        <artifactId>maven-enforcer-plugin</artifactId>
-        <version>3.0.0-M3</version>
-        <executions>
-          <execution>
-            <id>enforce-plugin-versions</id>
-            <goals>
-              <goal>enforce</goal>
-            </goals>
-            <configuration>
-              <rules>
-                <requirePluginVersions>
-                  <phases>NONE</phases>
-                </requirePluginVersions>
-              </rules>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      
-    </plugins>
-  </build>
-  <reporting>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-changes-plugin</artifactId>
-        <version>2.3</version>
-        <reportSets>
-          <reportSet>
-            <reports>
-              <report>changes-report</report>
-            </reports>
-          </reportSet>
-        </reportSets>
-      </plugin>
-    </plugins>
-  </reporting>
-  <profiles>
-<profile>
-      <!-- Profil utilisé par l'archetype fullstack -->
-      <id>prod</id>
-      <build>
-          <plugins>
-            <!-- CF : copie du répertoire dist du module UI pour créer un WAR exécutable qui contient tout. -->                
-            <!-- Commande :  java -jar xxx-api-exec.war -->
-            <plugin>
-              <artifactId>maven-resources-plugin</artifactId>
-              <version>3.2.0</version>
-              <executions>
-                <execution>
-                  <id>copy-resources</id>
-                  <phase>validate</phase>
-                  <goals>
-                    <goal>copy-resources</goal>
-                  </goals>
-                  <configuration>
-                    <outputDirectory>${project.build.directory}/classes/resources/</outputDirectory>
-                    <overwrite>true</overwrite>
-                    <resources>
-                      <resource>                      
-                        <directory>../monappli-ui/dist/</directory>
-                      </resource>
-                    </resources>                    
-                  </configuration>
-                </execution>
-              </executions>
-            </plugin>
-          </plugins>
-      </build>
-    </profile>
-    
-    
-   <!--  CF: redéfinition provisoire de ce plugin car le plugin enforcer exige une version.
-        Même avec une version mentionnée dans le pom parent (lombok) ... -->
-    <profile>
-      <id>ice-puppet</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-assembly-plugin</artifactId>
-            <version>3.3.0</version>
-          </plugin>
-        </plugins>
-        </build>
-    </profile>
-    
-    <profile>
-      <id>release-puppet</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-release-plugin</artifactId>
-            <version>3.0.0-M1</version>
-            <configuration>
-              <goals>install</goals>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <profile>
-      <id>swagger</id>
-        <dependencies>
-          <dependency>
-            <groupId>org.webjars</groupId>
-            <artifactId>webjars-locator</artifactId>
-            <version>${webjars-locator.version}</version>
-          </dependency>              
-          <dependency>
-            <groupId>org.webjars</groupId>
-            <artifactId>swagger-ui</artifactId>
-            <version>${swagger-ui.version}</version>
-          </dependency>
-        </dependencies>
-    </profile>
-  </profiles>
-</project> et pom.xml du dossier parent monappli <?xml version="1.0" encoding="UTF-8"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <artifactId>monappli</artifactId>
-  <groupId>fr.gouv.finances.dgfip</groupId>
-  <version>0.0.1-SNAPSHOT</version>
-  <packaging>pom</packaging>
-  <modules>
-    <module>monappli-ui</module>
-    <module>monappli-api</module>
-  </modules>
-  <profiles>
-    <!--  CF : Modification du profil ice-puppet pour qu'il ne fasse rien à ce niveau là. 
-        En effet ce pom agrégateur n'hérite pas de lombok mais si on lance la construction depuis Jenkins ce profil 
-        s'appliquera également à ce pom agrégateur  -->
-    <profile>
-      <id>ice-puppet</id>
-    </profile>
-    <!--  Ajout de ce profil pour pouvoir l'appeler depuis ce pom agregateur -->
-    <profile>
-      <id>prod</id>
-    </profile>
-  </profiles>
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-deploy-plugin</artifactId>
-        <configuration>
-          <skip>true</skip>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
-</project>
- 
+                           
+monappli-api :: Application mod�le :: Application mod�le - Projet blanc 
+Version 0.0.1-SNAPSHOT
+Running with Boot : 2.7.6
+Build with Lombok version : 25.1.4
+                                                                      
+2025-02-13 11:07:48.666  INFO M092-1879707 --- [kground-preinit] o.h.v.i.u.Version                        : HV000001: Hibernate Validator 6.2.5.Final
+2025-02-13 11:07:49.223  INFO M092-1879707 --- [on(2)-127.0.0.1] f.g.f.d.m.WebLauncher                    : Starting WebLauncher using Java 21.0.2 on M092-1879707 with PID 8816 (C:\soda\atelierjava\conteneurs\tomcat\apache-tomcat-9.0.97\webapps\monappli_api_war\WEB-INF\classes started by kharrari01 in C:\soda\atelierjava\conteneurs\tomcat\apache-tomcat-9.0.97\bin)
+2025-02-13 11:07:49.227  INFO M092-1879707 --- [on(2)-127.0.0.1] f.g.f.d.m.WebLauncher                    : The following 1 profile is active: "exemple"
+13-Feb-2025 11:07:49.313 INFOS [Catalina-utility-2] org.apache.jasper.servlet.TldScanner.scanJars Au moins un fichier JAR a été analysé pour trouver des TLDs mais il n'en contenait pas, le mode "debug" du journal peut être activé pour obtenir une liste complète de JAR scannés sans succès ; éviter d'analyser des JARs inutilement peut améliorer sensiblement le temps de démarrage et le temps de compilation des JSPs
+13-Feb-2025 11:07:49.365 INFOS [Catalina-utility-2] org.apache.catalina.startup.HostConfig.deployDirectory Le déploiement du répertoire [C:\soda\atelierjava\conteneurs\tomcat\apache-tomcat-9.0.97\webapps\host-manager] de l'application web s'est terminé en [1 149] ms
+13-Feb-2025 11:07:49.367 INFOS [Catalina-utility-2] org.apache.catalina.startup.HostConfig.deployDirectory Déploiement du répertoire d'application web [C:\soda\atelierjava\conteneurs\tomcat\apache-tomcat-9.0.97\webapps\manager]
+13-Feb-2025 11:07:50.259 INFOS [Catalina-utility-2] org.apache.jasper.servlet.TldScanner.scanJars Au moins un fichier JAR a été analysé pour trouver des TLDs mais il n'en contenait pas, le mode "debug" du journal peut être activé pour obtenir une liste complète de JAR scannés sans succès ; éviter d'analyser des JARs inutilement peut améliorer sensiblement le temps de démarrage et le temps de compilation des JSPs
+13-Feb-2025 11:07:50.279 INFOS [Catalina-utility-2] org.apache.catalina.startup.HostConfig.deployDirectory Le déploiement du répertoire [C:\soda\atelierjava\conteneurs\tomcat\apache-tomcat-9.0.97\webapps\manager] de l'application web s'est terminé en [911] ms
+13-Feb-2025 11:07:50.280 INFOS [Catalina-utility-2] org.apache.catalina.startup.HostConfig.deployDirectory Déploiement du répertoire d'application web [C:\soda\atelierjava\conteneurs\tomcat\apache-tomcat-9.0.97\webapps\ROOT]
+13-Feb-2025 11:07:50.655 INFOS [Catalina-utility-2] org.apache.jasper.servlet.TldScanner.scanJars Au moins un fichier JAR a été analysé pour trouver des TLDs mais il n'en contenait pas, le mode "debug" du journal peut être activé pour obtenir une liste complète de JAR scannés sans succès ; éviter d'analyser des JARs inutilement peut améliorer sensiblement le temps de démarrage et le temps de compilation des JSPs
+13-Feb-2025 11:07:50.731 INFOS [Catalina-utility-2] org.apache.catalina.startup.HostConfig.deployDirectory Le déploiement du répertoire [C:\soda\atelierjava\conteneurs\tomcat\apache-tomcat-9.0.97\webapps\ROOT] de l'application web s'est terminé en [448] ms
+2025-02-13 11:08:02.240  INFO M092-1879707 --- [on(2)-127.0.0.1] trationDelegate$BeanPostProcessorChecker : Bean 'fr.gouv.finances.lombok.core.config.LombokCommunServiceConfiguration' of type [fr.gouv.finances.lombok.core.config.LombokCommunServiceConfiguration$$EnhancerBySpringCGLIB$$570a6e90] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2025-02-13 11:08:02.340  INFO M092-1879707 --- [on(2)-127.0.0.1] trationDelegate$BeanPostProcessorChecker : Bean 'fr.gouv.finances.lombok.data.autoconfigure.PersistenceJPAConfig$InnerEmbeddedConfig' of type [fr.gouv.finances.lombok.data.autoconfigure.PersistenceJPAConfig$InnerEmbeddedConfig$$EnhancerBySpringCGLIB$$7648b740] is not eligible for getting processed by all BeanPostProcessors (for example: not eligible for auto-proxying)
+2025-02-13 11:08:03.632  INFO M092-1879707 --- [on(2)-127.0.0.1] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 14053 ms
+2025-02-13 11:08:05.297  INFO M092-1879707 --- [on(2)-127.0.0.1] o.s.j.d.e.EmbeddedDatabaseFactory        : Starting embedded database: url='jdbc:hsqldb:mem:testdb', username='sa'
+2025-02-13 11:08:09.616  INFO M092-1879707 --- [on(2)-127.0.0.1] s.AbstractAuthentificationSecurityLombok : mode d'authentification des utilisateurs : appli
+2025-02-13 11:08:09.619  INFO M092-1879707 --- [on(2)-127.0.0.1] .s.PortailAuthentificationSecurityLombok : Url  complete de connexion au portail pour les utilisateurs  : 
+2025-02-13 11:08:09.619  INFO M092-1879707 --- [on(2)-127.0.0.1] .s.PortailAuthentificationSecurityLombok : Url de connexion au portail pour les utilisateurs (partie prefixe) : 
+2025-02-13 11:08:09.619  INFO M092-1879707 --- [on(2)-127.0.0.1] .s.PortailAuthentificationSecurityLombok : Url de connexion au portail pour les utilisateurs (partie application) : dmoweb
+2025-02-13 11:08:10.013  INFO M092-1879707 --- [on(2)-127.0.0.1] o.h.j.i.u.LogHelper                      : HHH000204: Processing PersistenceUnitInfo [name: pu-principal]
+2025-02-13 11:08:10.689  INFO M092-1879707 --- [on(2)-127.0.0.1] o.h.Version                              : HHH000412: Hibernate ORM core version 5.6.15.Final
+2025-02-13 11:08:12.012  INFO M092-1879707 --- [on(2)-127.0.0.1] o.h.a.c.Version                          : HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+2025-02-13 11:08:16.261  INFO M092-1879707 --- [on(2)-127.0.0.1] o.h.d.Dialect                            : HHH000400: Using dialect: org.hibernate.dialect.HSQLDialect
+2025-02-13 11:08:20.382  INFO M092-1879707 --- [on(2)-127.0.0.1] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2025-02-13 11:08:20.453  INFO M092-1879707 --- [on(2)-127.0.0.1] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'pu-principal'
+2025-02-13 11:08:20.479  INFO M092-1879707 --- [on(2)-127.0.0.1] o.h.j.i.u.LogHelper                      : HHH000204: Processing PersistenceUnitInfo [name: pu-principal]
+2025-02-13 11:08:20.775  INFO M092-1879707 --- [on(2)-127.0.0.1] o.h.d.Dialect                            : HHH000400: Using dialect: org.hibernate.dialect.HSQLDialect
+2025-02-13 11:08:20.910  INFO M092-1879707 --- [on(2)-127.0.0.1] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2025-02-13 11:08:20.910  INFO M092-1879707 --- [on(2)-127.0.0.1] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'pu-principal'
+2025-02-13 11:08:20.944  INFO M092-1879707 --- [on(2)-127.0.0.1] s.AbstractAuthentificationSecurityLombok : mode d'authentification des utilisateurs : appli
+2025-02-13 11:08:21.295  INFO M092-1879707 --- [on(2)-127.0.0.1] s.AbstractAuthentificationSecurityLombok : mode d'authentification des utilisateurs : appli
+2025-02-13 11:08:21.299  INFO M092-1879707 --- [on(2)-127.0.0.1] s.AbstractAuthentificationSecurityLombok : mode d'authentification des utilisateurs : appli
+2025-02-13 11:08:22.508  INFO M092-1879707 --- [on(2)-127.0.0.1] o.s.s.w.DefaultSecurityFilterChain       : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@3c160f80, org.springframework.security.web.session.ForceEagerSessionCreationFilter@32da2497, org.springframework.security.web.session.ForceEagerSessionCreationFilter@65794d7e, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@788602df, org.springframework.security.web.context.SecurityContextPersistenceFilter@2056eb26, org.springframework.security.web.csrf.CsrfFilter@40942fcf, org.springframework.security.web.authentication.logout.LogoutFilter@69a9b72a, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter@6043fc6e, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@641ddf25, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@69fcb228, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@67b84e33, org.springframework.security.web.session.SessionManagementFilter@768a52d5, org.springframework.security.web.access.ExceptionTranslationFilter@3bdab011, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@85685ef]
+2025-02-13 11:08:25.126  INFO M092-1879707 --- [on(2)-127.0.0.1] f.g.f.l.c.a.CoreApplicationConfig        : Valeurs des propriétés : fr.gouv.finances.lombok.core.autoconfig.LombokProperties@433b48f2  
+2025-02-13 11:08:25.252  INFO M092-1879707 --- [on(2)-127.0.0.1] f.g.f.l.s.a.LombokSecurityConfig         : Valeurs des propriétés : fr.gouv.finances.lombok.security.autoconfig.LombokAuthentificationProperties@3078d815  
+2025-02-13 11:08:26.375  INFO M092-1879707 --- [on(2)-127.0.0.1] o.s.l.c.s.AbstractContextSource          : Property 'userDn' not set - anonymous context will be used for read-write operations
+2025-02-13 11:08:26.640  INFO M092-1879707 --- [on(2)-127.0.0.1] o.s.b.a.e.w.EndpointLinksResolver        : Exposing 0 endpoint(s) beneath base path '/actuator'
+2025-02-13 11:08:26.794  INFO M092-1879707 --- [on(2)-127.0.0.1] f.g.f.d.m.WebLauncher                    : Started WebLauncher in 41.099 seconds (JVM running for 54.371)
+[2025-02-13 11:08:26,887] Artifact monappli-api:war: Artifact is deployed successfully
+[2025-02-13 11:08:26,887] Artifact monappli-api:war: Deploy took 50,566 milliseconds
+2025-02-13 11:08:29.918  INFO M092-1879707 --- [nio-8084-exec-2] AccessLog                                : 127.0.0.1 - - [13/Feb/2025:11:08:29 +0100] "GET / HTTP/1.1" 200 11227 "-" "IntelliJ IDEA/243.23654.189" - "-" "-" "-"
+2025-02-13 11:08:29.922  INFO M092-1879707 --- [nio-8084-exec-1] AccessLog                                : 127.0.0.1 - - [13/Feb/2025:11:08:29 +0100] "GET / HTTP/1.1" 200 11227 "-" "IntelliJ IDEA/243.23654.189" - "-" "-" "-"
+2025-02-13 11:08:30.639  INFO M092-1879707 --- [nio-8084-exec-3] AccessLog                                : 127.0.0.1 - - [13/Feb/2025:11:08:30 +0100] "GET / HTTP/1.1" 200 11227 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.5.0) Gecko/20100101 Firefox/128.5.0" - "-" "-" "-"
+2025-02-13 11:08:30.724  INFO M092-1879707 --- [nio-8084-exec-4] AccessLog                                : 127.0.0.1 - - [13/Feb/2025:11:08:30 +0100] "GET /tomcat.css HTTP/1.1" 200 5584 "http://localhost:8084/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.5.0) Gecko/20100101 Firefox/128.5.0" - "-" "-" "-"
+2025-02-13 11:08:30.739  INFO M092-1879707 --- [nio-8084-exec-4] AccessLog                                : 127.0.0.1 - - [13/Feb/2025:11:08:30 +0100] "GET /tomcat.svg HTTP/1.1" 200 67795 "http://localhost:8084/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.5.0) Gecko/20100101 Firefox/128.5.0" - "-" "-" "-"
+2025-02-13 11:08:30.805  INFO M092-1879707 --- [nio-8084-exec-5] AccessLog                                : 127.0.0.1 - - [13/Feb/2025:11:08:30 +0100] "GET /bg-nav.png HTTP/1.1" 200 1401 "http://localhost:8084/tomcat.css" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.5.0) Gecko/20100101 Firefox/128.5.0" - "-" "-" "-"
+2025-02-13 11:08:30.813  INFO M092-1879707 --- [nio-8084-exec-9] AccessLog                                : 127.0.0.1 - - [13/Feb/2025:11:08:30 +0100] "GET /bg-button.png HTTP/1.1" 200 713 "http://localhost:8084/tomcat.css" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.5.0) Gecko/20100101 Firefox/128.5.0" - "-" "-" "-"
+2025-02-13 11:08:30.816  INFO M092-1879707 --- [nio-8084-exec-8] AccessLog                                : 127.0.0.1 - - [13/Feb/2025:11:08:30 +0100] "GET /bg-middle.png HTTP/1.1" 200 1918 "http://localhost:8084/tomcat.css" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.5.0) Gecko/20100101 Firefox/128.5.0" - "-" "-" "-"
+2025-02-13 11:08:30.830  INFO M092-1879707 --- [nio-8084-exec-6] AccessLog                                : 127.0.0.1 - - [13/Feb/2025:11:08:30 +0100] "GET /asf-logo-wide.svg HTTP/1.1" 200 27235 "http://localhost:8084/tomcat.css" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.5.0) Gecko/20100101 Firefox/128.5.0" - "-" "-" "-"
+2025-02-13 11:08:30.846  INFO M092-1879707 --- [nio-8084-exec-7] AccessLog                                : 127.0.0.1 - - [13/Feb/2025:11:08:30 +0100] "GET /bg-upper.png HTTP/1.1" 200 3103 "http://localhost:8084/tomcat.css" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.5.0) Gecko/20100101 Firefox/128.5.0" - "-" "-" "-"
+2025-02-13 11:08:55.863  INFO M092-1879707 --- [nio-8084-exec-5] AccessLog                                : 127.0.0.1 - - [13/Feb/2025:11:08:55 +0100] "GET /manager/status HTTP/1.1" 401 2499 "http://localhost:8084/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.5.0) Gecko/20100101 Firefox/128.5.0" - "-" "-" "-"
+2025-02-13 11:09:03.485  INFO M092-1879707 --- [nio-8084-exec-9] AccessLog                                : 127.0.0.1 - - [13/Feb/2025:11:09:03 +0100] "GET /host-manager/html HTTP/1.1" 401 2044 "http://localhost:8084/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.5.0) Gecko/20100101 Firefox/128.5.0" - "-" "-" "-"
+2025-02-13 11:09:19.817  INFO M092-1879707 --- [nio-8084-exec-8] AccessLog                                : 127.0.0.1 - - [13/Feb/2025:11:09:19 +0100] "GET /manager/status HTTP/1.1" 401 2499 "http://localhost:8084/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.5.0) Gecko/20100101 Firefox/128.5.0" - "-" "-" "-"
+2025-02-13 11:09:23.313  INFO M092-1879707 --- [nio-8084-exec-6] AccessLog                                : 127.0.0.1 - - [13/Feb/2025:11:09:23 +0100] "GET /host-manager/html HTTP/1.1" 401 2044 "http://localhost:8084/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.5.0) Gecko/20100101 Firefox/128.5.0" - "-" "-" "-"
+2025-02-13 11:09:25.891  INFO M092-1879707 --- [nio-8084-exec-7] AccessLog                                : 127.0.0.1 - - [13/Feb/2025:11:09:25 +0100] "GET /host-manager/html HTTP/1.1" 401 2044 "http://localhost:8084/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.5.0) Gecko/20100101 Firefox/128.5.0" - "-" "-" "-"
+2025-02-13 11:09:31.646  INFO M092-1879707 --- [nio-8084-exec-2] AccessLog                                : 127.0.0.1 - - [13/Feb/2025:11:09:31 +0100] "GET /host-manager/html HTTP/1.1" 401 2044 "http://localhost:8084/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.5.0) Gecko/20100101 Firefox/128.5.0" - "Basic YWRtaW4tZ3VpOnMzY3JldA==" "-" "-"
+2025-02-13 11:09:37.824  INFO M092-1879707 --- [io-8084-exec-10] AccessLog                                : 127.0.0.1 - - [13/Feb/2025:11:09:37 +0100] "GET /host-manager/html HTTP/1.1" 401 2044 "http://localhost:8084/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.5.0) Gecko/20100101 Firefox/128.5.0" - "-" "-" "-"
+2025-02-13 11:10:04.187  INFO M092-1879707 --- [nio-8084-exec-3] AccessLog                                : 127.0.0.1 - - [13/Feb/2025:11:10:04 +0100] "GET /host-manager/html HTTP/1.1" 401 2044 "http://localhost:8084/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.5.0) Gecko/20100101 Firefox/128.5.0" - "Basic YWRtaW4tZ3VpOnMzY3JldA==" "-" "-"
+2025-02-13 11:10:13.240  INFO M092-1879707 --- [nio-8084-exec-4] AccessLog                                : 127.0.0.1 - - [13/Feb/2025:11:10:13 +0100] "GET /host-manager/html HTTP/1.1" 401 2044 "http://localhost:8084/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.5.0) Gecko/20100101 Firefox/128.5.0" - "Basic dG9tY2F0Og==" "-" "-"
+2025-02-13 11:10:20.830  INFO M092-1879707 --- [nio-8084-exec-5] AccessLog                                : 127.0.0.1 - - [13/Feb/2025:11:10:20 +0100] "GET /host-manager/html HTTP/1.1" 401 2044 "http://localhost:8084/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.5.0) Gecko/20100101 Firefox/128.5.0" - "Basic dG9tY2F0OnMzY3JldA==" "-" "-"
+2025-02-13 11:10:26.295  INFO M092-1879707 --- [nio-8084-exec-9] AccessLog                                : 127.0.0.1 - - [13/Feb/2025:11:10:26 +0100] "GET /monappli-api/api/tech/ping HTTP/1.1" 404 719 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.5.0) Gecko/20100101 Firefox/128.5.0" - "-" "-" "JSESSIONID=3C746A0D962AF70F27C15E8B0C3735D7"
+2025-02-13 11:10:26.948  INFO M092-1879707 --- [nio-8084-exec-8] AccessLog                                : 127.0.0.1 - - [13/Feb/2025:11:10:26 +0100] "GET /monappli-api/api/tech/ping HTTP/1.1" 404 719 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.5.0) Gecko/20100101 Firefox/128.5.0" - "-" "-" "JSESSIONID=3C746A0D962AF70F27C15E8B0C3735D7"
+2025-02-13 11:10:27.599  INFO M092-1879707 --- [nio-8084-exec-6] AccessLog                                : 127.0.0.1 - - [13/Feb/2025:11:10:27 +0100] "GET /monappli-api/api/tech/ping HTTP/1.1" 404 719 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.5.0) Gecko/20100101 Firefox/128.5.0" - "-" "-" "JSESSIONID=3C746A0D962AF70F27C15E8B0C3735D7"
+2025-02-13 11:10:28.169  INFO M092-1879707 --- [nio-8084-exec-7] AccessLog                                : 127.0.0.1 - - [13/Feb/2025:11:10:28 +0100] "GET /monappli-api/api/tech/ping HTTP/1.1" 404 719 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.5.0) Gecko/20100101 Firefox/128.5.0" - "-" "-" "JSESSIONID=3C746A0D962AF70F27C15E8B0C3735D7"
+2025-02-13 11:10:28.552  INFO M092-1879707 --- [nio-8084-exec-2] AccessLog                                : 127.0.0.1 - - [13/Feb/2025:11:10:28 +0100] "GET /monappli-api/api/tech/ping HTTP/1.1" 404 719 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.5.0) Gecko/20100101 Firefox/128.5.0" - "-" "-" "JSESSIONID=3C746A0D962AF70F27C15E8B0C3735D7"
+2025-02-13 11:10:28.943  INFO M092-1879707 --- [io-8084-exec-10] AccessLog                                : 127.0.0.1 - - [13/Feb/2025:11:10:28 +0100] "GET /monappli-api/api/tech/ping HTTP/1.1" 404 719 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.5.0) Gecko/20100101 Firefox/128.5.0" - "-" "-" "JSESSIONID=3C746A0D962AF70F27C15E8B0C3735D7"
+2025-02-13 11:10:29.346  INFO M092-1879707 --- [nio-8084-exec-1] AccessLog                                : 127.0.0.1 - - [13/Feb/2025:11:10:29 +0100] "GET /monappli-api/api/tech/ping HTTP/1.1" 404 719 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.5.0) Gecko/20100101 Firefox/128.5.0" - "-" "-" "JSESSIONID=3C746A0D962AF70F27C15E8B0C3735D7"
+2025-02-13 11:10:29.779  INFO M092-1879707 --- [nio-8084-exec-3] AccessLog                                : 127.0.0.1 - - [13/Feb/2025:11:10:29 +0100] "GET /monappli-api/api/tech/ping HTTP/1.1" 404 719 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.5.0) Gecko/20100101 Firefox/128.5.0" - "-" "-" "JSESSIONID=3C746A0D962AF70F27C15E8B0C3735D7"
+ je n'ai pas de alive quand je fait http://localhost:8084/monappli-api/api/tech/ping

@@ -1,140 +1,163 @@
+Méthode 1 : avec eclipse
 
-Error starting ApplicationContext. To display the conditions report re-run your application with 'debug' enabled.
-2025-02-13 11:44:37.082 ERROR M092-1879707 --- [alina-utility-2] o.s.b.SpringApplication                  : Application run failed
-org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'directoryServer' defined in class path resource [org/springframework/boot/autoconfigure/ldap/embedded/EmbeddedLdapAutoConfiguration.class]: Bean instantiation via factory method failed; nested exception is org.springframework.beans.BeanInstantiationException: Failed to instantiate [com.unboundid.ldap.listener.InMemoryDirectoryServer]: Factory method 'directoryServer' threw exception; nested exception is LDAPException(resultCode=82 (local error), errorMessage='An error occurred while attempting to start listener 'ldap':  BindException(Address already in use: bind), ldapSDKVersion=6.0.6, revision=b8c6c463def55758ed8ec0d914c84268c944251c')
-	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:658)
-	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:638)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1352)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1195)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:582)
-	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:542)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:335)
-	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:333)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:208)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:322)
-	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:208)
-	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:955)
-	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:918)
-	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:583)
-	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:147)
-	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:731)
-	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:408)
-	at org.springframework.boot.SpringApplication.run(SpringApplication.java:307)
-	at org.springframework.boot.web.servlet.support.SpringBootServletInitializer.run(SpringBootServletInitializer.java:175)
-	at org.springframework.boot.web.servlet.support.SpringBootServletInitializer.createRootApplicationContext(SpringBootServletInitializer.java:155)
-	at org.springframework.boot.web.servlet.support.SpringBootServletInitializer.onStartup(SpringBootServletInitializer.java:97)
-	at org.springframework.web.SpringServletContainerInitializer.onStartup(SpringServletContainerInitializer.java:174)
-	at org.apache.catalina.core.StandardContext.startInternal(StandardContext.java:4450)
-	at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:164)
-	at org.apache.catalina.core.ContainerBase.addChildInternal(ContainerBase.java:599)
-	at org.apache.catalina.core.ContainerBase.addChild(ContainerBase.java:571)
-	at org.apache.catalina.core.StandardHost.addChild(StandardHost.java:603)
-	at org.apache.catalina.startup.HostConfig.deployDirectory(HostConfig.java:1175)
-	at org.apache.catalina.startup.HostConfig$DeployDirectory.run(HostConfig.java:1888)
-	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:572)
-	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
-	at org.apache.tomcat.util.threads.InlineExecutorService.execute(InlineExecutorService.java:75)
-	at java.base/java.util.concurrent.AbstractExecutorService.submit(AbstractExecutorService.java:123)
-	at org.apache.catalina.startup.HostConfig.deployDirectories(HostConfig.java:1086)
-	at org.apache.catalina.startup.HostConfig.deployApps(HostConfig.java:470)
-	at org.apache.catalina.startup.HostConfig.check(HostConfig.java:1633)
-	at org.apache.catalina.startup.HostConfig.lifecycleEvent(HostConfig.java:308)
-	at org.apache.catalina.util.LifecycleBase.fireLifecycleEvent(LifecycleBase.java:109)
-	at org.apache.catalina.core.ContainerBase.backgroundProcess(ContainerBase.java:973)
-	at org.apache.catalina.core.ContainerBase$ContainerBackgroundProcessor.processChildren(ContainerBase.java:1172)
-	at org.apache.catalina.core.ContainerBase$ContainerBackgroundProcessor.processChildren(ContainerBase.java:1176)
-	at org.apache.catalina.core.ContainerBase$ContainerBackgroundProcessor.run(ContainerBase.java:1154)
-	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:572)
-	at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:358)
-	at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305)
-	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
-	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
-	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
-	at java.base/java.lang.Thread.run(Thread.java:1583)
-Caused by: org.springframework.beans.BeanInstantiationException: Failed to instantiate [com.unboundid.ldap.listener.InMemoryDirectoryServer]: Factory method 'directoryServer' threw exception; nested exception is LDAPException(resultCode=82 (local error), errorMessage='An error occurred while attempting to start listener 'ldap':  BindException(Address already in use: bind), ldapSDKVersion=6.0.6, revision=b8c6c463def55758ed8ec0d914c84268c944251c')
-	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:185)
-	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:653)
-	... 49 more
-Caused by: LDAPException(resultCode=82 (local error), errorMessage='An error occurred while attempting to start listener 'ldap':  BindException(Address already in use: bind), ldapSDKVersion=6.0.6, revision=b8c6c463def55758ed8ec0d914c84268c944251c')
-	at com.unboundid.ldap.listener.InMemoryDirectoryServer.startListening(InMemoryDirectoryServer.java:443)
-	at org.springframework.boot.autoconfigure.ldap.embedded.EmbeddedLdapAutoConfiguration.directoryServer(EmbeddedLdapAutoConfiguration.java:102)
-	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
-	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:154)
-	... 50 more
-13-Feb-2025 11:44:37.090 GRAVE [Catalina-utility-2] org.apache.catalina.startup.HostConfig.deployDirectory Erreur lors du déploiement du répertoire [C:\soda\atelierjava\conteneurs\tomcat\apache-tomcat-9.0.97\webapps\monappli_api_war] de l'application web
-	java.lang.IllegalStateException: Erreur lors du démarrage du conteneur fils
-		at org.apache.catalina.core.ContainerBase.addChildInternal(ContainerBase.java:602)
-		at org.apache.catalina.core.ContainerBase.addChild(ContainerBase.java:571)
-		at org.apache.catalina.core.StandardHost.addChild(StandardHost.java:603)
-		at org.apache.catalina.startup.HostConfig.deployDirectory(HostConfig.java:1175)
-		at org.apache.catalina.startup.HostConfig$DeployDirectory.run(HostConfig.java:1888)
-		at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:572)
-		at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
-		at org.apache.tomcat.util.threads.InlineExecutorService.execute(InlineExecutorService.java:75)
-		at java.base/java.util.concurrent.AbstractExecutorService.submit(AbstractExecutorService.java:123)
-		at org.apache.catalina.startup.HostConfig.deployDirectories(HostConfig.java:1086)
-		at org.apache.catalina.startup.HostConfig.deployApps(HostConfig.java:470)
-		at org.apache.catalina.startup.HostConfig.check(HostConfig.java:1633)
-		at org.apache.catalina.startup.HostConfig.lifecycleEvent(HostConfig.java:308)
-		at org.apache.catalina.util.LifecycleBase.fireLifecycleEvent(LifecycleBase.java:109)
-		at org.apache.catalina.core.ContainerBase.backgroundProcess(ContainerBase.java:973)
-		at org.apache.catalina.core.ContainerBase$ContainerBackgroundProcessor.processChildren(ContainerBase.java:1172)
-		at org.apache.catalina.core.ContainerBase$ContainerBackgroundProcessor.processChildren(ContainerBase.java:1176)
-		at org.apache.catalina.core.ContainerBase$ContainerBackgroundProcessor.run(ContainerBase.java:1154)
-		at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:572)
-		at java.base/java.util.concurrent.FutureTask.runAndReset(FutureTask.java:358)
-		at java.base/java.util.concurrent.ScheduledThreadPoolExecutor$ScheduledFutureTask.run(ScheduledThreadPoolExecutor.java:305)
-		at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
-		at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
-		at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
-		at java.base/java.lang.Thread.run(Thread.java:1583)
-	Caused by: org.apache.catalina.LifecycleException: Echec de démarrage du composant [StandardEngine[Catalina].StandardHost[localhost].StandardContext[/monappli_api_war]]
-		at org.apache.catalina.util.LifecycleBase.handleSubClassException(LifecycleBase.java:406)
-		at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:179)
-		at org.apache.catalina.core.ContainerBase.addChildInternal(ContainerBase.java:599)
-		... 24 more
-	Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'directoryServer' defined in class path resource [org/springframework/boot/autoconfigure/ldap/embedded/EmbeddedLdapAutoConfiguration.class]: Bean instantiation via factory method failed; nested exception is org.springframework.beans.BeanInstantiationException: Failed to instantiate [com.unboundid.ldap.listener.InMemoryDirectoryServer]: Factory method 'directoryServer' threw exception; nested exception is LDAPException(resultCode=82 (local error), errorMessage='An error occurred while attempting to start listener 'ldap':  BindException(Address already in use: bind), ldapSDKVersion=6.0.6, revision=b8c6c463def55758ed8ec0d914c84268c944251c')
-		at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:658)
-		at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:638)
-		at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1352)
-		at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1195)
-		at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:582)
-		at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:542)
-		at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:335)
-		at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
-		at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:333)
-		at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:208)
-		at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:322)
-		at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:208)
-		at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:955)
-		at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:918)
-		at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:583)
-		at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:147)
-		at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:731)
-		at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:408)
-		at org.springframework.boot.SpringApplication.run(SpringApplication.java:307)
-		at org.springframework.boot.web.servlet.support.SpringBootServletInitializer.run(SpringBootServletInitializer.java:175)
-		at org.springframework.boot.web.servlet.support.SpringBootServletInitializer.createRootApplicationContext(SpringBootServletInitializer.java:155)
-		at org.springframework.boot.web.servlet.support.SpringBootServletInitializer.onStartup(SpringBootServletInitializer.java:97)
-		at org.springframework.web.SpringServletContainerInitializer.onStartup(SpringServletContainerInitializer.java:174)
-		at org.apache.catalina.core.StandardContext.startInternal(StandardContext.java:4450)
-		at org.apache.catalina.util.LifecycleBase.start(LifecycleBase.java:164)
-		... 25 more
-	Caused by: org.springframework.beans.BeanInstantiationException: Failed to instantiate [com.unboundid.ldap.listener.InMemoryDirectoryServer]: Factory method 'directoryServer' threw exception; nested exception is LDAPException(resultCode=82 (local error), errorMessage='An error occurred while attempting to start listener 'ldap':  BindException(Address already in use: bind), ldapSDKVersion=6.0.6, revision=b8c6c463def55758ed8ec0d914c84268c944251c')
-		at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:185)
-		at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:653)
-		... 49 more
-	Caused by: LDAPException(resultCode=82 (local error), errorMessage='An error occurred while attempting to start listener 'ldap':  BindException(Address already in use: bind), ldapSDKVersion=6.0.6, revision=b8c6c463def55758ed8ec0d914c84268c944251c')
-		at com.unboundid.ldap.listener.InMemoryDirectoryServer.startListening(InMemoryDirectoryServer.java:443)
-		at org.springframework.boot.autoconfigure.ldap.embedded.EmbeddedLdapAutoConfiguration.directoryServer(EmbeddedLdapAutoConfiguration.java:102)
-		at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
-		at java.base/java.lang.reflect.Method.invoke(Method.java:580)
-		at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:154)
-		... 50 more
-13-Feb-2025 11:44:37.205 INFOS [Catalina-utility-2] org.apache.catalina.startup.HostConfig.deployDirectory Le déploiement du répertoire [C:\soda\atelierjava\conteneurs\tomcat\apache-tomcat-9.0.97\webapps\monappli_api_war] de l'application web s'est terminé en [45 246] ms
-13-Feb-2025 11:44:37.208 INFOS [Catalina-utility-2] org.apache.catalina.startup.HostConfig.deployDirectory Déploiement du répertoire d'application web [C:\soda\atelierjava\conteneurs\tomcat\apache-tomcat-9.0.97\webapps\ROOT]
-13-Feb-2025 11:44:37.739 INFOS [Catalina-utility-2] org.apache.jasper.servlet.TldScanner.scanJars Au moins un fichier JAR a été analysé pour trouver des TLDs mais il n'en contenait pas, le mode "debug" du journal peut être activé pour obtenir une liste complète de JAR scannés sans succès ; éviter d'analyser des JARs inutilement peut améliorer sensiblement le temps de démarrage et le temps de compilation des JSPs
-13-Feb-2025 11:44:37.750 INFOS [Catalina-utility-2] org.apache.catalina.startup.HostConfig.deployDirectory Le déploiement du répertoire [C:\soda\atelierjava\conteneurs\tomcat\apache-tomcat-9.0.97\webapps\ROOT] de l'application web s'est terminé en [541] ms
-2025-02-13 11:44:44.120  INFO M092-1879707 --- [nio-8084-exec-3] AccessLog                                : 127.0.0.1 - - [13/Feb/2025:11:44:44 +0100] "GET /monappli-api HTTP/1.1" 404 693 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:128.5.0) Gecko/20100101 Firefox/128.5.0" - "-" "-" "JSESSIONID=3C746A0D962AF70F27C15E8B0C3735D7"
+La création d'un projet sous eclipse se fait en plusieurs étapes.
+Étape 0 : sélection du repository (Nexus)
+
+Dans le cas d'une utilisation d'une version livrée (release), donc une version stable de l'archetype, le repository (Nexus 2) à utiliser est celui des releases : http://repo.appli.dgfip/nexus/content/repositories/releases/
+
+Dans le cas d'une version snapshot, donc une version en cours de développement de l'archetype, il faudra utiliser le repository (Nexus 2) des versions snapshots  : http://repo.appli.dgfip/nexus/content/repositories/snapshots/
+
+Sous eclipse, cela signifie qu'il faut créer un catalogue qui pointe vers le repository des versions snapshots :
+	
+
+RemoteSnapshots1.png
+
+Depuis la version 3.0.3 de l'archetype, il faut utiliser le repository Nexus 3 avec le repository lombok_releases : http://nexus3.appli.dgfip/repository/lombok_releases
+
+ArchetypeFSNexus3.png
+Étape 1 : création du projet multi-module
+
+1) Créer un nouveau projet de type Maven (File -> New -> Maven Project).
+2) Au deuxième écran, à la sélection de l'archétype, saisir le filtre "lombok-archetype-vuejs-jersey".
+
+Choisir une version supérieure ou égale à 3.0.0
+	NewMavenProject1.png
+
+
+3) Saisir ensuite les paramètres de l’archétype, certains étant destinés à l'archetype backend qui sera utilisé dans la partie suivante.
+
+- Group ID: fr.gouv.finances.dgfip
+
+- Artifact ID: monappli
+
+- Version: 0.0.1-SNAPSHOT
+
+- Package: fr.gouv.finances.dgfip
+
+- Run archetype generation interactively: Décoché
+	NewMavenProject2.png
+
+
+Le module parent est créé, ainsi que le module frontend (monappli-ui).
+Étape 2 : création du module API
+1) Le module parent contient une configuration "genere backend <nom de l'artefact parent>-api" pour générer le module backend.
+
+Les paramètres de cette configuration reprennent les valeurs des paramètres de l’archétype parent.
+
+Run -> Run Configurations...
+	Genere backend.png
+2) Rafraichir (click droit -> Refresh) le module parent pour faire apparaître le module backend, et l'importer ensuite dans le workspace :
+
+File -> Import -> Maven -> Existing Maven Projects... en choisissant le workspace en cours comme répertoire racine.
+	Import existing maven project.png
+Étape 3 : scaffolding du module UI
+
+Le module UI a été instantié mais il ne contient pas encore le code Clir.
+
+Documentation sur le package NPM create-clir : https://agiledevops-portail.dgfip.finances.rie.gouv.fr/confluence/display/CLIR/Create-clir
+
+Pour cela, 2 possibilités :
+a) 1ère possibilité : Faire un "run as configuration" avec les paramètres suivants :
+
+- Goal : install
+
+- Profiles : initialisationModuleUI
+	RunConfigurationScaffolding1.png
+
+b) 2ème possibilité : lancer le fichier scaffoldingModuleUI.launch présent dans le module UI. Faire un click droit sur le fichier puis "Run as".
+Méthode 2: en ligne de commandes
+
+Lancer la commande suivante :
+
+ mvn archetype:generate \
+ -DinteractiveMode=false \
+ -DarchetypeGroupId=fr.gouv.finances.lombok \
+ -DarchetypeArtifactId=lombok-archetype-vuejs-jersey \
+ -DarchetypeVersion=3.0.0-SNAPSHOT \
+ -DgroupId=fr.gouv.finances.dgfip \
+ -DartifactId=monappli \
+ -Dversion=0.0.1-SNAPSHOT \
+ -Dgoals="archetype:generate \
+                -pl=. \
+               -DgroupId=fr.gouv.finances.dgfip \
+               -DartifactId=monappli-api \
+               -Dversion=0.0.1-SNAPSHOT \
+              -Dport_backend_embedded=8084 \
+              -DarchetypeGroupId=fr.gouv.finances.lombok \
+              -DarchetypeArtifactId=lombok-archetype-backend \
+              -DarchetypeVersion=25.1.4 \
+              -DinteractiveMode=false \
+              install \
+              -pl=monappli-ui \
+              -P=initialisationModuleUI"
+
+On précise le groupId, le nom du module (artifactId) et la version pour le module parent. La propriété gitignore doit être laissée à sa valeur par défaut (.gitignore). Elle permet d'inclure le fichier .gitignore dans le module UI généré.
+
+Le module backend est généré via le paramètre goals qui permet de spécifier des tâches à exécuter après la création du prototype :
+
+    à minima, il faut préciser les GAV de l'archétype backend (-DarchetypeGroupId, -DarchetypeArtifactId, -DarchetypeVersion), et du prototype (-DgroupId, -DartifactId, -Dversion) ;
+    port_backend_embedded=8084 (valeur par défaut : 8080) ;
+    les autres paramètres de l'archétype backend sont : 
+
+Paramètre 	Valeur par défaut 	Description
+spring_profiles_active 	exemple 	Profils Spring pour la partie Web
+spring_profiles_active_batch 	batchdao,exemple 	Profils Spring pour la partie Batch
+lombok_composant_sireme_inclus
+lombok_composant_journal_inclus
+lombok_composant_journalws_inclus
+lombok_composant_bancaire_inclus
+lombok_composant_atlas_inclus
+lombok_composant_upload_inclus
+lombok_composant_adresse_inclus
+lombok_composant_structure_inclus
+lombok_composant_clamav_inclus
+lombok_composant_clamav_simulation_inclus
+lombok_composant_clamav_simulation_offline_inclus
+lombok_composant_itm_inclus
+lombok_composant_ws_inclus
+lombok_composant_edition_inclus
+lombok_composant_editionsansbase_inclus
+lombok_composant_batchoptimisation_inclus
+lombok_composant_batchdao_inclus 	false 	Activation des modules
+lombok_orm_jpa 	true 	Spécifications JPA (true) ou Hibernate (false) pour l'ORM
+packaging_type 	war 	Packaging défini dans le pom
+svnssh_root 	svn+ssh://venezia.appli.dgfip:9222/svnroot/ 	Utilisé dans le pom, pour la connexion SCM
+venezia_url 	venezia.appli.dgfip 	Utilisé dans le pom, pour la connexion SCM
+venezia_group_id 	A_COMPLETER 	Utilisé dans le pom, pour la connexion SCM
+provider_persistance 	jpa 	Suffixe des dépendances lombok (jpa ou hibernate), doit être cohérent avec lombok_orm_jpa
+
+Le goal install est appelé sur le module monappli-ui juste après la génération de l'archetype. Le profil initialisationModuleUI permet de lancer le scaffolding du module UI.
+Version de Java
+
+Le module backend est configuré par défaut pour utiliser Java 11. Vous pouvez modifier cette configuration via la propriété java.version du pom du module backend.
+
+Si vous souhaitez rester en Java 11 :
+
+    vérifiez qu'une JDK 11 (disponible dans un atelier suffisamment récent) est bien présente dans le "Build Path" du module backend ;
+    pour déployer l'application dans un Tomcat "standalone" (inutile en tomcat embedded), associez une version 11 au serveur Tomcat (Window -> Preferences -> Server -> Runtime Environments -> Sélectionner le runtime environment -> Edit...) ;
+    supprimez le paramètre -Djava.endorsed.dirs dans la configuration du serveur (double click dans la vue "Servers" -> Open launch configuration -> Arguments -> VM arguments).
+
+Version de Maven
+
+Pour des raisons de compatibilité avec certains plugins, il est nécessaire d'utiliser au minimum la version 3.6.1 de Maven.
+Build et lancement de l'application
+
+Faire ensuite un build maven (mvn install) depuis le module agrégateur avec le profil maven PROD :
+
+ProfileProd.png
+
+En phase de développement, on peut choisir de faire tourner le frontend Vue.JS et le backend Java/REST sur des ports différents. Par exemple, on peut faire tourner le frontend via VsCodium et le backend sur Eclipse et/ou VsCodium. Dans le fichier de configuration .env de CliR, on indique l'adresse du backend et on verra directement les changements lorsque le code du frontend est modifié.
+
+Le but du profil PROD est de packager le code Vue.JS dans le module backend et de faire tourner l'artefact produit dans un seul port. Toute l'application tourne alors uniquement côté serveur du backend : le code de CliR est transpilé via un build Maven.
+
+Déployer l'application monappli-api avec Tomcat. Les URI suivantes utilisent le port 8084 qui est la configuration par défaut du module backend (propriété server.port). Le Tomcat "standalone" utilise par défaut le port 8080.
+
+La ressource http://localhost:8084/monappli-api/api/tech/ping doit répondre "alive" (en text/plain)
+
+Le front est accessible à l'application à l'URL suivante :
+
+http://localhost:8084/monappli-api/front
+
+L'écran d'accueil s'affiche :
+
+ProjetBlanc1.png 

@@ -1,31 +1,66 @@
- /src/main/java
-   fr.gouv.finances.monappli.monappliapi
-               |-- api.v1
-               |   |-- controller                         - Les contrôleurs REST
-               |   |-- dto                                - Les DTOs
-               |-- config                                 - Les classes de configuration (Jersey, Spring Security, Tomcat ...)
-               |-- dao                                    - Les DAOs
-               |-- entite                                 - Les entités
-               |-- service                                - Les services métiers
-               |-- techbean                               - Les beans techniques    
-   org.springframework.boot.autoconfigure.web
-   client-config.wsdd
- /src/main/resources
-               |-- conf                                  - La configuration XML des beans
-               |-- data                                  - Les données
-               |-- ldap                                  - La configuration du LDAP embarqué (fichier LDIF)
-               |-- META-INF
-               |   |-- persistence.xml                   - Le fichier de persistance JPA
-               |-- application.properties                - Le fichier de configuration Spring Boot
-               |-- banner.txt                            - Le bandeau
-               |-- log4j2.xml                            - Le fichier de configuration des logs
- /src/test/java
- /src/main/webapp
-               |-- aide
-               |-- application
-               |-- META-INF
-               |-- WEB-INF
-               |   |-- openapi.yaml                       - Le fichier de définition des endpoints (API REST)
-               |   |-- web.xml                            - Le descripteur de déploiement
-               |-- lignedevie.jsp                         - JSP de ligne de vie
- /pom.xml
+D’accord ! Comme ton projet fonctionne déjà sous Eclipse, voici comment le lancer sous IntelliJ IDEA avec Tomcat et Maven.
+
+1. Importer le projet dans IntelliJ IDEA
+	1.	Ouvre IntelliJ IDEA.
+	2.	File > Open et sélectionne le dossier contenant ton projet (monappliapi).
+	3.	IntelliJ détectera automatiquement que c’est un projet Maven.
+	4.	Clique sur Auto-Import si demandé pour que les dépendances Maven se chargent.
+	5.	Vérifie que Maven est bien activé dans View > Tool Windows > Maven.
+
+2. Vérifier les dépendances Maven
+	1.	Ouvre le fichier pom.xml.
+	2.	Fais un clic droit et sélectionne “Reimport” pour être sûr que toutes les dépendances sont bien téléchargées.
+	3.	Dans l’onglet Maven d’IntelliJ (View > Tool Windows > Maven), clique sur l’icône refresh.
+
+3. Configurer Tomcat dans IntelliJ IDEA
+	1.	File > Settings > Application Servers.
+	2.	Clique sur +, sélectionne Tomcat Server > Local.
+	3.	Sélectionne ton dossier d’installation de Tomcat (celui que tu utilisais sous Eclipse).
+	4.	Clique sur OK.
+
+4. Ajouter une configuration de lancement Tomcat
+	1.	Run > Edit Configurations.
+	2.	Clique sur + et choisis Tomcat Server > Local.
+	3.	Dans l’onglet Deployment :
+	•	Clique sur +, puis sélectionne Artifact.
+	•	Ajoute war exploded (ou war si tu fais un packaging complet).
+	4.	Dans l’onglet Server :
+	•	Mets HTTP port : 8080 (ou celui que tu utilisais dans Eclipse).
+	•	Vérifie que On ‘Update’ action est bien sur Restart server.
+	5.	Dans l’onglet Logs :
+	•	Ajoute les logs si nécessaire (log4j2.xml, catalina.out, etc.).
+	6.	Clique sur Apply, puis OK.
+
+5. Vérifier Lombok dans IntelliJ IDEA
+	1.	File > Settings > Plugins.
+	2.	Recherche Lombok, installe-le si nécessaire.
+	3.	File > Settings > Build, Execution, Deployment > Compiler > Annotation Processors.
+	4.	Coche “Enable annotation processing”.
+	5.	Redémarre IntelliJ IDEA.
+
+6. Démarrer l’application
+	1.	Run > Run ‘Tomcat’ (ou Shift + F10).
+	2.	Vérifie que Tomcat démarre sans erreur dans la console.
+	3.	Accède à ton API REST dans ton navigateur :
+
+http://localhost:8080/api/v1/hello
+
+(Remplace /hello par un des endpoints de ton projet).
+
+7. Résolution des erreurs possibles
+
+Erreur ClassNotFoundException pour Jersey ou Spring Boot
+	•	Assure-toi que Jersey et Spring Boot sont bien dans pom.xml et relance Maven > Reimport.
+
+Problème avec Lombok (@Getter, @Setter non reconnus)
+	•	Vérifie que le plugin Lombok est bien installé et que l’annotation processing est activée.
+
+Tomcat ne démarre pas ou port déjà utilisé
+	•	Change le port dans Run > Edit Configurations > Tomcat > Server > HTTP Port (ex: 8081).
+	•	Vérifie qu’aucun autre serveur Tomcat ne tourne (ps aux | grep tomcat sur Linux/macOS ou Task Manager sur Windows).
+
+Conclusion
+
+Ton projet est maintenant prêt à tourner sous IntelliJ IDEA avec Tomcat et Maven, tout comme sous Eclipse. Tu peux développer, tester et déployer ton application Spring Boot + Jersey sans souci !
+
+Besoin d’un dernier ajustement ?
